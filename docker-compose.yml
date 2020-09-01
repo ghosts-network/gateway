@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  publications:
+    image: docker.pkg.github.com/gh-network/publications/ghostnetwork-publications:latest
+    ports:
+      - "5300:80"
+    environment:
+      - MONGO_ADDRESS=db:27017
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  db:
+    image: mvertes/alpine-mongo
