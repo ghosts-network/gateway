@@ -5,7 +5,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{05B80664-E911-4C78-81E7-07123CE1990E}"
 ProjectSection(SolutionItems) = preProject
 	docker-compose.yml = docker-compose.yml
+	Readme.md = Readme.md
 EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{B31FA5E2-02D2-4D91-BC20-F2CD9066A901}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Publications", "Infrastructure\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj", "{344A2255-77B9-4073-BB24-00F25D6E9A3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http", "Http", "{8CFFE041-310F-4DDC-B83A-62BD0913311E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,5 +24,13 @@ Global
 		{71E6C0EC-8D8F-4439-BDFB-1FBC9DD9213C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71E6C0EC-8D8F-4439-BDFB-1FBC9DD9213C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71E6C0EC-8D8F-4439-BDFB-1FBC9DD9213C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{344A2255-77B9-4073-BB24-00F25D6E9A3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{344A2255-77B9-4073-BB24-00F25D6E9A3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{344A2255-77B9-4073-BB24-00F25D6E9A3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{344A2255-77B9-4073-BB24-00F25D6E9A3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8CFFE041-310F-4DDC-B83A-62BD0913311E} = {B31FA5E2-02D2-4D91-BC20-F2CD9066A901}
+		{344A2255-77B9-4073-BB24-00F25D6E9A3A} = {8CFFE041-310F-4DDC-B83A-62BD0913311E}
 	EndGlobalSection
 EndGlobal

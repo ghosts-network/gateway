@@ -6,7 +6,8 @@ openapi-generator generate -i http://localhost:5300/swagger/v1/swagger.json \
     --additional-properties=packageName=GhostNetwork.Publications \
     --additional-properties=netCoreProjectFile=true
 
-mkdir Infrastructure/Http
+rm -r ./Infrastructure/Http/GhostNetwork.Publications
+mkdir ./Infrastructure/Http
 cp -r ./http/src/GhostNetwork.Publications ./Infrastructure/Http/GhostNetwork.Publications
 
 rm -r ./http
