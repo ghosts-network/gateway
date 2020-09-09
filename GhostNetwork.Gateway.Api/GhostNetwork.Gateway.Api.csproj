@@ -8,9 +8,4 @@
       <ProjectReference Include="..\Infrastructure\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.4.0" />
-      <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="3.4.0" />
-    </ItemGroup>
-
 </Project>
