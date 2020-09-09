@@ -1,3 +1,4 @@
+using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,8 @@ namespace GhostNetwork.Gateway.Api
             });
 
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
+
+            services.AddScoped<NewsFeedPublicationsSource>();
 
             services.AddControllers();
         }
