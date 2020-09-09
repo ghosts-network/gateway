@@ -4,4 +4,8 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Infrastructure\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj" />
+    </ItemGroup>
+
 </Project>
