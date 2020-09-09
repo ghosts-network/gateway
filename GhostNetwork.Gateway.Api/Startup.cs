@@ -29,6 +29,8 @@ namespace GhostNetwork.Gateway.Api
                 });
             });
 
+            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
+
             services.AddControllers();
         }
 

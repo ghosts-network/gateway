@@ -4,9 +4,10 @@
     "GhostNetwork.Gateway.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/graphiql",
+      "launchUrl": "http://localhost:5000/swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "PUBLICATIONS_ADDRESS": "http://localhost:5300"
       }
     }
   }
