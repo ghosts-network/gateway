@@ -6,6 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 ProjectSection(SolutionItems) = preProject
 	docker-compose.yml = docker-compose.yml
 	Readme.md = Readme.md
+	Dockerfile = Dockerfile
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{B31FA5E2-02D2-4D91-BC20-F2CD9066A901}"
