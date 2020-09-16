@@ -16,7 +16,7 @@ namespace GhostNetwork.Gateway.Facade
         
         public async Task<ICollection<NewsFeedPublication>> FindManyAsync()
         {
-            var publications = await publicationsApi.PublicationsGetAsync();
+            var publications = await publicationsApi.PublicationsFindManyAsync();
 
             return publications.Select(p => new NewsFeedPublication(p.Content)).ToList();
         }

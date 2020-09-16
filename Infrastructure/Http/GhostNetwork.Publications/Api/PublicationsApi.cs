@@ -34,11 +34,53 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns></returns>
+        void PublicationsCreate (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        ApiResponse<Object> PublicationsCreateWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Publication</returns>
+        Publication PublicationsFind (string id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>ApiResponse of Publication</returns>
+        ApiResponse<Publication> PublicationsFindWithHttpInfo (string id);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        List<Publication> PublicationsGet (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        List<Publication> PublicationsFindMany (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
 
         /// <summary>
         /// 
@@ -51,49 +93,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        ApiResponse<List<Publication>> PublicationsGetWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Publication</returns>
-        Publication PublicationsIdGet (string id);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>ApiResponse of Publication</returns>
-        ApiResponse<Publication> PublicationsIdGetWithHttpInfo (string id);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns></returns>
-        void PublicationsPost (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> PublicationsPostWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        ApiResponse<List<Publication>> PublicationsFindManyWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
         #endregion Synchronous Operations
     }
 
@@ -110,11 +110,53 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>Task of void</returns>
+        System.Threading.Tasks.Task PublicationsCreateAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>Task of ApiResponse</returns>
+        System.Threading.Tasks.Task<ApiResponse<Object>> PublicationsCreateAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of Publication</returns>
+        System.Threading.Tasks.Task<Publication> PublicationsFindAsync (string id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of ApiResponse (Publication)</returns>
+        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsFindAsyncWithHttpInfo (string id);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        System.Threading.Tasks.Task<List<Publication>> PublicationsGetAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        System.Threading.Tasks.Task<List<Publication>> PublicationsFindManyAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
 
         /// <summary>
         /// 
@@ -127,49 +169,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsGetAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of Publication</returns>
-        System.Threading.Tasks.Task<Publication> PublicationsIdGetAsync (string id);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsIdGetAsyncWithHttpInfo (string id);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task PublicationsPostAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PublicationsPostAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsFindManyAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
         #endregion Asynchronous Operations
     }
 
@@ -294,13 +294,237 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns></returns>
+        public void PublicationsCreate (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        {
+             PublicationsCreateWithHttpInfo(createPublicationModel);
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>ApiResponse of Object(void)</returns>
+        public GhostNetwork.Publications.Client.ApiResponse<Object> PublicationsCreateWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        {
+            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+                "application/json", 
+                "text/json", 
+                "application/_*+json"
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+
+            var localVarContentType = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = createPublicationModel;
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<Object>("/Publications", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("PublicationsCreate", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>Task of void</returns>
+        public async System.Threading.Tasks.Task PublicationsCreateAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        {
+             await PublicationsCreateAsyncWithHttpInfo(createPublicationModel);
+
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="createPublicationModel"> (optional)</param>
+        /// <returns>Task of ApiResponse</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Object>> PublicationsCreateAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        {
+
+            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+                "application/json", 
+                "text/json", 
+                "application/_*+json"
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+            };
+            
+            foreach (var _contentType in _contentTypes)
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
+            
+            foreach (var _accept in _accepts)
+                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
+            
+            localVarRequestOptions.Data = createPublicationModel;
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.PostAsync<Object>("/Publications", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("PublicationsCreate", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Publication</returns>
+        public Publication PublicationsFind (string id)
+        {
+             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsFindWithHttpInfo(id);
+             return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>ApiResponse of Publication</returns>
+        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsFindWithHttpInfo (string id)
+        {
+            // verify the required parameter 'id' is set
+            if (id == null)
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsFind");
+
+            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get< Publication >("/Publications/{id}", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("PublicationsFind", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of Publication</returns>
+        public async System.Threading.Tasks.Task<Publication> PublicationsFindAsync (string id)
+        {
+             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsFindAsyncWithHttpInfo(id);
+             return localVarResponse.Data;
+
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of ApiResponse (Publication)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsFindAsyncWithHttpInfo (string id)
+        {
+            // verify the required parameter 'id' is set
+            if (id == null)
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsFind");
+
+
+            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+            
+            foreach (var _contentType in _contentTypes)
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
+            
+            foreach (var _accept in _accepts)
+                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
+            
+            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.GetAsync<Publication>("/Publications/{id}", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("PublicationsFind", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        public List<Publication> PublicationsGet (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public List<Publication> PublicationsFindMany (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsGetWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsFindManyWithHttpInfo(skip, take, tags);
              return localVarResponse.Data;
         }
 
@@ -312,7 +536,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsGetWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsFindManyWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -351,7 +575,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsGet", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsFindMany", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -366,9 +590,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Publication>> PublicationsGetAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<List<Publication>> PublicationsFindManyAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsGetAsyncWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsFindManyAsyncWithHttpInfo(skip, take, tags);
              return localVarResponse.Data;
 
         }
@@ -381,7 +605,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsGetAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsFindManyAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -422,231 +646,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsGet", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Publication</returns>
-        public Publication PublicationsIdGet (string id)
-        {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsIdGetWithHttpInfo(id);
-             return localVarResponse.Data;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>ApiResponse of Publication</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsIdGetWithHttpInfo (string id)
-        {
-            // verify the required parameter 'id' is set
-            if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsIdGet");
-
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-
-            var localVarContentType = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get< Publication >("/Publications/{id}", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsIdGet", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of Publication</returns>
-        public async System.Threading.Tasks.Task<Publication> PublicationsIdGetAsync (string id)
-        {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsIdGetAsyncWithHttpInfo(id);
-             return localVarResponse.Data;
-
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsIdGetAsyncWithHttpInfo (string id)
-        {
-            // verify the required parameter 'id' is set
-            if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsIdGet");
-
-
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-            
-            foreach (var _contentType in _contentTypes)
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
-            
-            foreach (var _accept in _accepts)
-                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
-            
-            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
-
-
-            // make the HTTP request
-
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Publication>("/Publications/{id}", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsIdGet", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns></returns>
-        public void PublicationsPost (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
-        {
-             PublicationsPostWithHttpInfo(createPublicationModel);
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public GhostNetwork.Publications.Client.ApiResponse<Object> PublicationsPostWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
-        {
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-                "application/json", 
-                "text/json", 
-                "application/_*+json"
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-            };
-
-            var localVarContentType = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = createPublicationModel;
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/Publications", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsPost", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task PublicationsPostAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
-        {
-             await PublicationsPostAsyncWithHttpInfo(createPublicationModel);
-
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Object>> PublicationsPostAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
-        {
-
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-                "application/json", 
-                "text/json", 
-                "application/_*+json"
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-            };
-            
-            foreach (var _contentType in _contentTypes)
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
-            
-            foreach (var _accept in _accepts)
-                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
-            
-            localVarRequestOptions.Data = createPublicationModel;
-
-
-            // make the HTTP request
-
-            var localVarResponse = await this.AsynchronousClient.PostAsync<Object>("/Publications", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsPost", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsFindMany", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
