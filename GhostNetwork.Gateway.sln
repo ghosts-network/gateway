@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.Api", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{05B80664-E911-4C78-81E7-07123CE1990E}"
 ProjectSection(SolutionItems) = preProject
-	docker-compose.yml = docker-compose.yml
+	dev-compose.yml = dev-compose.yml
 	Readme.md = Readme.md
 	Dockerfile = Dockerfile
 EndProjectSection
