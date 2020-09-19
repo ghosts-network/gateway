@@ -27,7 +27,7 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> CreateAsync([FromBody] CreateNewsFeedPublication model)
+        public async Task<ActionResult<NewsFeedPublication>> CreateAsync([FromBody] CreateNewsFeedPublication model)
         {
             return Ok(await source.CreateAsync(model.Content));
         }
