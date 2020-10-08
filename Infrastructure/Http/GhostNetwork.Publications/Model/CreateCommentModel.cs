@@ -26,54 +26,48 @@ using OpenAPIDateConverter = GhostNetwork.Publications.Client.OpenAPIDateConvert
 namespace GhostNetwork.Publications.Model
 {
     /// <summary>
-    /// Publication
+    /// CreateCommentModel
     /// </summary>
     [DataContract]
-    public partial class Publication :  IEquatable<Publication>, IValidatableObject
+    public partial class CreateCommentModel :  IEquatable<CreateCommentModel>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Publication" /> class.
+        /// Initializes a new instance of the <see cref="CreateCommentModel" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        public Publication()
+        protected CreateCommentModel() { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommentModel" /> class.
+        /// </summary>
+        /// <param name="publicationId">publicationId (required).</param>
+        /// <param name="content">content (required).</param>
+        /// <param name="replyCommentId">replyCommentId.</param>
+        public CreateCommentModel(string publicationId = default(string), string content = default(string), string replyCommentId = default(string))
         {
+            // to ensure "publicationId" is required (not null)
+            this.PublicationId = publicationId ?? throw new ArgumentNullException("publicationId is a required property for CreateCommentModel and cannot be null");
+            // to ensure "content" is required (not null)
+            this.Content = content ?? throw new ArgumentNullException("content is a required property for CreateCommentModel and cannot be null");
+            this.ReplyCommentId = replyCommentId;
         }
         
         /// <summary>
-        /// Gets or Sets Id
+        /// Gets or Sets PublicationId
         /// </summary>
-        [DataMember(Name="id", EmitDefaultValue=true)]
-        public string Id { get; private set; }
+        [DataMember(Name="publicationId", EmitDefaultValue=false)]
+        public string PublicationId { get; set; }
 
         /// <summary>
         /// Gets or Sets Content
         /// </summary>
-        [DataMember(Name="content", EmitDefaultValue=true)]
-        public string Content { get; private set; }
+        [DataMember(Name="content", EmitDefaultValue=false)]
+        public string Content { get; set; }
 
         /// <summary>
-        /// Gets or Sets CreatedOn
+        /// Gets or Sets ReplyCommentId
         /// </summary>
-        [DataMember(Name="createdOn", EmitDefaultValue=false)]
-        public DateTime CreatedOn { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets Tags
-        /// </summary>
-        [DataMember(Name="tags", EmitDefaultValue=true)]
-        public List<string> Tags { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets UpdatedOn
-        /// </summary>
-        [DataMember(Name="updatedOn", EmitDefaultValue=false)]
-        public DateTime UpdatedOn { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets IsUpdated
-        /// </summary>
-        [DataMember(Name="isUpdated", EmitDefaultValue=false)]
-        public bool IsUpdated { get; private set; }
+        [DataMember(Name="replyCommentId", EmitDefaultValue=true)]
+        public string ReplyCommentId { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -82,13 +76,10 @@ namespace GhostNetwork.Publications.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Publication {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("class CreateCommentModel {\n");
+            sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
-            sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
-            sb.Append("  Tags: ").Append(Tags).Append("\n");
-            sb.Append("  UpdatedOn: ").Append(UpdatedOn).Append("\n");
-            sb.Append("  IsUpdated: ").Append(IsUpdated).Append("\n");
+            sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -109,24 +100,24 @@ namespace GhostNetwork.Publications.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as Publication);
+            return this.Equals(input as CreateCommentModel);
         }
 
         /// <summary>
-        /// Returns true if Publication instances are equal
+        /// Returns true if CreateCommentModel instances are equal
         /// </summary>
-        /// <param name="input">Instance of Publication to be compared</param>
+        /// <param name="input">Instance of CreateCommentModel to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(Publication input)
+        public bool Equals(CreateCommentModel input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    this.Id == input.Id ||
-                    (this.Id != null &&
-                    this.Id.Equals(input.Id))
+                    this.PublicationId == input.PublicationId ||
+                    (this.PublicationId != null &&
+                    this.PublicationId.Equals(input.PublicationId))
                 ) && 
                 (
                     this.Content == input.Content ||
@@ -134,24 +125,9 @@ namespace GhostNetwork.Publications.Model
                     this.Content.Equals(input.Content))
                 ) && 
                 (
-                    this.CreatedOn == input.CreatedOn ||
-                    (this.CreatedOn != null &&
-                    this.CreatedOn.Equals(input.CreatedOn))
-                ) && 
-                (
-                    this.Tags == input.Tags ||
-                    this.Tags != null &&
-                    input.Tags != null &&
-                    this.Tags.SequenceEqual(input.Tags)
-                ) && 
-                (
-                    this.UpdatedOn == input.UpdatedOn ||
-                    (this.UpdatedOn != null &&
-                    this.UpdatedOn.Equals(input.UpdatedOn))
-                ) && 
-                (
-                    this.IsUpdated == input.IsUpdated ||
-                    this.IsUpdated.Equals(input.IsUpdated)
+                    this.ReplyCommentId == input.ReplyCommentId ||
+                    (this.ReplyCommentId != null &&
+                    this.ReplyCommentId.Equals(input.ReplyCommentId))
                 );
         }
 
@@ -164,17 +140,12 @@ namespace GhostNetwork.Publications.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Id != null)
-                    hashCode = hashCode * 59 + this.Id.GetHashCode();
+                if (this.PublicationId != null)
+                    hashCode = hashCode * 59 + this.PublicationId.GetHashCode();
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
-                if (this.CreatedOn != null)
-                    hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
-                if (this.Tags != null)
-                    hashCode = hashCode * 59 + this.Tags.GetHashCode();
-                if (this.UpdatedOn != null)
-                    hashCode = hashCode * 59 + this.UpdatedOn.GetHashCode();
-                hashCode = hashCode * 59 + this.IsUpdated.GetHashCode();
+                if (this.ReplyCommentId != null)
+                    hashCode = hashCode * 59 + this.ReplyCommentId.GetHashCode();
                 return hashCode;
             }
         }

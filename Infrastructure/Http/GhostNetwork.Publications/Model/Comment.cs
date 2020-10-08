@@ -26,16 +26,16 @@ using OpenAPIDateConverter = GhostNetwork.Publications.Client.OpenAPIDateConvert
 namespace GhostNetwork.Publications.Model
 {
     /// <summary>
-    /// Publication
+    /// Comment
     /// </summary>
     [DataContract]
-    public partial class Publication :  IEquatable<Publication>, IValidatableObject
+    public partial class Comment :  IEquatable<Comment>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Publication" /> class.
+        /// Initializes a new instance of the <see cref="Comment" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        public Publication()
+        public Comment()
         {
         }
         
@@ -52,28 +52,22 @@ namespace GhostNetwork.Publications.Model
         public string Content { get; private set; }
 
         /// <summary>
+        /// Gets or Sets PublicationId
+        /// </summary>
+        [DataMember(Name="publicationId", EmitDefaultValue=true)]
+        public string PublicationId { get; private set; }
+
+        /// <summary>
         /// Gets or Sets CreatedOn
         /// </summary>
         [DataMember(Name="createdOn", EmitDefaultValue=false)]
         public DateTime CreatedOn { get; private set; }
 
         /// <summary>
-        /// Gets or Sets Tags
+        /// Gets or Sets ReplyCommentId
         /// </summary>
-        [DataMember(Name="tags", EmitDefaultValue=true)]
-        public List<string> Tags { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets UpdatedOn
-        /// </summary>
-        [DataMember(Name="updatedOn", EmitDefaultValue=false)]
-        public DateTime UpdatedOn { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets IsUpdated
-        /// </summary>
-        [DataMember(Name="isUpdated", EmitDefaultValue=false)]
-        public bool IsUpdated { get; private set; }
+        [DataMember(Name="replyCommentId", EmitDefaultValue=true)]
+        public string ReplyCommentId { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -82,13 +76,12 @@ namespace GhostNetwork.Publications.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Publication {\n");
+            sb.Append("class Comment {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
+            sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
             sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
-            sb.Append("  Tags: ").Append(Tags).Append("\n");
-            sb.Append("  UpdatedOn: ").Append(UpdatedOn).Append("\n");
-            sb.Append("  IsUpdated: ").Append(IsUpdated).Append("\n");
+            sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -109,15 +102,15 @@ namespace GhostNetwork.Publications.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as Publication);
+            return this.Equals(input as Comment);
         }
 
         /// <summary>
-        /// Returns true if Publication instances are equal
+        /// Returns true if Comment instances are equal
         /// </summary>
-        /// <param name="input">Instance of Publication to be compared</param>
+        /// <param name="input">Instance of Comment to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(Publication input)
+        public bool Equals(Comment input)
         {
             if (input == null)
                 return false;
@@ -134,24 +127,19 @@ namespace GhostNetwork.Publications.Model
                     this.Content.Equals(input.Content))
                 ) && 
                 (
+                    this.PublicationId == input.PublicationId ||
+                    (this.PublicationId != null &&
+                    this.PublicationId.Equals(input.PublicationId))
+                ) && 
+                (
                     this.CreatedOn == input.CreatedOn ||
                     (this.CreatedOn != null &&
                     this.CreatedOn.Equals(input.CreatedOn))
                 ) && 
                 (
-                    this.Tags == input.Tags ||
-                    this.Tags != null &&
-                    input.Tags != null &&
-                    this.Tags.SequenceEqual(input.Tags)
-                ) && 
-                (
-                    this.UpdatedOn == input.UpdatedOn ||
-                    (this.UpdatedOn != null &&
-                    this.UpdatedOn.Equals(input.UpdatedOn))
-                ) && 
-                (
-                    this.IsUpdated == input.IsUpdated ||
-                    this.IsUpdated.Equals(input.IsUpdated)
+                    this.ReplyCommentId == input.ReplyCommentId ||
+                    (this.ReplyCommentId != null &&
+                    this.ReplyCommentId.Equals(input.ReplyCommentId))
                 );
         }
 
@@ -168,13 +156,12 @@ namespace GhostNetwork.Publications.Model
                     hashCode = hashCode * 59 + this.Id.GetHashCode();
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
+                if (this.PublicationId != null)
+                    hashCode = hashCode * 59 + this.PublicationId.GetHashCode();
                 if (this.CreatedOn != null)
                     hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
-                if (this.Tags != null)
-                    hashCode = hashCode * 59 + this.Tags.GetHashCode();
-                if (this.UpdatedOn != null)
-                    hashCode = hashCode * 59 + this.UpdatedOn.GetHashCode();
-                hashCode = hashCode * 59 + this.IsUpdated.GetHashCode();
+                if (this.ReplyCommentId != null)
+                    hashCode = hashCode * 59 + this.ReplyCommentId.GetHashCode();
                 return hashCode;
             }
         }
