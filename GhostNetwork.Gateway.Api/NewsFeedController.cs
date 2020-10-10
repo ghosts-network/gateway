@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Api.Helpers;
 using GhostNetwork.Gateway.Facade;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,16 +36,22 @@ namespace GhostNetwork.Gateway.Api
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<NewsFeedPublication>> UpdateAsync([FromRoute] string id, [FromBody] CreateNewsFeedPublication model)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateAsync([FromRoute] string id, [FromBody] CreateNewsFeedPublication model)
         {
-            var result = await source.UpdateAsync(id, model.Content);
+            var (domainResult, result) = await source.UpdateAsync(id, model.Content);
 
-            if (result != null)
+            if (result == true)
             {
                 return NoContent();
             }
 
-            return NotFound();
+            if (result == false)
+            {
+                return BadRequest(domainResult.ToProblemDetails());
+            }
+
+            return NotFound(domainResult.ToProblemDetails());
         }
 
         [HttpDelete("{id}")]
@@ -54,12 +61,12 @@ namespace GhostNetwork.Gateway.Api
         {
             var result = await source.DeleteAsync(id);
 
-            if (result)
+            if (result.Success)
             {
-                return Ok();
+                return NoContent();
             }
 
-            return BadRequest();
+            return BadRequest(result.ToProblemDetails());
         }
     }
 
