@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GhostNetwork.Gateway.Facade
+﻿namespace GhostNetwork.Gateway.Facade
 {
-    class DomainError
+    public class DomainError
     {
+        public DomainError(string message)
+        {
+            Message = message;
+        }
+
+        public string Message { get; }
     }
 }

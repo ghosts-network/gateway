@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using GhostNetwork.Publications.Model;
 
 namespace GhostNetwork.Gateway.Facade
@@ -15,7 +12,7 @@ namespace GhostNetwork.Gateway.Facade
             this.maxTime = maxTime;
         }
 
-        public bool TryUpdatePublication(Publication publication)
+        public bool CanUpdatePublication(Publication publication)
         {
             if (maxTime == null)
             {

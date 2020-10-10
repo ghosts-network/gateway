@@ -10,18 +10,20 @@ namespace GhostNetwork.Gateway.Facade
     {
         private readonly IPublicationsApi publicationsApi;
         private readonly IUpdateValidator validator;
+        private readonly ICommentsApi commentsApi;
 
-        public NewsFeedPublicationsSource(IPublicationsApi publicationsApi, IUpdateValidator validator)
+        public NewsFeedPublicationsSource(IPublicationsApi publicationsApi, IUpdateValidator validator, ICommentsApi commentsApi)
         {
             this.publicationsApi = publicationsApi;
             this.validator = validator;
+            this.commentsApi = commentsApi;
         }
         
         public async Task<ICollection<NewsFeedPublication>> FindManyAsync()
         {
             var publications = await publicationsApi.PublicationsFindManyAsync();
 
-            return publications.Select(p => new NewsFeedPublication(p.Content)).ToList();
+            return publications.Select(p => new NewsFeedPublication(p.Content, commentsApi.CommentsFindMany(p.Id).Count)).ToList();
         }
 
 
@@ -31,41 +33,41 @@ namespace GhostNetwork.Gateway.Facade
 
             var result = await publicationsApi.PublicationsCreateAsync(model);
 
-            return new NewsFeedPublication(result.Content);
+            return new NewsFeedPublication(result.Content, 0);
         }
 
-        public async Task<NewsFeedPublication> UpdateAsync(string id, string content)
+        public async Task<(DomainResult, bool?)> UpdateAsync(string id, string content)
         {
             var publication = await publicationsApi.PublicationsFindAsync(id);
 
             if (publication == null)
             {
-                return null;
+                return (DomainResult.Error("Publication not found."), false);
             }
 
-            var result = validator.TryUpdatePublication(publication);
+            var result = validator.CanUpdatePublication(publication);
 
             if (result)
             {
                 var model = new UpdatePublicationModel(content);
                 await publicationsApi.PublicationsUpdateAsync(id, model);
-                return new NewsFeedPublication(content);
+                return (DomainResult.Successed(),true);
             }
 
-            return null;
+            return (DomainResult.Error("Publication could not be updated."), false);
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<DomainResult> DeleteAsync(string id)
         {
             var publication = await publicationsApi.PublicationsFindAsync(id);
 
             if (publication != null)
             {
                 await publicationsApi.PublicationsDeleteAsync(id);
-                return true;
+                return DomainResult.Successed();
             }
 
-            return false;
+            return DomainResult.Error("Publication not found.");
         }
     }
 }
