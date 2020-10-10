@@ -31,6 +31,36 @@ namespace GhostNetwork.Gateway.Api
         {
             return Ok(await source.CreateAsync(model.Content));
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<NewsFeedPublication>> UpdateAsync([FromRoute] string id, [FromBody] CreateNewsFeedPublication model)
+        {
+            var result = await source.UpdateAsync(id, model.Content);
+
+            if (result != null)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        {
+            var result = await source.DeleteAsync(id);
+
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 
     public class CreateNewsFeedPublication

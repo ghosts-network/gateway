@@ -31,6 +31,8 @@ namespace GhostNetwork.Gateway.Api
             });
 
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
+            services.AddScoped<IUpdateValidator>(provider =>
+                new UpdateValidator(configuration.GetValue<int?>("PUBLICATION_MODIFICATION_TIME")));
 
             services.AddScoped<NewsFeedPublicationsSource>();
 
