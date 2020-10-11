@@ -12,21 +12,21 @@ namespace GhostNetwork.Gateway.Facade
             this.maxTime = maxTime;
         }
 
-        public bool CanUpdatePublication(Publication publication)
+        public DomainResult CanUpdatePublication(Publication publication)
         {
             if (maxTime == null)
             {
-                return true;
+                return DomainResult.Successed();
             }
 
             var time = DateTime.Now - publication.CreatedOn;
             
             if (time.TotalMinutes > maxTime)
             {
-                return false;
+                return DomainResult.Error("Unable to update publication.");
             }
 
-            return true;
+            return DomainResult.Successed();
         }
     }
 }

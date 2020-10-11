@@ -31,7 +31,7 @@ namespace GhostNetwork.Gateway.Facade
 
         public async Task<List<CommentOfPublication>> FindManyAsync(string publicationId, int skip = 0, int take = 10)
         {
-            var comments = await commentsApi.CommentsFindManyAsync(publicationId, skip, take);
+            var comments = await commentsApi.CommentsSearchAsync(publicationId, skip, take);
 
             return comments.Select(c => new CommentOfPublication(c.Content)).ToList();
         }

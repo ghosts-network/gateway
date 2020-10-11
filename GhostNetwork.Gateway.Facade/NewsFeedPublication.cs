@@ -2,7 +2,7 @@ namespace GhostNetwork.Gateway.Facade
 {
     public class NewsFeedPublication
     {
-        public NewsFeedPublication(string content, int quantityComments)
+        public NewsFeedPublication(string content, int? quantityComments)
         {
             Content = content;
             QuantityComments = quantityComments;
@@ -10,6 +10,6 @@ namespace GhostNetwork.Gateway.Facade
 
         public string Content { get; }
 
-        public int QuantityComments { get; }
+        public int? QuantityComments { get; }
     }
 }
