@@ -78,7 +78,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Publication</returns>
-        Publication PublicationsFind (string id);
+        Publication PublicationsGetById (string id);
 
         /// <summary>
         /// 
@@ -89,7 +89,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>ApiResponse of Publication</returns>
-        ApiResponse<Publication> PublicationsFindWithHttpInfo (string id);
+        ApiResponse<Publication> PublicationsGetByIdWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -101,7 +101,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        List<Publication> PublicationsFindMany (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
 
         /// <summary>
         /// 
@@ -114,7 +114,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        ApiResponse<List<Publication>> PublicationsFindManyWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        ApiResponse<List<Publication>> PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
         /// <summary>
         /// 
         /// </summary>
@@ -198,7 +198,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of Publication</returns>
-        System.Threading.Tasks.Task<Publication> PublicationsFindAsync (string id);
+        System.Threading.Tasks.Task<Publication> PublicationsGetByIdAsync (string id);
 
         /// <summary>
         /// 
@@ -209,7 +209,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of ApiResponse (Publication)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsFindAsyncWithHttpInfo (string id);
+        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsGetByIdAsyncWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -221,7 +221,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        System.Threading.Tasks.Task<List<Publication>> PublicationsFindManyAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
 
         /// <summary>
         /// 
@@ -234,7 +234,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsFindManyAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
         /// <summary>
         /// 
         /// </summary>
@@ -614,9 +614,9 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Publication</returns>
-        public Publication PublicationsFind (string id)
+        public Publication PublicationsGetById (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsFindWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsGetByIdWithHttpInfo(id);
              return localVarResponse.Data;
         }
 
@@ -626,11 +626,11 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>ApiResponse of Publication</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsFindWithHttpInfo (string id)
+        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsGetByIdWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsFind");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsGetById");
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -658,7 +658,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsFind", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -671,9 +671,9 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of Publication</returns>
-        public async System.Threading.Tasks.Task<Publication> PublicationsFindAsync (string id)
+        public async System.Threading.Tasks.Task<Publication> PublicationsGetByIdAsync (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsFindAsyncWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsGetByIdAsyncWithHttpInfo(id);
              return localVarResponse.Data;
 
         }
@@ -684,11 +684,11 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of ApiResponse (Publication)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsFindAsyncWithHttpInfo (string id)
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsGetByIdAsyncWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsFind");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsGetById");
 
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -718,7 +718,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsFind", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -733,9 +733,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        public List<Publication> PublicationsFindMany (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsFindManyWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsSearchWithHttpInfo(skip, take, tags);
              return localVarResponse.Data;
         }
 
@@ -747,7 +747,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsFindManyWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -786,7 +786,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsFindMany", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -801,9 +801,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Publication>> PublicationsFindManyAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsFindManyAsyncWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsSearchAsyncWithHttpInfo(skip, take, tags);
              return localVarResponse.Data;
 
         }
@@ -816,7 +816,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsFindManyAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
         {
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -857,7 +857,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsFindMany", localVarResponse);
+                Exception _exception = this.ExceptionFactory("PublicationsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 

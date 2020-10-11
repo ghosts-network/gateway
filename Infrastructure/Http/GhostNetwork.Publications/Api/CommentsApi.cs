@@ -78,7 +78,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Comment</returns>
-        Comment CommentsFind (string id);
+        Comment CommentsGetById (string id);
 
         /// <summary>
         /// 
@@ -89,7 +89,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>ApiResponse of Comment</returns>
-        ApiResponse<Comment> CommentsFindWithHttpInfo (string id);
+        ApiResponse<Comment> CommentsGetByIdWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -101,7 +101,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>List&lt;Comment&gt;</returns>
-        List<Comment> CommentsFindMany (string publicationId, int? skip = default(int?), int? take = default(int?));
+        List<Comment> CommentsSearch (string publicationId, int? skip = default(int?), int? take = default(int?));
 
         /// <summary>
         /// 
@@ -114,7 +114,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
-        ApiResponse<List<Comment>> CommentsFindManyWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
+        ApiResponse<List<Comment>> CommentsSearchWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
         #endregion Synchronous Operations
     }
 
@@ -175,7 +175,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of Comment</returns>
-        System.Threading.Tasks.Task<Comment> CommentsFindAsync (string id);
+        System.Threading.Tasks.Task<Comment> CommentsGetByIdAsync (string id);
 
         /// <summary>
         /// 
@@ -186,7 +186,7 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of ApiResponse (Comment)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Comment>> CommentsFindAsyncWithHttpInfo (string id);
+        System.Threading.Tasks.Task<ApiResponse<Comment>> CommentsGetByIdAsyncWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -198,7 +198,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>Task of List&lt;Comment&gt;</returns>
-        System.Threading.Tasks.Task<List<Comment>> CommentsFindManyAsync (string publicationId, int? skip = default(int?), int? take = default(int?));
+        System.Threading.Tasks.Task<List<Comment>> CommentsSearchAsync (string publicationId, int? skip = default(int?), int? take = default(int?));
 
         /// <summary>
         /// 
@@ -211,7 +211,7 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Comment>>> CommentsFindManyAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
+        System.Threading.Tasks.Task<ApiResponse<List<Comment>>> CommentsSearchAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
         #endregion Asynchronous Operations
     }
 
@@ -570,9 +570,9 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Comment</returns>
-        public Comment CommentsFind (string id)
+        public Comment CommentsGetById (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = CommentsFindWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = CommentsGetByIdWithHttpInfo(id);
              return localVarResponse.Data;
         }
 
@@ -582,11 +582,11 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>ApiResponse of Comment</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< Comment > CommentsFindWithHttpInfo (string id)
+        public GhostNetwork.Publications.Client.ApiResponse< Comment > CommentsGetByIdWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsFind");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsGetById");
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -614,7 +614,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("CommentsFind", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -627,9 +627,9 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of Comment</returns>
-        public async System.Threading.Tasks.Task<Comment> CommentsFindAsync (string id)
+        public async System.Threading.Tasks.Task<Comment> CommentsGetByIdAsync (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = await CommentsFindAsyncWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = await CommentsGetByIdAsyncWithHttpInfo(id);
              return localVarResponse.Data;
 
         }
@@ -640,11 +640,11 @@ namespace GhostNetwork.Publications.Api
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
         /// <returns>Task of ApiResponse (Comment)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Comment>> CommentsFindAsyncWithHttpInfo (string id)
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Comment>> CommentsGetByIdAsyncWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsFind");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsGetById");
 
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -674,7 +674,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("CommentsFind", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -689,9 +689,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>List&lt;Comment&gt;</returns>
-        public List<Comment> CommentsFindMany (string publicationId, int? skip = default(int?), int? take = default(int?))
+        public List<Comment> CommentsSearch (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = CommentsFindManyWithHttpInfo(publicationId, skip, take);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = CommentsSearchWithHttpInfo(publicationId, skip, take);
              return localVarResponse.Data;
         }
 
@@ -703,11 +703,11 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< List<Comment> > CommentsFindManyWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
+        public GhostNetwork.Publications.Client.ApiResponse< List<Comment> > CommentsSearchWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
             // verify the required parameter 'publicationId' is set
             if (publicationId == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsFindMany");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsSearch");
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -743,7 +743,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("CommentsFindMany", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -758,9 +758,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>Task of List&lt;Comment&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Comment>> CommentsFindManyAsync (string publicationId, int? skip = default(int?), int? take = default(int?))
+        public async System.Threading.Tasks.Task<List<Comment>> CommentsSearchAsync (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = await CommentsFindManyAsyncWithHttpInfo(publicationId, skip, take);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = await CommentsSearchAsyncWithHttpInfo(publicationId, skip, take);
              return localVarResponse.Data;
 
         }
@@ -773,11 +773,11 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional, default to 10)</param>
         /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Comment>>> CommentsFindManyAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Comment>>> CommentsSearchAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
             // verify the required parameter 'publicationId' is set
             if (publicationId == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsFindMany");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsSearch");
 
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -815,7 +815,7 @@ namespace GhostNetwork.Publications.Api
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("CommentsFindMany", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 

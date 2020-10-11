@@ -58,6 +58,12 @@ namespace GhostNetwork.Publications.Model
         public string PublicationId { get; private set; }
 
         /// <summary>
+        /// Gets or Sets AuthorId
+        /// </summary>
+        [DataMember(Name="authorId", EmitDefaultValue=true)]
+        public string AuthorId { get; private set; }
+
+        /// <summary>
         /// Gets or Sets CreatedOn
         /// </summary>
         [DataMember(Name="createdOn", EmitDefaultValue=false)]
@@ -80,6 +86,7 @@ namespace GhostNetwork.Publications.Model
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
             sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
+            sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
             sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
             sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
             sb.Append("}\n");
@@ -132,6 +139,11 @@ namespace GhostNetwork.Publications.Model
                     this.PublicationId.Equals(input.PublicationId))
                 ) && 
                 (
+                    this.AuthorId == input.AuthorId ||
+                    (this.AuthorId != null &&
+                    this.AuthorId.Equals(input.AuthorId))
+                ) && 
+                (
                     this.CreatedOn == input.CreatedOn ||
                     (this.CreatedOn != null &&
                     this.CreatedOn.Equals(input.CreatedOn))
@@ -158,6 +170,8 @@ namespace GhostNetwork.Publications.Model
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
                 if (this.PublicationId != null)
                     hashCode = hashCode * 59 + this.PublicationId.GetHashCode();
+                if (this.AuthorId != null)
+                    hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
                 if (this.CreatedOn != null)
                     hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
                 if (this.ReplyCommentId != null)

@@ -52,16 +52,22 @@ namespace GhostNetwork.Publications.Model
         public string Content { get; private set; }
 
         /// <summary>
-        /// Gets or Sets CreatedOn
-        /// </summary>
-        [DataMember(Name="createdOn", EmitDefaultValue=false)]
-        public DateTime CreatedOn { get; private set; }
-
-        /// <summary>
         /// Gets or Sets Tags
         /// </summary>
         [DataMember(Name="tags", EmitDefaultValue=true)]
         public List<string> Tags { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets AuthorId
+        /// </summary>
+        [DataMember(Name="authorId", EmitDefaultValue=true)]
+        public string AuthorId { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets CreatedOn
+        /// </summary>
+        [DataMember(Name="createdOn", EmitDefaultValue=false)]
+        public DateTime CreatedOn { get; private set; }
 
         /// <summary>
         /// Gets or Sets UpdatedOn
@@ -85,8 +91,9 @@ namespace GhostNetwork.Publications.Model
             sb.Append("class Publication {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
-            sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
+            sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
             sb.Append("  UpdatedOn: ").Append(UpdatedOn).Append("\n");
             sb.Append("  IsUpdated: ").Append(IsUpdated).Append("\n");
             sb.Append("}\n");
@@ -134,15 +141,20 @@ namespace GhostNetwork.Publications.Model
                     this.Content.Equals(input.Content))
                 ) && 
                 (
-                    this.CreatedOn == input.CreatedOn ||
-                    (this.CreatedOn != null &&
-                    this.CreatedOn.Equals(input.CreatedOn))
-                ) && 
-                (
                     this.Tags == input.Tags ||
                     this.Tags != null &&
                     input.Tags != null &&
                     this.Tags.SequenceEqual(input.Tags)
+                ) && 
+                (
+                    this.AuthorId == input.AuthorId ||
+                    (this.AuthorId != null &&
+                    this.AuthorId.Equals(input.AuthorId))
+                ) && 
+                (
+                    this.CreatedOn == input.CreatedOn ||
+                    (this.CreatedOn != null &&
+                    this.CreatedOn.Equals(input.CreatedOn))
                 ) && 
                 (
                     this.UpdatedOn == input.UpdatedOn ||
@@ -168,10 +180,12 @@ namespace GhostNetwork.Publications.Model
                     hashCode = hashCode * 59 + this.Id.GetHashCode();
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
-                if (this.CreatedOn != null)
-                    hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
                 if (this.Tags != null)
                     hashCode = hashCode * 59 + this.Tags.GetHashCode();
+                if (this.AuthorId != null)
+                    hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
+                if (this.CreatedOn != null)
+                    hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
                 if (this.UpdatedOn != null)
                     hashCode = hashCode * 59 + this.UpdatedOn.GetHashCode();
                 hashCode = hashCode * 59 + this.IsUpdated.GetHashCode();

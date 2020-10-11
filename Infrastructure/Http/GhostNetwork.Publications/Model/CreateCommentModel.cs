@@ -42,13 +42,15 @@ namespace GhostNetwork.Publications.Model
         /// <param name="publicationId">publicationId (required).</param>
         /// <param name="content">content (required).</param>
         /// <param name="replyCommentId">replyCommentId.</param>
-        public CreateCommentModel(string publicationId = default(string), string content = default(string), string replyCommentId = default(string))
+        /// <param name="authorId">authorId.</param>
+        public CreateCommentModel(string publicationId = default(string), string content = default(string), string replyCommentId = default(string), string authorId = default(string))
         {
             // to ensure "publicationId" is required (not null)
             this.PublicationId = publicationId ?? throw new ArgumentNullException("publicationId is a required property for CreateCommentModel and cannot be null");
             // to ensure "content" is required (not null)
             this.Content = content ?? throw new ArgumentNullException("content is a required property for CreateCommentModel and cannot be null");
             this.ReplyCommentId = replyCommentId;
+            this.AuthorId = authorId;
         }
         
         /// <summary>
@@ -70,6 +72,12 @@ namespace GhostNetwork.Publications.Model
         public string ReplyCommentId { get; set; }
 
         /// <summary>
+        /// Gets or Sets AuthorId
+        /// </summary>
+        [DataMember(Name="authorId", EmitDefaultValue=true)]
+        public string AuthorId { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -80,6 +88,7 @@ namespace GhostNetwork.Publications.Model
             sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
             sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
+            sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -128,6 +137,11 @@ namespace GhostNetwork.Publications.Model
                     this.ReplyCommentId == input.ReplyCommentId ||
                     (this.ReplyCommentId != null &&
                     this.ReplyCommentId.Equals(input.ReplyCommentId))
+                ) && 
+                (
+                    this.AuthorId == input.AuthorId ||
+                    (this.AuthorId != null &&
+                    this.AuthorId.Equals(input.AuthorId))
                 );
         }
 
@@ -146,6 +160,8 @@ namespace GhostNetwork.Publications.Model
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
                 if (this.ReplyCommentId != null)
                     hashCode = hashCode * 59 + this.ReplyCommentId.GetHashCode();
+                if (this.AuthorId != null)
+                    hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
                 return hashCode;
             }
         }
