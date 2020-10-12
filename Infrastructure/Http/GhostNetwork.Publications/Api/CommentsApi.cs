@@ -24,7 +24,7 @@ namespace GhostNetwork.Publications.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public interface IPublicationsApiSync : IApiAccessor
+    public interface ICommentsApiSync : IApiAccessor
     {
         #region Synchronous Operations
         /// <summary>
@@ -34,9 +34,9 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Publication</returns>
-        Publication PublicationsCreate (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Comment</returns>
+        Comment CommentsCreate (CreateCommentModel createCommentModel = default(CreateCommentModel));
 
         /// <summary>
         /// 
@@ -45,9 +45,9 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Publication</returns>
-        ApiResponse<Publication> PublicationsCreateWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>ApiResponse of Comment</returns>
+        ApiResponse<Comment> CommentsCreateWithHttpInfo (CreateCommentModel createCommentModel = default(CreateCommentModel));
         /// <summary>
         /// 
         /// </summary>
@@ -56,29 +56,8 @@ namespace GhostNetwork.Publications.Api
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns></returns>
-        void PublicationsDelete (string id);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> PublicationsDeleteWithHttpInfo (string id);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Publication</returns>
-        Publication PublicationsGetById (string id);
+        /// <returns>List&lt;Comment&gt;</returns>
+        List<Comment> CommentsDelete (string id);
 
         /// <summary>
         /// 
@@ -88,8 +67,8 @@ namespace GhostNetwork.Publications.Api
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>ApiResponse of Publication</returns>
-        ApiResponse<Publication> PublicationsGetByIdWithHttpInfo (string id);
+        /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
+        ApiResponse<List<Comment>> CommentsDeleteWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -97,11 +76,32 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Comment</returns>
+        Comment CommentsGetById (string id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>ApiResponse of Comment</returns>
+        ApiResponse<Comment> CommentsGetByIdWithHttpInfo (string id);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>List&lt;Publication&gt;</returns>
-        List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>List&lt;Comment&gt;</returns>
+        List<Comment> CommentsSearch (string publicationId, int? skip = default(int?), int? take = default(int?));
 
         /// <summary>
         /// 
@@ -110,41 +110,18 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        ApiResponse<List<Publication>> PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns></returns>
-        void PublicationsUpdate (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> PublicationsUpdateWithHttpInfo (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel));
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
+        ApiResponse<List<Comment>> CommentsSearchWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
         #endregion Synchronous Operations
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public interface IPublicationsApiAsync : IApiAccessor
+    public interface ICommentsApiAsync : IApiAccessor
     {
         #region Asynchronous Operations
         /// <summary>
@@ -154,9 +131,9 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of Publication</returns>
-        System.Threading.Tasks.Task<Publication> PublicationsCreateAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Task of Comment</returns>
+        System.Threading.Tasks.Task<Comment> CommentsCreateAsync (CreateCommentModel createCommentModel = default(CreateCommentModel));
 
         /// <summary>
         /// 
@@ -165,9 +142,9 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsCreateAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel));
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Task of ApiResponse (Comment)</returns>
+        System.Threading.Tasks.Task<ApiResponse<Comment>> CommentsCreateAsyncWithHttpInfo (CreateCommentModel createCommentModel = default(CreateCommentModel));
         /// <summary>
         /// 
         /// </summary>
@@ -176,29 +153,8 @@ namespace GhostNetwork.Publications.Api
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task PublicationsDeleteAsync (string id);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PublicationsDeleteAsyncWithHttpInfo (string id);
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <returns>Task of Publication</returns>
-        System.Threading.Tasks.Task<Publication> PublicationsGetByIdAsync (string id);
+        /// <returns>Task of List&lt;Comment&gt;</returns>
+        System.Threading.Tasks.Task<List<Comment>> CommentsDeleteAsync (string id);
 
         /// <summary>
         /// 
@@ -208,8 +164,8 @@ namespace GhostNetwork.Publications.Api
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Publication>> PublicationsGetByIdAsyncWithHttpInfo (string id);
+        /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
+        System.Threading.Tasks.Task<ApiResponse<List<Comment>>> CommentsDeleteAsyncWithHttpInfo (string id);
         /// <summary>
         /// 
         /// </summary>
@@ -217,11 +173,32 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of Comment</returns>
+        System.Threading.Tasks.Task<Comment> CommentsGetByIdAsync (string id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="id"></param>
+        /// <returns>Task of ApiResponse (Comment)</returns>
+        System.Threading.Tasks.Task<ApiResponse<Comment>> CommentsGetByIdAsyncWithHttpInfo (string id);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>Task of List&lt;Publication&gt;</returns>
-        System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>Task of List&lt;Comment&gt;</returns>
+        System.Threading.Tasks.Task<List<Comment>> CommentsSearchAsync (string publicationId, int? skip = default(int?), int? take = default(int?));
 
         /// <summary>
         /// 
@@ -230,41 +207,18 @@ namespace GhostNetwork.Publications.Api
         /// 
         /// </remarks>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task PublicationsUpdateAsync (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PublicationsUpdateAsyncWithHttpInfo (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel));
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
+        System.Threading.Tasks.Task<ApiResponse<List<Comment>>> CommentsSearchAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?));
         #endregion Asynchronous Operations
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public interface IPublicationsApi : IPublicationsApiSync, IPublicationsApiAsync
+    public interface ICommentsApi : ICommentsApiSync, ICommentsApiAsync
     {
 
     }
@@ -272,23 +226,23 @@ namespace GhostNetwork.Publications.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class PublicationsApi : IPublicationsApi
+    public partial class CommentsApi : ICommentsApi
     {
         private GhostNetwork.Publications.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublicationsApi"/> class.
+        /// Initializes a new instance of the <see cref="CommentsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PublicationsApi() : this((string) null)
+        public CommentsApi() : this((string) null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublicationsApi"/> class.
+        /// Initializes a new instance of the <see cref="CommentsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PublicationsApi(String basePath)
+        public CommentsApi(String basePath)
         {
             this.Configuration = GhostNetwork.Publications.Client.Configuration.MergeConfigurations(
                 GhostNetwork.Publications.Client.GlobalConfiguration.Instance,
@@ -300,12 +254,12 @@ namespace GhostNetwork.Publications.Api
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublicationsApi"/> class
+        /// Initializes a new instance of the <see cref="CommentsApi"/> class
         /// using Configuration object
         /// </summary>
         /// <param name="configuration">An instance of Configuration</param>
         /// <returns></returns>
-        public PublicationsApi(GhostNetwork.Publications.Client.Configuration configuration)
+        public CommentsApi(GhostNetwork.Publications.Client.Configuration configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
 
@@ -319,13 +273,13 @@ namespace GhostNetwork.Publications.Api
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublicationsApi"/> class
+        /// Initializes a new instance of the <see cref="CommentsApi"/> class
         /// using a Configuration object and client instance.
         /// </summary>
         /// <param name="client">The client interface for synchronous API access.</param>
         /// <param name="asyncClient">The client interface for asynchronous API access.</param>
         /// <param name="configuration">The configuration object.</param>
-        public PublicationsApi(GhostNetwork.Publications.Client.ISynchronousClient client,GhostNetwork.Publications.Client.IAsynchronousClient asyncClient, GhostNetwork.Publications.Client.IReadableConfiguration configuration)
+        public CommentsApi(GhostNetwork.Publications.Client.ISynchronousClient client,GhostNetwork.Publications.Client.IAsynchronousClient asyncClient, GhostNetwork.Publications.Client.IReadableConfiguration configuration)
         {
             if(client == null) throw new ArgumentNullException("client");
             if(asyncClient == null) throw new ArgumentNullException("asyncClient");
@@ -382,11 +336,11 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Publication</returns>
-        public Publication PublicationsCreate (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Comment</returns>
+        public Comment CommentsCreate (CreateCommentModel createCommentModel = default(CreateCommentModel))
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsCreateWithHttpInfo(createPublicationModel);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = CommentsCreateWithHttpInfo(createCommentModel);
              return localVarResponse.Data;
         }
 
@@ -394,9 +348,9 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Publication</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsCreateWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>ApiResponse of Comment</returns>
+        public GhostNetwork.Publications.Client.ApiResponse< Comment > CommentsCreateWithHttpInfo (CreateCommentModel createCommentModel = default(CreateCommentModel))
         {
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -419,15 +373,15 @@ namespace GhostNetwork.Publications.Api
             var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
 
-            localVarRequestOptions.Data = createPublicationModel;
+            localVarRequestOptions.Data = createCommentModel;
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post< Publication >("/Publications", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post< Comment >("/Comments", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsCreate", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsCreate", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -438,11 +392,11 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of Publication</returns>
-        public async System.Threading.Tasks.Task<Publication> PublicationsCreateAsync (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Task of Comment</returns>
+        public async System.Threading.Tasks.Task<Comment> CommentsCreateAsync (CreateCommentModel createCommentModel = default(CreateCommentModel))
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsCreateAsyncWithHttpInfo(createPublicationModel);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = await CommentsCreateAsyncWithHttpInfo(createCommentModel);
              return localVarResponse.Data;
 
         }
@@ -451,9 +405,9 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createPublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsCreateAsyncWithHttpInfo (CreatePublicationModel createPublicationModel = default(CreatePublicationModel))
+        /// <param name="createCommentModel"> (optional)</param>
+        /// <returns>Task of ApiResponse (Comment)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Comment>> CommentsCreateAsyncWithHttpInfo (CreateCommentModel createCommentModel = default(CreateCommentModel))
         {
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -477,16 +431,16 @@ namespace GhostNetwork.Publications.Api
             foreach (var _accept in _accepts)
                 localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
             
-            localVarRequestOptions.Data = createPublicationModel;
+            localVarRequestOptions.Data = createCommentModel;
 
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<Publication>("/Publications", localVarRequestOptions, this.Configuration);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<Comment>("/Comments", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsCreate", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsCreate", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -498,10 +452,11 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns></returns>
-        public void PublicationsDelete (string id)
+        /// <returns>List&lt;Comment&gt;</returns>
+        public List<Comment> CommentsDelete (string id)
         {
-             PublicationsDeleteWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = CommentsDeleteWithHttpInfo(id);
+             return localVarResponse.Data;
         }
 
         /// <summary>
@@ -509,12 +464,12 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public GhostNetwork.Publications.Client.ApiResponse<Object> PublicationsDeleteWithHttpInfo (string id)
+        /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
+        public GhostNetwork.Publications.Client.ApiResponse< List<Comment> > CommentsDeleteWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsDelete");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsDelete");
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -538,11 +493,11 @@ namespace GhostNetwork.Publications.Api
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Delete<Object>("/Publications/{id}", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Delete< List<Comment> >("/Comments/{id}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsDelete", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsDelete", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -554,10 +509,11 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task PublicationsDeleteAsync (string id)
+        /// <returns>Task of List&lt;Comment&gt;</returns>
+        public async System.Threading.Tasks.Task<List<Comment>> CommentsDeleteAsync (string id)
         {
-             await PublicationsDeleteAsyncWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = await CommentsDeleteAsyncWithHttpInfo(id);
+             return localVarResponse.Data;
 
         }
 
@@ -566,12 +522,12 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Object>> PublicationsDeleteAsyncWithHttpInfo (string id)
+        /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Comment>>> CommentsDeleteAsyncWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsDelete");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsDelete");
 
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -597,11 +553,11 @@ namespace GhostNetwork.Publications.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.DeleteAsync<Object>("/Publications/{id}", localVarRequestOptions, this.Configuration);
+            var localVarResponse = await this.AsynchronousClient.DeleteAsync<List<Comment>>("/Comments/{id}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsDelete", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsDelete", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -613,10 +569,10 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Publication</returns>
-        public Publication PublicationsGetById (string id)
+        /// <returns>Comment</returns>
+        public Comment CommentsGetById (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = PublicationsGetByIdWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = CommentsGetByIdWithHttpInfo(id);
              return localVarResponse.Data;
         }
 
@@ -625,12 +581,12 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>ApiResponse of Publication</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< Publication > PublicationsGetByIdWithHttpInfo (string id)
+        /// <returns>ApiResponse of Comment</returns>
+        public GhostNetwork.Publications.Client.ApiResponse< Comment > CommentsGetByIdWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsGetById");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsGetById");
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -654,11 +610,11 @@ namespace GhostNetwork.Publications.Api
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get< Publication >("/Publications/{id}", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get< Comment >("/Comments/{id}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsGetById", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -670,10 +626,10 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of Publication</returns>
-        public async System.Threading.Tasks.Task<Publication> PublicationsGetByIdAsync (string id)
+        /// <returns>Task of Comment</returns>
+        public async System.Threading.Tasks.Task<Comment> CommentsGetByIdAsync (string id)
         {
-             GhostNetwork.Publications.Client.ApiResponse<Publication> localVarResponse = await PublicationsGetByIdAsyncWithHttpInfo(id);
+             GhostNetwork.Publications.Client.ApiResponse<Comment> localVarResponse = await CommentsGetByIdAsyncWithHttpInfo(id);
              return localVarResponse.Data;
 
         }
@@ -683,12 +639,12 @@ namespace GhostNetwork.Publications.Api
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="id"></param>
-        /// <returns>Task of ApiResponse (Publication)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Publication>> PublicationsGetByIdAsyncWithHttpInfo (string id)
+        /// <returns>Task of ApiResponse (Comment)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Comment>> CommentsGetByIdAsyncWithHttpInfo (string id)
         {
             // verify the required parameter 'id' is set
             if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsGetById");
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling CommentsApi->CommentsGetById");
 
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -714,11 +670,11 @@ namespace GhostNetwork.Publications.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Publication>("/Publications/{id}", localVarRequestOptions, this.Configuration);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<Comment>("/Comments/{id}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsGetById", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsGetById", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -729,13 +685,13 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>List&lt;Publication&gt;</returns>
-        public List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>List&lt;Comment&gt;</returns>
+        public List<Comment> CommentsSearch (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsSearchWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = CommentsSearchWithHttpInfo(publicationId, skip, take);
              return localVarResponse.Data;
         }
 
@@ -743,12 +699,16 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>ApiResponse of List&lt;Comment&gt;</returns>
+        public GhostNetwork.Publications.Client.ApiResponse< List<Comment> > CommentsSearchWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
+            // verify the required parameter 'publicationId' is set
+            if (publicationId == null)
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsSearch");
+
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -767,6 +727,7 @@ namespace GhostNetwork.Publications.Api
             var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
 
+            localVarRequestOptions.PathParameters.Add("publicationId", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(publicationId)); // path parameter
             if (skip != null)
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
@@ -775,18 +736,14 @@ namespace GhostNetwork.Publications.Api
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "take", take));
             }
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
 
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get< List<Publication> >("/Publications", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get< List<Comment> >("/Comments/bypublication/{publicationId}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsSearch", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -797,13 +754,13 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>Task of List&lt;Publication&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>Task of List&lt;Comment&gt;</returns>
+        public async System.Threading.Tasks.Task<List<Comment>> CommentsSearchAsync (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsSearchAsyncWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Comment>> localVarResponse = await CommentsSearchAsyncWithHttpInfo(publicationId, skip, take);
              return localVarResponse.Data;
 
         }
@@ -812,12 +769,16 @@ namespace GhostNetwork.Publications.Api
         ///  
         /// </summary>
         /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="publicationId"></param>
         /// <param name="skip"> (optional)</param>
-        /// <param name="take"> (optional)</param>
-        /// <param name="tags"> (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        /// <param name="take"> (optional, default to 10)</param>
+        /// <returns>Task of ApiResponse (List&lt;Comment&gt;)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Comment>>> CommentsSearchAsyncWithHttpInfo (string publicationId, int? skip = default(int?), int? take = default(int?))
         {
+            // verify the required parameter 'publicationId' is set
+            if (publicationId == null)
+                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'publicationId' when calling CommentsApi->CommentsSearch");
+
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -837,6 +798,7 @@ namespace GhostNetwork.Publications.Api
             foreach (var _accept in _accepts)
                 localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
             
+            localVarRequestOptions.PathParameters.Add("publicationId", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(publicationId)); // path parameter
             if (skip != null)
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
@@ -845,146 +807,15 @@ namespace GhostNetwork.Publications.Api
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "take", take));
             }
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
 
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Publication>>("/Publications", localVarRequestOptions, this.Configuration);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Comment>>("/Comments/bypublication/{publicationId}", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("PublicationsSearch", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns></returns>
-        public void PublicationsUpdate (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel))
-        {
-             PublicationsUpdateWithHttpInfo(id, updatePublicationModel);
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public GhostNetwork.Publications.Client.ApiResponse<Object> PublicationsUpdateWithHttpInfo (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel))
-        {
-            // verify the required parameter 'id' is set
-            if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsUpdate");
-
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-                "application/json", 
-                "text/json", 
-                "application/_*+json"
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-
-            var localVarContentType = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = GhostNetwork.Publications.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
-            localVarRequestOptions.Data = updatePublicationModel;
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Put<Object>("/Publications/{id}", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsUpdate", localVarResponse);
-                if (_exception != null) throw _exception;
-            }
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task PublicationsUpdateAsync (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel))
-        {
-             await PublicationsUpdateAsyncWithHttpInfo(id, updatePublicationModel);
-
-        }
-
-        /// <summary>
-        ///  
-        /// </summary>
-        /// <exception cref="GhostNetwork.Publications.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="id"></param>
-        /// <param name="updatePublicationModel"> (optional)</param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<Object>> PublicationsUpdateAsyncWithHttpInfo (string id, UpdatePublicationModel updatePublicationModel = default(UpdatePublicationModel))
-        {
-            // verify the required parameter 'id' is set
-            if (id == null)
-                throw new GhostNetwork.Publications.Client.ApiException(400, "Missing required parameter 'id' when calling PublicationsApi->PublicationsUpdate");
-
-
-            GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
-
-            String[] _contentTypes = new String[] {
-                "application/json", 
-                "text/json", 
-                "application/_*+json"
-            };
-
-            // to determine the Accept header
-            String[] _accepts = new String[] {
-                "text/plain",
-                "application/json",
-                "text/json"
-            };
-            
-            foreach (var _contentType in _contentTypes)
-                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
-            
-            foreach (var _accept in _accepts)
-                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
-            
-            localVarRequestOptions.PathParameters.Add("id", GhostNetwork.Publications.Client.ClientUtils.ParameterToString(id)); // path parameter
-            localVarRequestOptions.Data = updatePublicationModel;
-
-
-            // make the HTTP request
-
-            var localVarResponse = await this.AsynchronousClient.PutAsync<Object>("/Publications/{id}", localVarRequestOptions, this.Configuration);
-
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("PublicationsUpdate", localVarResponse);
+                Exception _exception = this.ExceptionFactory("CommentsSearch", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 

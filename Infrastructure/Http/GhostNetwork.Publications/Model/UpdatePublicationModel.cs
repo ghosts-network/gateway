@@ -26,26 +26,24 @@ using OpenAPIDateConverter = GhostNetwork.Publications.Client.OpenAPIDateConvert
 namespace GhostNetwork.Publications.Model
 {
     /// <summary>
-    /// CreatePublicationModel
+    /// UpdatePublicationModel
     /// </summary>
     [DataContract]
-    public partial class CreatePublicationModel :  IEquatable<CreatePublicationModel>, IValidatableObject
+    public partial class UpdatePublicationModel :  IEquatable<UpdatePublicationModel>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
+        /// Initializes a new instance of the <see cref="UpdatePublicationModel" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected CreatePublicationModel() { }
+        protected UpdatePublicationModel() { }
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
+        /// Initializes a new instance of the <see cref="UpdatePublicationModel" /> class.
         /// </summary>
         /// <param name="content">content (required).</param>
-        /// <param name="authorId">authorId.</param>
-        public CreatePublicationModel(string content = default(string), string authorId = default(string))
+        public UpdatePublicationModel(string content = default(string))
         {
             // to ensure "content" is required (not null)
-            this.Content = content ?? throw new ArgumentNullException("content is a required property for CreatePublicationModel and cannot be null");
-            this.AuthorId = authorId;
+            this.Content = content ?? throw new ArgumentNullException("content is a required property for UpdatePublicationModel and cannot be null");
         }
         
         /// <summary>
@@ -55,21 +53,14 @@ namespace GhostNetwork.Publications.Model
         public string Content { get; set; }
 
         /// <summary>
-        /// Gets or Sets AuthorId
-        /// </summary>
-        [DataMember(Name="authorId", EmitDefaultValue=true)]
-        public string AuthorId { get; set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class CreatePublicationModel {\n");
+            sb.Append("class UpdatePublicationModel {\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
-            sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -90,15 +81,15 @@ namespace GhostNetwork.Publications.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as CreatePublicationModel);
+            return this.Equals(input as UpdatePublicationModel);
         }
 
         /// <summary>
-        /// Returns true if CreatePublicationModel instances are equal
+        /// Returns true if UpdatePublicationModel instances are equal
         /// </summary>
-        /// <param name="input">Instance of CreatePublicationModel to be compared</param>
+        /// <param name="input">Instance of UpdatePublicationModel to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(CreatePublicationModel input)
+        public bool Equals(UpdatePublicationModel input)
         {
             if (input == null)
                 return false;
@@ -108,11 +99,6 @@ namespace GhostNetwork.Publications.Model
                     this.Content == input.Content ||
                     (this.Content != null &&
                     this.Content.Equals(input.Content))
-                ) && 
-                (
-                    this.AuthorId == input.AuthorId ||
-                    (this.AuthorId != null &&
-                    this.AuthorId.Equals(input.AuthorId))
                 );
         }
 
@@ -127,8 +113,6 @@ namespace GhostNetwork.Publications.Model
                 int hashCode = 41;
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
-                if (this.AuthorId != null)
-                    hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
                 return hashCode;
             }
         }

@@ -26,39 +26,54 @@ using OpenAPIDateConverter = GhostNetwork.Publications.Client.OpenAPIDateConvert
 namespace GhostNetwork.Publications.Model
 {
     /// <summary>
-    /// CreatePublicationModel
+    /// Comment
     /// </summary>
     [DataContract]
-    public partial class CreatePublicationModel :  IEquatable<CreatePublicationModel>, IValidatableObject
+    public partial class Comment :  IEquatable<Comment>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
+        /// Initializes a new instance of the <see cref="Comment" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected CreatePublicationModel() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
-        /// </summary>
-        /// <param name="content">content (required).</param>
-        /// <param name="authorId">authorId.</param>
-        public CreatePublicationModel(string content = default(string), string authorId = default(string))
+        public Comment()
         {
-            // to ensure "content" is required (not null)
-            this.Content = content ?? throw new ArgumentNullException("content is a required property for CreatePublicationModel and cannot be null");
-            this.AuthorId = authorId;
         }
         
         /// <summary>
+        /// Gets or Sets Id
+        /// </summary>
+        [DataMember(Name="id", EmitDefaultValue=true)]
+        public string Id { get; private set; }
+
+        /// <summary>
         /// Gets or Sets Content
         /// </summary>
-        [DataMember(Name="content", EmitDefaultValue=false)]
-        public string Content { get; set; }
+        [DataMember(Name="content", EmitDefaultValue=true)]
+        public string Content { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets PublicationId
+        /// </summary>
+        [DataMember(Name="publicationId", EmitDefaultValue=true)]
+        public string PublicationId { get; private set; }
 
         /// <summary>
         /// Gets or Sets AuthorId
         /// </summary>
         [DataMember(Name="authorId", EmitDefaultValue=true)]
-        public string AuthorId { get; set; }
+        public string AuthorId { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets CreatedOn
+        /// </summary>
+        [DataMember(Name="createdOn", EmitDefaultValue=false)]
+        public DateTime CreatedOn { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets ReplyCommentId
+        /// </summary>
+        [DataMember(Name="replyCommentId", EmitDefaultValue=true)]
+        public string ReplyCommentId { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -67,9 +82,13 @@ namespace GhostNetwork.Publications.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class CreatePublicationModel {\n");
+            sb.Append("class Comment {\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
+            sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
             sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
+            sb.Append("  CreatedOn: ").Append(CreatedOn).Append("\n");
+            sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -90,29 +109,49 @@ namespace GhostNetwork.Publications.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as CreatePublicationModel);
+            return this.Equals(input as Comment);
         }
 
         /// <summary>
-        /// Returns true if CreatePublicationModel instances are equal
+        /// Returns true if Comment instances are equal
         /// </summary>
-        /// <param name="input">Instance of CreatePublicationModel to be compared</param>
+        /// <param name="input">Instance of Comment to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(CreatePublicationModel input)
+        public bool Equals(Comment input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
+                    this.Id == input.Id ||
+                    (this.Id != null &&
+                    this.Id.Equals(input.Id))
+                ) && 
+                (
                     this.Content == input.Content ||
                     (this.Content != null &&
                     this.Content.Equals(input.Content))
                 ) && 
                 (
+                    this.PublicationId == input.PublicationId ||
+                    (this.PublicationId != null &&
+                    this.PublicationId.Equals(input.PublicationId))
+                ) && 
+                (
                     this.AuthorId == input.AuthorId ||
                     (this.AuthorId != null &&
                     this.AuthorId.Equals(input.AuthorId))
+                ) && 
+                (
+                    this.CreatedOn == input.CreatedOn ||
+                    (this.CreatedOn != null &&
+                    this.CreatedOn.Equals(input.CreatedOn))
+                ) && 
+                (
+                    this.ReplyCommentId == input.ReplyCommentId ||
+                    (this.ReplyCommentId != null &&
+                    this.ReplyCommentId.Equals(input.ReplyCommentId))
                 );
         }
 
@@ -125,10 +164,18 @@ namespace GhostNetwork.Publications.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
+                if (this.Id != null)
+                    hashCode = hashCode * 59 + this.Id.GetHashCode();
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
+                if (this.PublicationId != null)
+                    hashCode = hashCode * 59 + this.PublicationId.GetHashCode();
                 if (this.AuthorId != null)
                     hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
+                if (this.CreatedOn != null)
+                    hashCode = hashCode * 59 + this.CreatedOn.GetHashCode();
+                if (this.ReplyCommentId != null)
+                    hashCode = hashCode * 59 + this.ReplyCommentId.GetHashCode();
                 return hashCode;
             }
         }

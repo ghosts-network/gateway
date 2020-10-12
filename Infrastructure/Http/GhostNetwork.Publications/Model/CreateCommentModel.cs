@@ -26,33 +26,50 @@ using OpenAPIDateConverter = GhostNetwork.Publications.Client.OpenAPIDateConvert
 namespace GhostNetwork.Publications.Model
 {
     /// <summary>
-    /// CreatePublicationModel
+    /// CreateCommentModel
     /// </summary>
     [DataContract]
-    public partial class CreatePublicationModel :  IEquatable<CreatePublicationModel>, IValidatableObject
+    public partial class CreateCommentModel :  IEquatable<CreateCommentModel>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
+        /// Initializes a new instance of the <see cref="CreateCommentModel" /> class.
         /// </summary>
         [JsonConstructorAttribute]
-        protected CreatePublicationModel() { }
+        protected CreateCommentModel() { }
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatePublicationModel" /> class.
+        /// Initializes a new instance of the <see cref="CreateCommentModel" /> class.
         /// </summary>
+        /// <param name="publicationId">publicationId (required).</param>
         /// <param name="content">content (required).</param>
+        /// <param name="replyCommentId">replyCommentId.</param>
         /// <param name="authorId">authorId.</param>
-        public CreatePublicationModel(string content = default(string), string authorId = default(string))
+        public CreateCommentModel(string publicationId = default(string), string content = default(string), string replyCommentId = default(string), string authorId = default(string))
         {
+            // to ensure "publicationId" is required (not null)
+            this.PublicationId = publicationId ?? throw new ArgumentNullException("publicationId is a required property for CreateCommentModel and cannot be null");
             // to ensure "content" is required (not null)
-            this.Content = content ?? throw new ArgumentNullException("content is a required property for CreatePublicationModel and cannot be null");
+            this.Content = content ?? throw new ArgumentNullException("content is a required property for CreateCommentModel and cannot be null");
+            this.ReplyCommentId = replyCommentId;
             this.AuthorId = authorId;
         }
         
+        /// <summary>
+        /// Gets or Sets PublicationId
+        /// </summary>
+        [DataMember(Name="publicationId", EmitDefaultValue=false)]
+        public string PublicationId { get; set; }
+
         /// <summary>
         /// Gets or Sets Content
         /// </summary>
         [DataMember(Name="content", EmitDefaultValue=false)]
         public string Content { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ReplyCommentId
+        /// </summary>
+        [DataMember(Name="replyCommentId", EmitDefaultValue=true)]
+        public string ReplyCommentId { get; set; }
 
         /// <summary>
         /// Gets or Sets AuthorId
@@ -67,8 +84,10 @@ namespace GhostNetwork.Publications.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class CreatePublicationModel {\n");
+            sb.Append("class CreateCommentModel {\n");
+            sb.Append("  PublicationId: ").Append(PublicationId).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
+            sb.Append("  ReplyCommentId: ").Append(ReplyCommentId).Append("\n");
             sb.Append("  AuthorId: ").Append(AuthorId).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -90,24 +109,34 @@ namespace GhostNetwork.Publications.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as CreatePublicationModel);
+            return this.Equals(input as CreateCommentModel);
         }
 
         /// <summary>
-        /// Returns true if CreatePublicationModel instances are equal
+        /// Returns true if CreateCommentModel instances are equal
         /// </summary>
-        /// <param name="input">Instance of CreatePublicationModel to be compared</param>
+        /// <param name="input">Instance of CreateCommentModel to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(CreatePublicationModel input)
+        public bool Equals(CreateCommentModel input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
+                    this.PublicationId == input.PublicationId ||
+                    (this.PublicationId != null &&
+                    this.PublicationId.Equals(input.PublicationId))
+                ) && 
+                (
                     this.Content == input.Content ||
                     (this.Content != null &&
                     this.Content.Equals(input.Content))
+                ) && 
+                (
+                    this.ReplyCommentId == input.ReplyCommentId ||
+                    (this.ReplyCommentId != null &&
+                    this.ReplyCommentId.Equals(input.ReplyCommentId))
                 ) && 
                 (
                     this.AuthorId == input.AuthorId ||
@@ -125,8 +154,12 @@ namespace GhostNetwork.Publications.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
+                if (this.PublicationId != null)
+                    hashCode = hashCode * 59 + this.PublicationId.GetHashCode();
                 if (this.Content != null)
                     hashCode = hashCode * 59 + this.Content.GetHashCode();
+                if (this.ReplyCommentId != null)
+                    hashCode = hashCode * 59 + this.ReplyCommentId.GetHashCode();
                 if (this.AuthorId != null)
                     hashCode = hashCode * 59 + this.AuthorId.GetHashCode();
                 return hashCode;
