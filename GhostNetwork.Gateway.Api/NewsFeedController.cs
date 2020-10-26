@@ -62,7 +62,7 @@ namespace GhostNetwork.Gateway.Api
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedComment model)
         {
-            await newsFeedManager.AddCommentAsync(publicationId, model.Content, currentUserProvider.UserId);
+            await newsFeedManager.AddCommentAsync(publicationId, currentUserProvider.UserId, model.Content);
 
             return Ok();
         }
