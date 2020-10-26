@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj" />
+      <ProjectReference Include="..\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj" />
+      <ProjectReference Include="..\Http\GhostNetwork.Reactions\GhostNetwork.Reactions.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -2,14 +2,20 @@ namespace GhostNetwork.Gateway.Facade
 {
     public class NewsFeedPublication
     {
-        public NewsFeedPublication(string content, int? quantityComments)
+        public NewsFeedPublication(string id, string content, CommentsShort comments, ReactionShort reactions)
         {
+            Id = id;
             Content = content;
-            QuantityComments = quantityComments;
+            Comments = comments;
+            Reactions = reactions;
         }
+
+        public string Id { get; }
 
         public string Content { get; }
 
-        public int? QuantityComments { get; }
+        public CommentsShort Comments { get; }
+
+        public ReactionShort Reactions { get; }
     }
 }

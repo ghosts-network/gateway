@@ -8,6 +8,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "PUBLICATIONS_ADDRESS": "http://localhost:5300",
+        "REACTIONS_ADDRESS": "http://localhost:5200",
         "PUBLICATION_MODIFICATION_TIME": "5"
       }
     }
