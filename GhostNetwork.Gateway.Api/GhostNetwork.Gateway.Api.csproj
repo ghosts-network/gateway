@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj" />
+      <ProjectReference Include="..\Infrastructure\GhostNetwork.Infrastructure.Repository\GhostNetwork.Infrastructure.Repository.csproj" />
       <ProjectReference Include="..\Infrastructure\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj" />
       <ProjectReference Include="..\Infrastructure\Http\GhostNetwork.Reactions\GhostNetwork.Reactions.csproj" />
     </ItemGroup>

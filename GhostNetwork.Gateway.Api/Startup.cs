@@ -1,4 +1,5 @@
 using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Infrastructure.Repository;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Reactions.Api;
 using Microsoft.AspNetCore.Builder;
@@ -31,14 +32,11 @@ namespace GhostNetwork.Gateway.Api
                 });
             });
 
-            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["REACTIONS_ADDRESS"]));
-
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<IUpdateValidator>(provider =>
-                new UpdateValidator(configuration.GetValue<int?>("PUBLICATION_MODIFICATION_TIME")));
-            services.AddScoped<NewsFeedPublicationsSource>();
-            services.AddScoped<CommentsPublicationSource>();
+            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["REACTIONS_ADDRESS"]));
+
+            services.AddScoped<INewsFeedManager, NewsFeedStorage>();
 
             services.AddControllers();
         }

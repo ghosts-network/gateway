@@ -1,23 +1,28 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
+using GhostNetwork.Reactions.Api;
 
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Infrastructure.Repository
 {
-    public class NewsFeedPublicationsSource
+    public class NewsFeedStorage : INewsFeedManager
     {
         private readonly IPublicationsApi publicationsApi;
         private readonly ICommentsApi commentsApi;
+        private readonly IReactionsApi reactionsApi;
 
-        public NewsFeedPublicationsSource(IPublicationsApi publicationsApi, ICommentsApi commentsApi)
+        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
+            this.reactionsApi = reactionsApi;
         }
 
-        public async Task<ICollection<NewsFeedPublication>> FindManyAsync()
+        public async Task<IEnumerable<NewsFeedPublication>> FindManyAsync()
         {
             var publications = await publicationsApi.PublicationsSearchAsync();
             var newsFeedPublications = new List<NewsFeedPublication>(publications.Count);
@@ -34,34 +39,41 @@ namespace GhostNetwork.Gateway.Facade
                     }
                 }
 
-                var reactions = new ReactionShort(new Dictionary<ReactionType, int>
-                {
-                    [ReactionType.Like] = 4,
-                    [ReactionType.Love] = 2
-                });
+                var reactions = await reactionsApi.ReactionsKeyGetAsync($"publication_{publication.Id}");
+                var r = reactions.Keys
+                    .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
+                    .ToDictionary(o => o.Item1, o => o.Item2);
 
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
                     totalCount,
-                    reactions));
+                    new ReactionShort(r)));
             }
 
             return newsFeedPublications;
         }
 
-        public async Task CreateAsync(string content)
+        public async Task CreateAsync(string content, string author)
         {
-            var model = new CreatePublicationModel(content);
+            var model = new CreatePublicationModel(content, author);
 
             await publicationsApi.PublicationsCreateAsync(model);
         }
 
-        public async Task AddCommentAsync(string publicationId, string content)
+        public async Task AddCommentAsync(string publicationId, string author, string content)
         {
-            var model = new CreateCommentModel(publicationId, content);
+            await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
+        }
 
-            await commentsApi.CommentsCreateAsync(model);
+        public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
+        {
+            await reactionsApi.ReactionsKeyTypePostAsync($"publication_{publicationId}", reaction.ToString(), author);
+        }
+
+        public async Task RemoveReactionAsync(string publicationId, string author)
+        {
+            await reactionsApi.ReactionsKeyDeleteAsync($"publication_{publicationId}", author);
         }
 
         public async Task UpdateAsync(string id, string content)
