@@ -29,7 +29,7 @@ namespace GhostNetwork.Infrastructure.Repository
 
             foreach (var publication in publications)
             {
-                var commentsResponse = await commentsApi.CommentsSearchAsyncWithHttpInfo(publication.Id, 0, 1);
+                var commentsResponse = await commentsApi.CommentsSearchAsyncWithHttpInfo(publication.Id, 0, 3);
                 var totalCount = 0;
                 if (commentsResponse.Headers.TryGetValue("X-TotalCount", out var headers))
                 {
@@ -47,7 +47,7 @@ namespace GhostNetwork.Infrastructure.Repository
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    totalCount,
+                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(c.Id, c.Content)).ToList(), totalCount),
                     new ReactionShort(r)));
             }
 

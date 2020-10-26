@@ -32,6 +32,8 @@ namespace GhostNetwork.Gateway.Api
                 });
             });
 
+            services.AddScoped<ICurrentUserProvider, FakeCurrentUserProvider>();
+
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["REACTIONS_ADDRESS"]));
