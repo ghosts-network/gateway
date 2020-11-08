@@ -2,37 +2,26 @@ version: '3'
 
 services:
   publications:
-    image: ghcr.io/gh-network/ghostnetwork-publications:latest
+    image: ghostsnetwork/publications:latest
     ports:
       - "5300:80"
     depends_on:
-      - publications-db
+      - db
     environment:
-      - MONGO_ADDRESS=publications-db:27017
+      - MONGO_ADDRESS=db:27017
       - ASPNETCORE_ENVIRONMENT=Development
 
-  publications-db:
-    image: mvertes/alpine-mongo
-    ports:
-      - "27017:27017"
-
   reactions:
-    image: ghcr.io/gh-network/ghostnetwork-reactions:latest
+    image: ghostsnetwork/reactions:latest
     ports:
       - "5200:80"
     depends_on:
-      - reactions-db
+      - db
     environment:
-      - MSSQL_ADDRESS=reactions-db
-      - MSSQL_PORT=1433
-      - MSSQL_USER=SA
-      - MSSQL_PASSWORD=Pass1234
+      - MONGO_ADDRESS=db:27017
       - ASPNETCORE_ENVIRONMENT=Development
 
-  reactions-db:
-    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+  db:
+    image: mvertes/alpine-mongo
     ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Pass1234
+      - "27017:27017"
