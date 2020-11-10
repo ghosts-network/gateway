@@ -55,6 +55,13 @@ namespace GhostNetwork.Gateway.Api
             return Ok();
         }
 
+        [HttpGet("{commentId}/comment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetCommentById([FromRoute] string commentId)
+        {
+            return Ok(await newsFeedManager.GetCommentByIdAsync(commentId));
+        }
+
         [HttpPost("{publicationId}/comment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> AddCommentAsync(

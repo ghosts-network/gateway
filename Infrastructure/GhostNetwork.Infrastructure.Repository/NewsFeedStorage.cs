@@ -47,7 +47,8 @@ namespace GhostNetwork.Infrastructure.Repository
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(c.Id, c.Content)).ToList(), totalCount),
+                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
+                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn, c.ReplyCommentId)).ToList(), totalCount),
                     new ReactionShort(r)));
             }
 
@@ -64,6 +65,13 @@ namespace GhostNetwork.Infrastructure.Repository
         public async Task AddCommentAsync(string publicationId, string author, string content)
         {
             await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
+        }
+
+        public async Task<PublicationComment> GetCommentByIdAsync(string id)
+        {
+            var comment = await commentsApi.CommentsGetByIdAsync(id);
+
+            return comment == null ? null : ToDomain(comment);
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
@@ -86,6 +94,18 @@ namespace GhostNetwork.Infrastructure.Repository
         public async Task DeleteAsync(string id)
         {
             await publicationsApi.PublicationsDeleteAsync(id);
+        }
+
+        private static PublicationComment ToDomain(Comment entity)
+        {
+            return new PublicationComment(
+                entity.Id,
+                entity.Content,
+                entity.PublicationId,
+                entity.AuthorId,
+                entity.CreatedOn,
+                entity.ReplyCommentId
+                );
         }
     }
 }
