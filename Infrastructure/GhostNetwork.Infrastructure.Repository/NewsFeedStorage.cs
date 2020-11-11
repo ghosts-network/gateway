@@ -48,7 +48,7 @@ namespace GhostNetwork.Infrastructure.Repository
                     publication.Id,
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
-                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn, c.ReplyCommentId)).ToList(), totalCount),
+                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), totalCount),
                     new ReactionShort(r)));
             }
 
@@ -89,7 +89,7 @@ namespace GhostNetwork.Infrastructure.Repository
             await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
         }
 
-        public async Task<(IEnumerable<PublicationComment>, long)> SearchAsync(string publicationId, int skip, int take)
+        public async Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take)
         {
             var comments = await commentsApi.CommentsSearchAsync(publicationId, skip, take);
 
@@ -117,8 +117,7 @@ namespace GhostNetwork.Infrastructure.Repository
                 entity.Content,
                 entity.PublicationId,
                 entity.AuthorId,
-                entity.CreatedOn,
-                entity.ReplyCommentId
+                entity.CreatedOn
                 );
         }
     }

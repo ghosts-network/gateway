@@ -17,7 +17,7 @@ namespace GhostNetwork.Gateway.Facade
 
         Task<PublicationComment> GetCommentByIdAsync(string id);
 
-        Task<(IEnumerable<PublicationComment>, long)> SearchAsync(string publicationId, int skip, int take);
+        Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take);
 
         Task DeleteCommentAsync(string id);
 

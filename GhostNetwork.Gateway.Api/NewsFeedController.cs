@@ -81,12 +81,12 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet("{publicationId}/comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> SearchAsync(
+        public async Task<ActionResult> SearchCommentsAsync(
             [FromRoute] string publicationId,
             [FromQuery, Range(0, int.MaxValue)] int skip,
             [FromQuery, Range(0, 100)] int take = 10)
         {
-            var (comments, totalCount) = await newsFeedManager.SearchAsync(publicationId, skip, take);
+            var (comments, totalCount) = await newsFeedManager.SearchCommentsAsync(publicationId, skip, take);
             Response.Headers.Add("X-TotalCount", totalCount.ToString());
 
             return Ok(comments);
@@ -94,7 +94,7 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet("{commentId}/comment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PublicationComment>> GetCommentById([FromRoute] string commentId)
+        public async Task<ActionResult<PublicationComment>> GetCommentByIdAsync([FromRoute] string commentId)
         {
             return Ok(await newsFeedManager.GetCommentByIdAsync(commentId));
         }
@@ -113,7 +113,7 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpDelete("{commentId}/comment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PublicationComment>> DeleteComment([FromRoute] string commentId)
+        public async Task<ActionResult<PublicationComment>> DeleteCommentAsync([FromRoute] string commentId)
         {
             await newsFeedManager.DeleteCommentAsync(commentId);
             return Ok();
