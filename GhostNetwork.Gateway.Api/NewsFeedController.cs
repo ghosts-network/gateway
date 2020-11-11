@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using Microsoft.AspNetCore.Http;
@@ -55,25 +56,6 @@ namespace GhostNetwork.Gateway.Api
             return Ok();
         }
 
-        [HttpGet("{commentId}/comment")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetCommentById([FromRoute] string commentId)
-        {
-            return Ok(await newsFeedManager.GetCommentByIdAsync(commentId));
-        }
-
-        [HttpPost("{publicationId}/comment")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> AddCommentAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
-            [FromRoute] string publicationId,
-            [FromBody] AddNewsFeedComment model)
-        {
-            await newsFeedManager.AddCommentAsync(publicationId, currentUserProvider.UserId, model.Content);
-
-            return Ok();
-        }
-
         [HttpPost("{publicationId}/reaction")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> AddReactionAsync(
@@ -94,6 +76,46 @@ namespace GhostNetwork.Gateway.Api
         {
             await newsFeedManager.RemoveReactionAsync(publicationId, currentUserProvider.UserId);
 
+            return Ok();
+        }
+
+        [HttpGet("{publicationId}/comments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> SearchAsync(
+            [FromRoute] string publicationId,
+            [FromQuery, Range(0, int.MaxValue)] int skip,
+            [FromQuery, Range(0, 100)] int take = 10)
+        {
+            var (comments, totalCount) = await newsFeedManager.SearchAsync(publicationId, skip, take);
+            Response.Headers.Add("X-TotalCount", totalCount.ToString());
+
+            return Ok(comments);
+        }
+
+        [HttpGet("{commentId}/comment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PublicationComment>> GetCommentById([FromRoute] string commentId)
+        {
+            return Ok(await newsFeedManager.GetCommentByIdAsync(commentId));
+        }
+
+        [HttpPost("{publicationId}/comment")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<PublicationComment>> AddCommentAsync(
+            [FromServices] ICurrentUserProvider currentUserProvider,
+            [FromRoute] string publicationId,
+            [FromBody] AddNewsFeedComment model)
+        {
+            await newsFeedManager.AddCommentAsync(publicationId, currentUserProvider.UserId, model.Content);
+
+            return Ok();
+        }
+
+        [HttpDelete("{commentId}/comment")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PublicationComment>> DeleteComment([FromRoute] string commentId)
+        {
+            await newsFeedManager.DeleteCommentAsync(commentId);
             return Ok();
         }
     }
