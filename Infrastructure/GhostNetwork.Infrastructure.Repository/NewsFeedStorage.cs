@@ -47,7 +47,8 @@ namespace GhostNetwork.Infrastructure.Repository
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(c.Id, c.Content)).ToList(), totalCount),
+                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
+                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), totalCount),
                     new ReactionShort(r)));
             }
 
@@ -59,11 +60,6 @@ namespace GhostNetwork.Infrastructure.Repository
             var model = new CreatePublicationModel(content, author);
 
             await publicationsApi.PublicationsCreateAsync(model);
-        }
-
-        public async Task AddCommentAsync(string publicationId, string author, string content)
-        {
-            await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
@@ -86,6 +82,43 @@ namespace GhostNetwork.Infrastructure.Repository
         public async Task DeleteAsync(string id)
         {
             await publicationsApi.PublicationsDeleteAsync(id);
+        }
+
+        public async Task AddCommentAsync(string publicationId, string author, string content)
+        {
+            await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
+        }
+
+        public async Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take)
+        {
+            var comments = await commentsApi.CommentsSearchAsync(publicationId, skip, take);
+
+            var totalCount = 0;
+
+            return (comments.Select(ToDomain).ToList(), totalCount);
+        }
+
+        public async Task<PublicationComment> GetCommentByIdAsync(string id)
+        {
+            var comment = await commentsApi.CommentsGetByIdAsync(id);
+
+            return comment == null ? null : ToDomain(comment);
+        }
+
+        public async Task DeleteCommentAsync(string id)
+        {
+            await commentsApi.CommentsDeleteAsync(id);
+        }
+
+        private static PublicationComment ToDomain(Comment entity)
+        {
+            return new PublicationComment(
+                entity.Id,
+                entity.Content,
+                entity.PublicationId,
+                entity.AuthorId,
+                entity.CreatedOn
+                );
         }
     }
 }
