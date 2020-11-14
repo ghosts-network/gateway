@@ -25,3 +25,15 @@ services:
     image: mvertes/alpine-mongo
     ports:
       - "27017:27017"
+
+  gateway:
+    build: .
+    ports:
+      - "5000:80"
+    depends_on:
+      - publications
+      - reactions
+    environment:
+      - PUBLICATIONS_ADDRESS=http://publications
+      - REACTIONS_ADDRESS=http://reactions
+      - ASPNETCORE_ENVIRONMENT=Development
