@@ -39,7 +39,7 @@ namespace GhostNetwork.Infrastructure.Repository
                     }
                 }
 
-                var reactions = await reactionsApi.ReactionsKeyGetAsync($"publication_{publication.Id}");
+                var reactions = await reactionsApi.ReactionsGetAsync($"publication_{publication.Id}");
                 var r = reactions.Keys
                     .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
                     .ToDictionary(o => o.Item1, o => o.Item2);
@@ -68,12 +68,12 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
         {
-            await reactionsApi.ReactionsKeyTypePostAsync($"publication_{publicationId}", reaction.ToString(), author);
+            await reactionsApi.ReactionsAddAsync($"publication_{publicationId}", reaction.ToString(), author);
         }
 
         public async Task RemoveReactionAsync(string publicationId, string author)
         {
-            await reactionsApi.ReactionsKeyDeleteAsync($"publication_{publicationId}", author);
+            await reactionsApi.ReactionsDeleteAsync($"publication_{publicationId}", author);
         }
 
         public async Task UpdateAsync(string id, string content)
