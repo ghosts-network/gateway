@@ -60,7 +60,8 @@ namespace GhostNetwork.Infrastructure.Repository
             var model = new CreatePublicationModel(content, author);
             var entity = await publicationsApi.PublicationsCreateAsync(model);
 
-            return new NewsFeedPublication(entity.Id, entity.Content, null, null);
+            return new NewsFeedPublication(entity.Id, entity.Content, new CommentsShort(Enumerable.Empty<PublicationComment>(), 0), 
+                new ReactionShort(new Dictionary<ReactionType, int>()));
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
