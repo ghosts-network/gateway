@@ -55,11 +55,12 @@ namespace GhostNetwork.Infrastructure.Repository
             return newsFeedPublications;
         }
 
-        public async Task CreateAsync(string content, string author)
+        public async Task<NewsFeedPublication> CreateAsync(string content, string author)
         {
             var model = new CreatePublicationModel(content, author);
+            var entity = await publicationsApi.PublicationsCreateAsync(model);
 
-            await publicationsApi.PublicationsCreateAsync(model);
+            return new NewsFeedPublication(entity.Id, entity.Content, null, null);
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
