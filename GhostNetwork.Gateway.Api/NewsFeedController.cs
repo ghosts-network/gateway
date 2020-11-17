@@ -31,9 +31,7 @@ namespace GhostNetwork.Gateway.Api
             [FromServices] ICurrentUserProvider currentUserProvider,
             [FromBody] CreateNewsFeedPublication model)
         {
-            await newsFeedManager.CreateAsync(model.Content, currentUserProvider.UserId);
-
-            return Ok();
+            return Created(string.Empty, await newsFeedManager.CreateAsync(model.Content, currentUserProvider.UserId));
         }
 
         [HttpPut("{id}")]
