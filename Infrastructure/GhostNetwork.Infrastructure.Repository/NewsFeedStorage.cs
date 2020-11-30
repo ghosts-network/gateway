@@ -64,6 +64,19 @@ namespace GhostNetwork.Infrastructure.Repository
                 new ReactionShort(new Dictionary<ReactionType, int>()));
         }
 
+        public async Task<IEnumerable<ReactionShort>> GetReactionsAsync(string publicationId)
+        {
+            var newsFeedReactions = new List<ReactionShort>();
+
+            var reactions = await reactionsApi.ReactionsGetAsync($"publication_{publicationId}");
+            var r = reactions.Keys
+                .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
+                .ToDictionary(o => o.Item1, o => o.Item2);
+
+            newsFeedReactions.Add(new ReactionShort(r));
+            return newsFeedReactions;
+        }
+
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
         {
             await reactionsApi.ReactionsAddAsync($"publication_{publicationId}", reaction.ToString(), author);

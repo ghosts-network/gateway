@@ -19,9 +19,11 @@ namespace GhostNetwork.Gateway.Facade
 
         Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take);
 
-        Task DeleteCommentAsync(string id);
+        Task<IEnumerable<ReactionShort>> GetReactionsAsync(string publicationId);
 
-        Task AddReactionAsync(string publicationId, string author, ReactionType reaction);
+        Task AddReactionAsync(string publicationId, string author, ReactionType type);
+
+        Task DeleteCommentAsync(string id);
 
         Task RemoveReactionAsync(string publicationId, string author);
     }

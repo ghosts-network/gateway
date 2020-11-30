@@ -63,7 +63,7 @@ namespace GhostNetwork.Gateway.Api
         {
             await newsFeedManager.AddReactionAsync(publicationId, currentUserProvider.UserId, model.Reaction);
 
-            return Ok();
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
         }
 
         [HttpDelete("{publicationId}/reaction")]
@@ -74,7 +74,7 @@ namespace GhostNetwork.Gateway.Api
         {
             await newsFeedManager.RemoveReactionAsync(publicationId, currentUserProvider.UserId);
 
-            return Ok();
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
         }
 
         [HttpGet("{publicationId}/comments")]
