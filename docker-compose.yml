@@ -2,7 +2,7 @@ version: '3'
 
 services:
   publications:
-    image: ghostsnetwork/publications:latest
+    image: ghcr.io/ghosts-network/publications:latest
     ports:
       - "5300:80"
     depends_on:
@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
 
   reactions:
-    image: ghostsnetwork/reactions:latest
+    image: ghcr.io/ghosts-network/reactions:latest
     ports:
       - "5200:80"
     depends_on:
