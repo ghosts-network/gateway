@@ -100,8 +100,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?));
 
         /// <summary>
         /// 
@@ -113,8 +114,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        ApiResponse<List<Publication>> PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        ApiResponse<List<Publication>> PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?));
         /// <summary>
         /// 
         /// </summary>
@@ -220,8 +222,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?));
 
         /// <summary>
         /// 
@@ -233,8 +236,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>));
+        System.Threading.Tasks.Task<ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?));
         /// <summary>
         /// 
         /// </summary>
@@ -732,10 +736,11 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>List&lt;Publication&gt;</returns>
-        public List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public List<Publication> PublicationsSearch (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsSearchWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = PublicationsSearchWithHttpInfo(skip, take, tags, order);
              return localVarResponse.Data;
         }
 
@@ -746,8 +751,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>ApiResponse of List&lt;Publication&gt;</returns>
-        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public GhostNetwork.Publications.Client.ApiResponse< List<Publication> > PublicationsSearchWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?))
         {
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
 
@@ -779,6 +785,10 @@ namespace GhostNetwork.Publications.Api
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
             }
+            if (order != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "order", order));
+            }
 
 
             // make the HTTP request
@@ -800,10 +810,11 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>Task of List&lt;Publication&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<List<Publication>> PublicationsSearchAsync (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?))
         {
-             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsSearchAsyncWithHttpInfo(skip, take, tags);
+             GhostNetwork.Publications.Client.ApiResponse<List<Publication>> localVarResponse = await PublicationsSearchAsyncWithHttpInfo(skip, take, tags, order);
              return localVarResponse.Data;
 
         }
@@ -815,8 +826,9 @@ namespace GhostNetwork.Publications.Api
         /// <param name="skip"> (optional)</param>
         /// <param name="take"> (optional)</param>
         /// <param name="tags"> (optional)</param>
+        /// <param name="order"> (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Publication&gt;)</returns>
-        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>))
+        public async System.Threading.Tasks.Task<GhostNetwork.Publications.Client.ApiResponse<List<Publication>>> PublicationsSearchAsyncWithHttpInfo (int? skip = default(int?), int? take = default(int?), List<string> tags = default(List<string>), Ordering? order = default(Ordering?))
         {
 
             GhostNetwork.Publications.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Publications.Client.RequestOptions();
@@ -848,6 +860,10 @@ namespace GhostNetwork.Publications.Api
             if (tags != null)
             {
                 localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
+            }
+            if (order != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(GhostNetwork.Publications.Client.ClientUtils.ParameterToMultiMap("", "order", order));
             }
 
 

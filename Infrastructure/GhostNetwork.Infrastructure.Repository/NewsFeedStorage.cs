@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
 using GhostNetwork.Reactions.Api;
+using GhostNetwork.Reactions.Client;
 
 namespace GhostNetwork.Infrastructure.Repository
 {
@@ -22,9 +24,9 @@ namespace GhostNetwork.Infrastructure.Repository
             this.reactionsApi = reactionsApi;
         }
 
-        public async Task<IEnumerable<NewsFeedPublication>> FindManyAsync()
+        public async Task<IEnumerable<NewsFeedPublication>> FindManyAsync(int skip, int take)
         {
-            var publications = await publicationsApi.PublicationsSearchAsync();
+            var publications = await publicationsApi.PublicationsSearchAsync(skip, take, order: Ordering.Desc);
             var newsFeedPublications = new List<NewsFeedPublication>(publications.Count);
 
             foreach (var publication in publications)
@@ -39,17 +41,25 @@ namespace GhostNetwork.Infrastructure.Repository
                     }
                 }
 
-                var reactions = await reactionsApi.ReactionsGetAsync($"publication_{publication.Id}");
-                var r = reactions.Keys
-                    .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
-                    .ToDictionary(o => o.Item1, o => o.Item2);
+                var reactions = new Dictionary<ReactionType, int>();
+                try
+                {
+                    var response = await reactionsApi.ReactionsGetAsync($"publication_{publication.Id}");
+                    reactions = response.Keys
+                        .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
+                        .ToDictionary(o => o.Item1, o => o.Item2);
+                }
+                catch (ApiException ex)
+                {
+                    // ignored
+                }
 
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
                         c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), totalCount),
-                    new ReactionShort(r)));
+                    new ReactionShort(reactions)));
             }
 
             return newsFeedPublications;

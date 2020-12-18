@@ -20,9 +20,11 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
+            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
+            [FromQuery, Range(1, 50)] int take = 20)
         {
-            return Ok(await newsFeedManager.FindManyAsync());
+            return Ok(await newsFeedManager.FindManyAsync(skip, take));
         }
 
         [HttpPost]
