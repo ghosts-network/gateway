@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -30,6 +31,8 @@ namespace GhostNetwork.Gateway.Api
                     Title = "GhostNetwork/Gateway API",
                     Version = "1.0.0"
                 });
+
+                options.OperationFilter<AddResponseHeadersFilter>();
             });
 
             services.AddScoped<ICurrentUserProvider, FakeCurrentUserProvider>();

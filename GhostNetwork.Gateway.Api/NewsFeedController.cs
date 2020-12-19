@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -20,6 +21,8 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, "X-TotalCount", "Number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, "X-HasMore", "String", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
