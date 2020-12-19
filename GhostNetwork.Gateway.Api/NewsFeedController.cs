@@ -24,7 +24,12 @@ namespace GhostNetwork.Gateway.Api
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            return Ok(await newsFeedManager.FindManyAsync(skip, take));
+            var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take);
+
+            Response.Headers.Add("X-TotalCount", totalCount.ToString());
+            Response.Headers.Add("X-HasMore", (skip + take < totalCount).ToString());
+
+            return Ok(news);
         }
 
         [HttpPost]

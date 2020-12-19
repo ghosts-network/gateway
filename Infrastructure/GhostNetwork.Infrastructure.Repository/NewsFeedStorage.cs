@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
@@ -24,22 +23,15 @@ namespace GhostNetwork.Infrastructure.Repository
             this.reactionsApi = reactionsApi;
         }
 
-        public async Task<IEnumerable<NewsFeedPublication>> FindManyAsync(int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take)
         {
-            var publications = await publicationsApi.PublicationsSearchAsync(skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.PublicationsSearchAsyncWithHttpInfo(skip, take, order: Ordering.Desc);
+            var publications = publicationsResponse.Data;
             var newsFeedPublications = new List<NewsFeedPublication>(publications.Count);
 
             foreach (var publication in publications)
             {
                 var commentsResponse = await commentsApi.CommentsSearchAsyncWithHttpInfo(publication.Id, 0, 3);
-                var totalCount = 0;
-                if (commentsResponse.Headers.TryGetValue("X-TotalCount", out var headers))
-                {
-                    if (!int.TryParse(headers.FirstOrDefault(), out totalCount))
-                    {
-                        totalCount = 0;
-                    }
-                }
 
                 var reactions = new Dictionary<ReactionType, int>();
                 try
@@ -49,7 +41,7 @@ namespace GhostNetwork.Infrastructure.Repository
                         .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                         .ToDictionary(o => o.Item1, o => o.Item2);
                 }
-                catch (ApiException ex)
+                catch (ApiException)
                 {
                     // ignored
                 }
@@ -58,11 +50,11 @@ namespace GhostNetwork.Infrastructure.Repository
                     publication.Id,
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
-                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), totalCount),
+                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), GetTotalCountHeader(commentsResponse)),
                     new ReactionShort(reactions)));
             }
 
-            return newsFeedPublications;
+            return (newsFeedPublications, GetTotalCountHeader(publicationsResponse));
         }
 
         public async Task<NewsFeedPublication> CreateAsync(string content, string author)
@@ -133,6 +125,20 @@ namespace GhostNetwork.Infrastructure.Repository
         public async Task DeleteCommentAsync(string id)
         {
             await commentsApi.CommentsDeleteAsync(id);
+        }
+
+        private static long GetTotalCountHeader<T>(Publications.Client.ApiResponse<T> response)
+        {
+            var totalCount = 0;
+            if (response.Headers.TryGetValue("X-TotalCount", out var headers))
+            {
+                if (!int.TryParse(headers.FirstOrDefault(), out totalCount))
+                {
+                    totalCount = 0;
+                }
+            }
+
+            return totalCount;
         }
 
         private static PublicationComment ToDomain(Comment entity)

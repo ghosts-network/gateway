@@ -5,7 +5,7 @@ namespace GhostNetwork.Gateway.Facade
 {
     public interface INewsFeedManager
     {
-        Task<IEnumerable<NewsFeedPublication>> FindManyAsync(int skip, int take);
+        Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take);
 
         Task<NewsFeedPublication> CreateAsync(string content, string author);
 
