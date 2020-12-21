@@ -52,11 +52,6 @@ namespace GhostNetwork.Infrastructure.Repository
                 {
                     var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
 
-                    if (!reactionByAuhor.Type.Any())
-                    {
-                        reactionType = null;
-                    }
-
                     reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
                 }
                 catch (ApiException)
@@ -104,11 +99,6 @@ namespace GhostNetwork.Infrastructure.Repository
             try
             {
                 var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
-
-                if (!reactionByAuhor.Type.Any())
-                {
-                    reactionType = null;
-                }
 
                 reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
             }
