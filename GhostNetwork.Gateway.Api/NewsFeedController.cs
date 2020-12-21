@@ -24,10 +24,11 @@ namespace GhostNetwork.Gateway.Api
         [SwaggerResponseHeader(StatusCodes.Status200OK, "X-TotalCount", "Number", "")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, "X-HasMore", "String", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
+            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take);
+            var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take, currentUserProvider.UserId);
 
             Response.Headers.Add("X-TotalCount", totalCount.ToString());
             Response.Headers.Add("X-HasMore", (skip + take < totalCount).ToString());
@@ -73,7 +74,7 @@ namespace GhostNetwork.Gateway.Api
         {
             await newsFeedManager.AddReactionAsync(publicationId, currentUserProvider.UserId, model.Reaction);
 
-            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId, currentUserProvider.UserId));
         }
 
         [HttpDelete("{publicationId}/reaction")]
@@ -84,7 +85,7 @@ namespace GhostNetwork.Gateway.Api
         {
             await newsFeedManager.RemoveReactionAsync(publicationId, currentUserProvider.UserId);
 
-            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId, currentUserProvider.UserId));
         }
 
         [HttpGet("{publicationId}/comments")]

@@ -104,6 +104,29 @@ namespace GhostNetwork.Reactions.Api
         /// </remarks>
         /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Reaction</returns>
+        Reaction ReactionsGetReactionByAuthor (string key, string author);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>ApiResponse of Reaction</returns>
+        ApiResponse<Reaction> ReactionsGetReactionByAuthorWithHttpInfo (string key, string author);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
         /// <param name="type"></param>
         /// <param name="author"></param>
         /// <returns>Dictionary&lt;string, int&gt;</returns>
@@ -199,6 +222,29 @@ namespace GhostNetwork.Reactions.Api
         /// <param name="key"></param>
         /// <returns>Task of ApiResponse (Dictionary&lt;string, int&gt;)</returns>
         System.Threading.Tasks.Task<ApiResponse<Dictionary<string, int>>> ReactionsGetAsyncWithHttpInfo (string key);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Task of Reaction</returns>
+        System.Threading.Tasks.Task<Reaction> ReactionsGetReactionByAuthorAsync (string key, string author);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Task of ApiResponse (Reaction)</returns>
+        System.Threading.Tasks.Task<ApiResponse<Reaction>> ReactionsGetReactionByAuthorAsyncWithHttpInfo (string key, string author);
         /// <summary>
         /// 
         /// </summary>
@@ -731,6 +777,137 @@ namespace GhostNetwork.Reactions.Api
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("ReactionsGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Reaction</returns>
+        public Reaction ReactionsGetReactionByAuthor (string key, string author)
+        {
+             GhostNetwork.Reactions.Client.ApiResponse<Reaction> localVarResponse = ReactionsGetReactionByAuthorWithHttpInfo(key, author);
+             return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>ApiResponse of Reaction</returns>
+        public GhostNetwork.Reactions.Client.ApiResponse< Reaction > ReactionsGetReactionByAuthorWithHttpInfo (string key, string author)
+        {
+            // verify the required parameter 'key' is set
+            if (key == null)
+                throw new GhostNetwork.Reactions.Client.ApiException(400, "Missing required parameter 'key' when calling ReactionsApi->ReactionsGetReactionByAuthor");
+
+            // verify the required parameter 'author' is set
+            if (author == null)
+                throw new GhostNetwork.Reactions.Client.ApiException(400, "Missing required parameter 'author' when calling ReactionsApi->ReactionsGetReactionByAuthor");
+
+            GhostNetwork.Reactions.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Reactions.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = GhostNetwork.Reactions.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = GhostNetwork.Reactions.Client.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("key", GhostNetwork.Reactions.Client.ClientUtils.ParameterToString(key)); // path parameter
+            localVarRequestOptions.HeaderParameters.Add("author", GhostNetwork.Reactions.Client.ClientUtils.ParameterToString(author)); // header parameter
+
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get< Reaction >("/Reactions/{key}/author", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ReactionsGetReactionByAuthor", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Task of Reaction</returns>
+        public async System.Threading.Tasks.Task<Reaction> ReactionsGetReactionByAuthorAsync (string key, string author)
+        {
+             GhostNetwork.Reactions.Client.ApiResponse<Reaction> localVarResponse = await ReactionsGetReactionByAuthorAsyncWithHttpInfo(key, author);
+             return localVarResponse.Data;
+
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="GhostNetwork.Reactions.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="key"></param>
+        /// <param name="author"></param>
+        /// <returns>Task of ApiResponse (Reaction)</returns>
+        public async System.Threading.Tasks.Task<GhostNetwork.Reactions.Client.ApiResponse<Reaction>> ReactionsGetReactionByAuthorAsyncWithHttpInfo (string key, string author)
+        {
+            // verify the required parameter 'key' is set
+            if (key == null)
+                throw new GhostNetwork.Reactions.Client.ApiException(400, "Missing required parameter 'key' when calling ReactionsApi->ReactionsGetReactionByAuthor");
+
+            // verify the required parameter 'author' is set
+            if (author == null)
+                throw new GhostNetwork.Reactions.Client.ApiException(400, "Missing required parameter 'author' when calling ReactionsApi->ReactionsGetReactionByAuthor");
+
+
+            GhostNetwork.Reactions.Client.RequestOptions localVarRequestOptions = new GhostNetwork.Reactions.Client.RequestOptions();
+
+            String[] _contentTypes = new String[] {
+            };
+
+            // to determine the Accept header
+            String[] _accepts = new String[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+            
+            foreach (var _contentType in _contentTypes)
+                localVarRequestOptions.HeaderParameters.Add("Content-Type", _contentType);
+            
+            foreach (var _accept in _accepts)
+                localVarRequestOptions.HeaderParameters.Add("Accept", _accept);
+            
+            localVarRequestOptions.PathParameters.Add("key", GhostNetwork.Reactions.Client.ClientUtils.ParameterToString(key)); // path parameter
+            localVarRequestOptions.HeaderParameters.Add("author", GhostNetwork.Reactions.Client.ClientUtils.ParameterToString(author)); // header parameter
+
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.GetAsync<Reaction>("/Reactions/{key}/author", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ReactionsGetReactionByAuthor", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 

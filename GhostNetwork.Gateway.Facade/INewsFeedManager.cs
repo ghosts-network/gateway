@@ -5,7 +5,7 @@ namespace GhostNetwork.Gateway.Facade
 {
     public interface INewsFeedManager
     {
-        Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take);
+        Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take, string author);
 
         Task<NewsFeedPublication> CreateAsync(string content, string author);
 
@@ -19,7 +19,7 @@ namespace GhostNetwork.Gateway.Facade
 
         Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take);
 
-        Task<IEnumerable<ReactionShort>> GetReactionsAsync(string publicationId);
+        Task<ReactionShort> GetReactionsAsync(string publicationId, string author);
 
         Task AddReactionAsync(string publicationId, string author, ReactionType type);
 
