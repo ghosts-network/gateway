@@ -46,13 +46,13 @@ namespace GhostNetwork.Infrastructure.Repository
                     // ignored
                 }
 
-                var reactionType = new ReactionType?();
+                UserReaction userReaction = null;
 
                 try
                 {
-                    var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                    var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
 
-                    reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
+                    userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
                 catch (ApiException)
                 {
@@ -64,7 +64,7 @@ namespace GhostNetwork.Infrastructure.Repository
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
                         c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), GetTotalCountHeader(commentsResponse)),
-                    new ReactionShort(reactions, new UserReaction(reactionType))));
+                    new ReactionShort(reactions, userReaction)));
             }
 
             return (newsFeedPublications, GetTotalCountHeader(publicationsResponse));
@@ -94,20 +94,20 @@ namespace GhostNetwork.Infrastructure.Repository
                 // ignored
             }
 
-            var reactionType = new ReactionType?();
+            UserReaction userReaction = null;
 
             try
             {
-                var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
+                var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
 
-                reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
+                userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
             }
             catch (ApiException)
             {
                 // ignored
             }
 
-            return new ReactionShort(reactions, new UserReaction(reactionType));
+            return new ReactionShort(reactions, userReaction);
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)

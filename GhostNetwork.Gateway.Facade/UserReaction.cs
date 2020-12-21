@@ -6,11 +6,11 @@ namespace GhostNetwork.Gateway.Facade
 {
     public class UserReaction
     {
-        public UserReaction(ReactionType? type)
+        public UserReaction(ReactionType type)
         {
             Type = type;
         }
 
-        public ReactionType? Type { get; }
+        public ReactionType Type { get; }
     }
 }
