@@ -46,15 +46,15 @@ namespace GhostNetwork.Infrastructure.Repository
                     // ignored
                 }
 
-                var reactionType = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
-                var reactionAuhor = Enum.Parse<ReactionType>(reactionType.Type);
+                var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                var reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
 
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
                         c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), GetTotalCountHeader(commentsResponse)),
-                    new ReactionShort(reactions, reactionAuhor)));
+                    new ReactionShort(reactions, reactionType)));
             }
 
             return (newsFeedPublications, GetTotalCountHeader(publicationsResponse));
@@ -76,10 +76,10 @@ namespace GhostNetwork.Infrastructure.Repository
                 .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
                 .ToDictionary(o => o.Item1, o => o.Item2);
 
-            var reactionType = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
-            var reactionAuhor = Enum.Parse<ReactionType>(reactionType.Type);
+            var reactionByAuhor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
+            var reactionType = Enum.Parse<ReactionType>(reactionByAuhor.Type);
 
-            return new ReactionShort(r, reactionAuhor);
+            return new ReactionShort(r, reactionType);
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
