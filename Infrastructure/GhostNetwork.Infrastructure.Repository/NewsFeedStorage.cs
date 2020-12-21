@@ -23,7 +23,7 @@ namespace GhostNetwork.Infrastructure.Repository
             this.reactionsApi = reactionsApi;
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take, string author)
         {
             var publicationsResponse = await publicationsApi.PublicationsSearchAsyncWithHttpInfo(skip, take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
@@ -46,12 +46,15 @@ namespace GhostNetwork.Infrastructure.Repository
                     // ignored
                 }
 
+                var reactionType = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                var reactionAuhor = Enum.Parse<ReactionType>(reactionType.Type);
+
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
                     new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
                         c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), GetTotalCountHeader(commentsResponse)),
-                    new ReactionShort(reactions)));
+                    new ReactionShort(reactions, reactionAuhor)));
             }
 
             return (newsFeedPublications, GetTotalCountHeader(publicationsResponse));
@@ -63,20 +66,20 @@ namespace GhostNetwork.Infrastructure.Repository
             var entity = await publicationsApi.PublicationsCreateAsync(model);
 
             return new NewsFeedPublication(entity.Id, entity.Content, new CommentsShort(Enumerable.Empty<PublicationComment>(), 0), 
-                new ReactionShort(new Dictionary<ReactionType, int>()));
+                new ReactionShort(new Dictionary<ReactionType, int>(), new ReactionType()));
         }
 
-        public async Task<IEnumerable<ReactionShort>> GetReactionsAsync(string publicationId)
+        public async Task<ReactionShort> GetReactionsAsync(string publicationId, string author)
         {
-            var newsFeedReactions = new List<ReactionShort>();
-
             var reactions = await reactionsApi.ReactionsGetAsync($"publication_{publicationId}");
             var r = reactions.Keys
                 .Select(k => (Enum.Parse<ReactionType>(k), reactions[k]))
                 .ToDictionary(o => o.Item1, o => o.Item2);
 
-            newsFeedReactions.Add(new ReactionShort(r));
-            return newsFeedReactions;
+            var reactionType = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
+            var reactionAuhor = Enum.Parse<ReactionType>(reactionType.Type);
+
+            return new ReactionShort(r, reactionAuhor);
         }
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)

@@ -21,8 +21,8 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.OpenApi.Any;
 using OpenAPIDateConverter = GhostNetwork.Reactions.Client.OpenAPIDateConverter;
+using Microsoft.OpenApi.Any;
 
 namespace GhostNetwork.Reactions.Model
 {

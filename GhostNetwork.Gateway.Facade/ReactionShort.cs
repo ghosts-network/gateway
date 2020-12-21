@@ -5,7 +5,7 @@ namespace GhostNetwork.Gateway.Facade
 {
     public class ReactionShort
     {
-        public ReactionShort(Dictionary<ReactionType, int> reactions)
+        public ReactionShort(Dictionary<ReactionType, int> reactions, ReactionType reactionType)
         {
             Reactions = reactions
                 .OrderBy(r => r.Value)
@@ -15,9 +15,12 @@ namespace GhostNetwork.Gateway.Facade
             TotalCount = reactions
                 .Values
                 .Sum();
+
+            ReactionType = reactionType;
         }
 
         public IEnumerable<ReactionType> Reactions { get; }
         public int TotalCount { get; }
+        public ReactionType ReactionType { get; }
     }
 }
