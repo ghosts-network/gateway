@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
@@ -54,7 +55,7 @@ namespace GhostNetwork.Infrastructure.Repository
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
-                catch (ApiException)
+                catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
                 {
                     // ignored
                 }
@@ -102,7 +103,7 @@ namespace GhostNetwork.Infrastructure.Repository
 
                 userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
             }
-            catch (ApiException)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 // ignored
             }
