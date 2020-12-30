@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
@@ -10,6 +11,7 @@ namespace GhostNetwork.Gateway.Api
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class NewsFeedController : ControllerBase
     {
         private readonly INewsFeedManager newsFeedManager;
