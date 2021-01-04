@@ -49,15 +49,18 @@ namespace GhostNetwork.Infrastructure.Repository
 
                 UserReaction userReaction = null;
 
-                try
+                if (author != null)
                 {
-                    var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                    try
+                    {
+                        var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
 
-                    userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
-                }
-                catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-                {
-                    // ignored
+                        userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
+                    }
+                    catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                    {
+                        // ignored
+                    }
                 }
 
                 newsFeedPublications.Add(new NewsFeedPublication(
@@ -97,15 +100,18 @@ namespace GhostNetwork.Infrastructure.Repository
 
             UserReaction userReaction = null;
 
-            try
+            if (author != null)
             {
-                var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
+                try
+                {
+                    var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
 
-                userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-            {
-                // ignored
+                    userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
+                }
+                catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                {
+                    // ignored
+                }
             }
 
             return new ReactionShort(reactions, userReaction);
