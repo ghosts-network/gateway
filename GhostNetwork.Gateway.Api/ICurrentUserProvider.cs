@@ -16,6 +16,6 @@ namespace GhostNetwork.Gateway.Api
             this.httpContext = httpContext;
         }
 
-        public string UserId => httpContext.HttpContext.User.FindFirst(s => s.Type == "sub").Value;
+        public string UserId => httpContext.HttpContext.User.FindFirst(s => s.Type == "sub")?.Value;
     }
 }

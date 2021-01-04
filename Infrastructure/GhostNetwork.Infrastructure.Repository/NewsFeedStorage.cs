@@ -119,12 +119,18 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
         {
-            await reactionsApi.ReactionsAddAsync($"publication_{publicationId}", reaction.ToString(), author);
+            if (author != null)
+            {
+                await reactionsApi.ReactionsAddAsync($"publication_{publicationId}", reaction.ToString(), author);
+            }
         }
 
         public async Task RemoveReactionAsync(string publicationId, string author)
         {
-            await reactionsApi.ReactionsDeleteAsync($"publication_{publicationId}", author);
+            if (author != null)
+            {
+                await reactionsApi.ReactionsDeleteAsync($"publication_{publicationId}", author);
+            }
         }
 
         public async Task UpdateAsync(string id, string content)
