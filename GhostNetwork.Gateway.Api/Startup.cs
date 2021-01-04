@@ -26,6 +26,7 @@ namespace GhostNetwork.Gateway.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+            services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -64,7 +65,7 @@ namespace GhostNetwork.Gateway.Api
                     options.Authority = "https://account.gn.boberneprotiv.com";
                 });
 
-            services.AddScoped<ICurrentUserProvider, FakeCurrentUserProvider>();
+            services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
