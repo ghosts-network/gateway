@@ -91,13 +91,14 @@ namespace GhostNetwork.Gateway.Api
                         options.OAuthAppName("Swagger Local");
                         options.OAuthUsePkce();
                     });
-
-                app.UseCors(builder => builder.AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin());
             }
 
             app.UseRouting();
+
+            app.UseCors(builder => builder
+                .WithOrigins("http://localhost:4200", "https://gn.boberneprotiv.com")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseAuthentication();
             app.UseAuthorization();
