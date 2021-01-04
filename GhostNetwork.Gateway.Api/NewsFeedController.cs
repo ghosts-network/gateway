@@ -23,8 +23,8 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, "X-TotalCount", "Number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, "X-HasMore", "String", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "Number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "String", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
             [FromServices] ICurrentUserProvider currentUserProvider,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
@@ -32,8 +32,8 @@ namespace GhostNetwork.Gateway.Api
         {
             var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take, currentUserProvider.UserId);
 
-            Response.Headers.Add("X-TotalCount", totalCount.ToString());
-            Response.Headers.Add("X-HasMore", (skip + take < totalCount).ToString());
+            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
+            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
 
             return Ok(news);
         }
@@ -91,6 +91,8 @@ namespace GhostNetwork.Gateway.Api
         }
 
         [HttpGet("{publicationId}/comments")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "Number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "String", "")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SearchCommentsAsync(
             [FromRoute] string publicationId,
@@ -98,7 +100,9 @@ namespace GhostNetwork.Gateway.Api
             [FromQuery, Range(0, 100)] int take = 10)
         {
             var (comments, totalCount) = await newsFeedManager.SearchCommentsAsync(publicationId, skip, take);
-            Response.Headers.Add("X-TotalCount", totalCount.ToString());
+
+            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
+            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
 
             return Ok(comments);
         }

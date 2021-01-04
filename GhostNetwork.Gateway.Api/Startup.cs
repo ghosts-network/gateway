@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Infrastructure.Repository;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Reactions.Api;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -51,7 +48,9 @@ namespace GhostNetwork.Gateway.Api
                             TokenUrl = new Uri("https://account.gn.boberneprotiv.com/connect/token"),
                             Scopes = new Dictionary<string, string>
                             {
-                                {"api", "Main API - full access"}
+                                {
+                                    "api", "Main API - full access"
+                                }
                             }
                         }
                     }
@@ -98,47 +97,13 @@ namespace GhostNetwork.Gateway.Api
             app.UseCors(builder => builder
                 .WithOrigins("http://localhost:4200", "https://gn.boberneprotiv.com")
                 .AllowAnyHeader()
+                .WithExposedHeaders(Consts.Headers.All)
                 .AllowAnyMethod());
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-        }
-    }
-
-    public class AuthorizeCheckOperationFilter : IOperationFilter
-    {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            var hasAuthorize =
-                context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
-                || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
-
-            if (!hasAuthorize)
-            {
-                return;
-            }
-
-            operation.Responses.Add("401", new OpenApiResponse {Description = "Unauthorized"});
-            operation.Responses.Add("403", new OpenApiResponse {Description = "Forbidden"});
-
-            operation.Security = new List<OpenApiSecurityRequirement>
-            {
-                new OpenApiSecurityRequirement
-                {
-                    [
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "oauth2"
-                            }
-                        }
-                    ] = new[] {"api"}
-                }
-            };
         }
     }
 }
