@@ -19,8 +19,8 @@ namespace GhostNetwork.Gateway.Api
                 return;
             }
 
-            operation.Responses.Add("401", new OpenApiResponse {Description = "Unauthorized"});
-            operation.Responses.Add("403", new OpenApiResponse {Description = "Forbidden"});
+            operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
 
             operation.Security = new List<OpenApiSecurityRequirement>
             {
@@ -35,7 +35,8 @@ namespace GhostNetwork.Gateway.Api
                                 Id = "oauth2"
                             }
                         }
-                    ] = new[] {"api"}
+
+                    ] = new[] { "api" }
                 }
             };
         }
