@@ -26,13 +26,13 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take, string author)
         {
-            var publicationsResponse = await publicationsApi.PublicationsSearchAsyncWithHttpInfo(skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
             var newsFeedPublications = new List<NewsFeedPublication>(publications.Count);
 
             foreach (var publication in publications)
             {
-                var commentsResponse = await commentsApi.CommentsSearchAsyncWithHttpInfo(publication.Id, 0, 3);
+                var commentsResponse = await commentsApi.SearchWithHttpInfoAsync(publication.Id, 0, 3);
 
                 var reactions = new Dictionary<ReactionType, int>();
                 try
@@ -77,7 +77,7 @@ namespace GhostNetwork.Infrastructure.Repository
         public async Task<NewsFeedPublication> CreateAsync(string content, string author)
         {
             var model = new CreatePublicationModel(content, author);
-            var entity = await publicationsApi.PublicationsCreateAsync(model);
+            var entity = await publicationsApi.CreateAsync(model);
 
             return new NewsFeedPublication(entity.Id, entity.Content, new CommentsShort(Enumerable.Empty<PublicationComment>(), 0), 
                 new ReactionShort(new Dictionary<ReactionType, int>(), new UserReaction(new ReactionType())));
@@ -131,22 +131,22 @@ namespace GhostNetwork.Infrastructure.Repository
         {
             var model = new UpdatePublicationModel(content);
 
-            await publicationsApi.PublicationsUpdateAsync(id, model);
+            await publicationsApi.UpdateAsync(id, model);
         }
 
         public async Task DeleteAsync(string id)
         {
-            await publicationsApi.PublicationsDeleteAsync(id);
+            await publicationsApi.DeleteAsync(id);
         }
 
         public async Task AddCommentAsync(string publicationId, string author, string content)
         {
-            await commentsApi.CommentsCreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
+            await commentsApi.CreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
         }
 
         public async Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take)
         {
-            var comments = await commentsApi.CommentsSearchAsync(publicationId, skip, take);
+            var comments = await commentsApi.SearchAsync(publicationId, skip, take);
 
             var totalCount = 0;
 
@@ -155,14 +155,14 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task<PublicationComment> GetCommentByIdAsync(string id)
         {
-            var comment = await commentsApi.CommentsGetByIdAsync(id);
+            var comment = await commentsApi.GetByIdAsync(id);
 
             return comment == null ? null : ToDomain(comment);
         }
 
         public async Task DeleteCommentAsync(string id)
         {
-            await commentsApi.CommentsDeleteAsync(id);
+            await commentsApi.DeleteAsync(id);
         }
 
         private static long GetTotalCountHeader<T>(Publications.Client.ApiResponse<T> response)

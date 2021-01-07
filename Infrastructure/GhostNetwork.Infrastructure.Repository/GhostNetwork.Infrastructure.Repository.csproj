@@ -6,8 +6,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj" />
-      <ProjectReference Include="..\Http\GhostNetwork.Publications\GhostNetwork.Publications.csproj" />
       <ProjectReference Include="..\Http\GhostNetwork.Reactions\GhostNetwork.Reactions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="GhostNetwork.Publications" Version="1.0.2" />
     </ItemGroup>
 
 </Project>
