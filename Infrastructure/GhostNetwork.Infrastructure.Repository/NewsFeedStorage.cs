@@ -37,7 +37,7 @@ namespace GhostNetwork.Infrastructure.Repository
                 var reactions = new Dictionary<ReactionType, int>();
                 try
                 {
-                    var response = await reactionsApi.ReactionsGetAsync($"publication_{publication.Id}");
+                    var response = await reactionsApi.GetAsync($"publication_{publication.Id}");
                     reactions = response.Keys
                         .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                         .ToDictionary(o => o.Item1, o => o.Item2);
@@ -53,7 +53,7 @@ namespace GhostNetwork.Infrastructure.Repository
                 {
                     try
                     {
-                        var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                        var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publication.Id}", author);
 
                         userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                     }
@@ -88,7 +88,7 @@ namespace GhostNetwork.Infrastructure.Repository
             var reactions = new Dictionary<ReactionType, int>();
             try
             {
-                var response = await reactionsApi.ReactionsGetAsync($"publication_{publicationId}");
+                var response = await reactionsApi.GetAsync($"publication_{publicationId}");
                 reactions = response.Keys
                     .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                     .ToDictionary(o => o.Item1, o => o.Item2);
@@ -104,7 +104,7 @@ namespace GhostNetwork.Infrastructure.Repository
             {
                 try
                 {
-                    var reactionByAuthor = await reactionsApi.ReactionsGetReactionByAuthorAsync($"publication_{publicationId}", author);
+                    var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publicationId}", author);
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
@@ -119,12 +119,12 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
         {
-            await reactionsApi.ReactionsAddAsync($"publication_{publicationId}", reaction.ToString(), author);
+            await reactionsApi.UpsertAsync($"publication_{publicationId}", reaction.ToString(), author);
         }
 
         public async Task RemoveReactionAsync(string publicationId, string author)
         {
-            await reactionsApi.ReactionsDeleteAsync($"publication_{publicationId}", author);
+            await reactionsApi.DeleteAsync($"publication_{publicationId}", author);
         }
 
         public async Task UpdateAsync(string id, string content)
