@@ -124,7 +124,7 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task RemoveReactionAsync(string publicationId, string author)
         {
-            await reactionsApi.DeleteAsync($"publication_{publicationId}", author);
+            await reactionsApi.DeleteByAuthorAsync($"publication_{publicationId}", author);
         }
 
         public async Task UpdateAsync(string id, string content)
@@ -136,6 +136,8 @@ namespace GhostNetwork.Infrastructure.Repository
 
         public async Task DeleteAsync(string id)
         {
+            await reactionsApi.DeleteAsync(id);
+
             await publicationsApi.DeleteAsync(id);
         }
 
