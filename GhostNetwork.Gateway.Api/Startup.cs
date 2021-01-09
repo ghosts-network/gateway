@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Infrastructure.Repository;
+using GhostNetwork.Profiles.Api;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Reactions.Api;
 using Microsoft.AspNetCore.Builder;
@@ -70,6 +71,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["REACTIONS_ADDRESS"]));
+            services.AddScoped<IProfilesApi>(provider => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
 
             services.AddScoped<INewsFeedManager, NewsFeedStorage>();
 
