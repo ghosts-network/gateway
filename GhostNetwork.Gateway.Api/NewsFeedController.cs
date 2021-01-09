@@ -23,8 +23,8 @@ namespace GhostNetwork.Gateway.Api
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "Number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "String", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
             [FromServices] ICurrentUserProvider currentUserProvider,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
@@ -91,8 +91,8 @@ namespace GhostNetwork.Gateway.Api
         }
 
         [HttpGet("{publicationId}/comments")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "Number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "String", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SearchCommentsAsync(
             [FromRoute] string publicationId,
