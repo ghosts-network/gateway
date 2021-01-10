@@ -94,6 +94,20 @@ namespace GhostNetwork.Gateway.Api
                         options.OAuthUsePkce();
                     });
             }
+            else
+            {
+                app
+                    .UseSwagger()
+                    .UseSwaggerUI(options =>
+                    {
+                        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway V1");
+
+                        options.OAuthClientId("swagger_prod");
+                        options.OAuthClientSecret("secret");
+                        options.OAuthAppName("Swagger Prod");
+                        options.OAuthUsePkce();
+                    });
+            }
 
             app.UseRouting();
 
