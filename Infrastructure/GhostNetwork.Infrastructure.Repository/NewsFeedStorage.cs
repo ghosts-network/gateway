@@ -216,12 +216,7 @@ namespace GhostNetwork.Infrastructure.Repository
 
         private static UserInfoModel ToUserModel(UserInfo userInfo)
         {
-            return new UserInfoModel
-            {
-                Id = userInfo.Id,
-                FullName = userInfo.FullName,
-                AvatarUrl = userInfo.AvatarUrl
-            };
+            return new UserInfoModel(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }
