@@ -142,11 +142,18 @@ namespace GhostNetwork.Infrastructure.Repository
             await publicationsApi.UpdateAsync(id, model);
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            await reactionsApi.DeleteAsync(id);
+            var publication = await publicationsApi.GetByIdAsync(id);
 
-            await publicationsApi.DeleteAsync(id);
+            if (publication.Author.Id.ToString() == currentUserProvider.UserId)
+            {
+                await reactionsApi.DeleteAsync(id);
+                await publicationsApi.DeleteAsync(id);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task AddCommentAsync(string publicationId, string content)
@@ -170,9 +177,15 @@ namespace GhostNetwork.Infrastructure.Repository
             return comment == null ? null : ToDomain(comment);
         }
 
-        public async Task DeleteCommentAsync(string id)
+        public async Task<bool> DeleteCommentAsync(string id)
         {
-            await commentsApi.DeleteAsync(id);
+            var comment = await commentsApi.GetByIdAsync(id);
+            if (comment.Author.Id.ToString() == currentUserProvider.UserId)
+            {
+                await commentsApi.DeleteAsync(id);
+                return true;
+            }
+            return false;
         }
 
         private static long GetTotalCountHeader<T>(Publications.Client.ApiResponse<T> response)

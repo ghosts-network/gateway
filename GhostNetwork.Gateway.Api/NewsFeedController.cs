@@ -60,9 +60,12 @@ namespace GhostNetwork.Gateway.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> DeleteAsync([FromRoute] string id)
         {
-            await newsFeedManager.DeleteAsync(id);
+            if (await newsFeedManager.DeleteAsync(id))
+            {
+                return Ok();
+            }
 
-            return Ok();
+            return Forbid();
         }
 
         [HttpPost("{publicationId}/reaction")]
@@ -125,8 +128,12 @@ namespace GhostNetwork.Gateway.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PublicationComment>> DeleteCommentAsync([FromRoute] string commentId)
         {
-            await newsFeedManager.DeleteCommentAsync(commentId);
-            return Ok();
+            if (await newsFeedManager.DeleteCommentAsync(commentId))
+            {
+                return Ok();
+            }
+
+            return Forbid();
         }
     }
 }
