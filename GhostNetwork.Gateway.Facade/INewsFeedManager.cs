@@ -23,7 +23,7 @@ namespace GhostNetwork.Gateway.Facade
 
         Task AddReactionAsync(string publicationId, ReactionType type);
 
-        Task DeleteCommentAsync(string id);
+        Task<bool> DeleteCommentAsync(string id);
 
         Task RemoveReactionAsync(string publicationId);
     }

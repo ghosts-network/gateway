@@ -128,8 +128,12 @@ namespace GhostNetwork.Gateway.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PublicationComment>> DeleteCommentAsync([FromRoute] string commentId)
         {
-            await newsFeedManager.DeleteCommentAsync(commentId);
-            return Ok();
+            if (await newsFeedManager.DeleteCommentAsync(commentId))
+            {
+                return Ok();
+            }
+
+            return Forbid();
         }
     }
 }
