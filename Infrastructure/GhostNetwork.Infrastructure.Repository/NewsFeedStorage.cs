@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Api;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
 using GhostNetwork.Reactions.Api;
 using GhostNetwork.Reactions.Client;
+using UserInfo = GhostNetwork.Gateway.Facade.UserInfo;
 
 namespace GhostNetwork.Infrastructure.Repository
 {
@@ -16,15 +18,17 @@ namespace GhostNetwork.Infrastructure.Repository
         private readonly IPublicationsApi publicationsApi;
         private readonly ICommentsApi commentsApi;
         private readonly IReactionsApi reactionsApi;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi)
+        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
             this.reactionsApi = reactionsApi;
+            this.currentUserProvider = currentUserProvider;
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take, string author)
+        public async Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take)
         {
             var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
@@ -49,11 +53,11 @@ namespace GhostNetwork.Infrastructure.Repository
 
                 UserReaction userReaction = null;
 
-                if (author != null)
+                if (currentUserProvider.UserId != null)
                 {
                     try
                     {
-                        var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publication.Id}", author);
+                        var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publication.Id}", currentUserProvider.UserId);
 
                         userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                     }
@@ -66,24 +70,28 @@ namespace GhostNetwork.Infrastructure.Repository
                 newsFeedPublications.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    new CommentsShort(commentsResponse.Data.Select(c => new PublicationComment(
-                        c.Id, c.Content, c.PublicationId, c.AuthorId, c.CreatedOn)).ToList(), GetTotalCountHeader(commentsResponse)),
-                    new ReactionShort(reactions, userReaction)));
+                    BuildCommentsShort(commentsResponse),
+                    new ReactionShort(reactions, userReaction),
+                    ToUser(publication.Author)));
             }
 
             return (newsFeedPublications, GetTotalCountHeader(publicationsResponse));
         }
 
-        public async Task<NewsFeedPublication> CreateAsync(string content, string author)
+        public async Task<NewsFeedPublication> CreateAsync(string content)
         {
-            var model = new CreatePublicationModel(content, author);
+            var model = new CreatePublicationModel(content, ToUserModel(await currentUserProvider.GetProfileAsync()));
             var entity = await publicationsApi.CreateAsync(model);
 
-            return new NewsFeedPublication(entity.Id, entity.Content, new CommentsShort(Enumerable.Empty<PublicationComment>(), 0), 
-                new ReactionShort(new Dictionary<ReactionType, int>(), new UserReaction(new ReactionType())));
+            return new NewsFeedPublication(entity.Id,
+                entity.Content,
+                new CommentsShort(Enumerable.Empty<PublicationComment>(), 0), 
+                new ReactionShort(new Dictionary<ReactionType, int>(),
+                    new UserReaction(new ReactionType())),
+                ToUser(entity.Author));
         }
 
-        public async Task<ReactionShort> GetReactionsAsync(string publicationId, string author)
+        public async Task<ReactionShort> GetReactionsAsync(string publicationId)
         {
             var reactions = new Dictionary<ReactionType, int>();
             try
@@ -100,11 +108,11 @@ namespace GhostNetwork.Infrastructure.Repository
 
             UserReaction userReaction = null;
 
-            if (author != null)
+            if (currentUserProvider.UserId != null)
             {
                 try
                 {
-                    var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publicationId}", author);
+                    var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publicationId}", currentUserProvider.UserId);
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
@@ -117,14 +125,14 @@ namespace GhostNetwork.Infrastructure.Repository
             return new ReactionShort(reactions, userReaction);
         }
 
-        public async Task AddReactionAsync(string publicationId, string author, ReactionType reaction)
+        public async Task AddReactionAsync(string publicationId, ReactionType reaction)
         {
-            await reactionsApi.UpsertAsync($"publication_{publicationId}", reaction.ToString(), author);
+            await reactionsApi.UpsertAsync($"publication_{publicationId}", reaction.ToString(), currentUserProvider.UserId);
         }
 
-        public async Task RemoveReactionAsync(string publicationId, string author)
+        public async Task RemoveReactionAsync(string publicationId)
         {
-            await reactionsApi.DeleteByAuthorAsync($"publication_{publicationId}", author);
+            await reactionsApi.DeleteByAuthorAsync($"publication_{publicationId}", currentUserProvider.UserId);
         }
 
         public async Task UpdateAsync(string id, string content)
@@ -141,9 +149,9 @@ namespace GhostNetwork.Infrastructure.Repository
             await publicationsApi.DeleteAsync(id);
         }
 
-        public async Task AddCommentAsync(string publicationId, string author, string content)
+        public async Task AddCommentAsync(string publicationId, string content)
         {
-            await commentsApi.CreateAsync(new CreateCommentModel(publicationId, content, authorId: author));
+            await commentsApi.CreateAsync(new CreateCommentModel(publicationId, content, author: ToUserModel(await currentUserProvider.GetProfileAsync())));
         }
 
         public async Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take)
@@ -187,9 +195,33 @@ namespace GhostNetwork.Infrastructure.Repository
                 entity.Id,
                 entity.Content,
                 entity.PublicationId,
-                entity.AuthorId,
+                ToUser(entity.Author),
                 entity.CreatedOn
                 );
+        }
+
+        private static CommentsShort BuildCommentsShort(Publications.Client.ApiResponse<List<Comment>> response)
+        {
+            return new CommentsShort(
+                response.Data
+                    .Select(c => new PublicationComment(c.Id, c.Content, c.PublicationId, ToUser(c.Author), c.CreatedOn))
+                    .ToList(),
+                GetTotalCountHeader(response));
+        }
+
+        private static UserInfo ToUser(Publications.Model.UserInfo userInfo)
+        {
+            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+        }
+
+        private static UserInfoModel ToUserModel(UserInfo userInfo)
+        {
+            return new UserInfoModel
+            {
+                Id = userInfo.Id,
+                FullName = userInfo.FullName,
+                AvatarUrl = userInfo.AvatarUrl
+            };
         }
     }
 }

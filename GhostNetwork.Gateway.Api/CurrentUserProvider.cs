@@ -1,31 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Http;
 
 namespace GhostNetwork.Gateway.Api
 {
-    public interface ICurrentUserProvider
-    {
-        public string UserId { get; }
-
-        public Task<UserInfo> GetProfileAsync();
-    }
-
-    public class UserInfo
-    {
-        public UserInfo(Guid id, string fullName, string avatarUrl)
-        {
-            Id = id;
-            FullName = fullName;
-            AvatarUrl = avatarUrl;
-        }
-
-        public Guid Id { get; }
-        public string FullName { get; }
-        public string AvatarUrl { get; }
-    }
-
     public class CurrentUserProvider : ICurrentUserProvider
     {
         private readonly IHttpContextAccessor httpContext;

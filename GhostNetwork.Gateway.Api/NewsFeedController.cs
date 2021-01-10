@@ -26,11 +26,10 @@ namespace GhostNetwork.Gateway.Api
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take, currentUserProvider.UserId);
+            var (news, totalCount) = await newsFeedManager.FindManyAsync(skip, take);
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
@@ -41,10 +40,9 @@ namespace GhostNetwork.Gateway.Api
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromBody] CreateNewsFeedPublication model)
         {
-            return Created(string.Empty, await newsFeedManager.CreateAsync(model.Content, currentUserProvider.UserId));
+            return Created(string.Empty, await newsFeedManager.CreateAsync(model.Content));
         }
 
         [HttpPut("{id}")]
@@ -70,24 +68,22 @@ namespace GhostNetwork.Gateway.Api
         [HttpPost("{publicationId}/reaction")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> AddReactionAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedReaction model)
         {
-            await newsFeedManager.AddReactionAsync(publicationId, currentUserProvider.UserId, model.Reaction);
+            await newsFeedManager.AddReactionAsync(publicationId, model.Reaction);
 
-            return Ok(await newsFeedManager.GetReactionsAsync(publicationId, currentUserProvider.UserId));
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
         }
 
         [HttpDelete("{publicationId}/reaction")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> RemoveReactionAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromRoute] string publicationId)
         {
-            await newsFeedManager.RemoveReactionAsync(publicationId, currentUserProvider.UserId);
+            await newsFeedManager.RemoveReactionAsync(publicationId);
 
-            return Ok(await newsFeedManager.GetReactionsAsync(publicationId, currentUserProvider.UserId));
+            return Ok(await newsFeedManager.GetReactionsAsync(publicationId));
         }
 
         [HttpGet("{publicationId}/comments")]
@@ -117,11 +113,10 @@ namespace GhostNetwork.Gateway.Api
         [HttpPost("{publicationId}/comment")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<PublicationComment>> AddCommentAsync(
-            [FromServices] ICurrentUserProvider currentUserProvider,
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedComment model)
         {
-            await newsFeedManager.AddCommentAsync(publicationId, currentUserProvider.UserId, model.Content);
+            await newsFeedManager.AddCommentAsync(publicationId, model.Content);
 
             return Ok();
         }

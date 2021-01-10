@@ -5,26 +5,26 @@ namespace GhostNetwork.Gateway.Facade
 {
     public interface INewsFeedManager
     {
-        Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take, string author);
+        Task<(IEnumerable<NewsFeedPublication>, long)> FindManyAsync(int skip, int take);
 
-        Task<NewsFeedPublication> CreateAsync(string content, string author);
+        Task<NewsFeedPublication> CreateAsync(string content);
 
         Task UpdateAsync(string id, string content);
 
         Task DeleteAsync(string id);
 
-        Task AddCommentAsync(string publicationId, string author, string content);
+        Task AddCommentAsync(string publicationId, string content);
 
         Task<PublicationComment> GetCommentByIdAsync(string id);
 
         Task<(IEnumerable<PublicationComment>, long)> SearchCommentsAsync(string publicationId, int skip, int take);
 
-        Task<ReactionShort> GetReactionsAsync(string publicationId, string author);
+        Task<ReactionShort> GetReactionsAsync(string publicationId);
 
-        Task AddReactionAsync(string publicationId, string author, ReactionType type);
+        Task AddReactionAsync(string publicationId, ReactionType type);
 
         Task DeleteCommentAsync(string id);
 
-        Task RemoveReactionAsync(string publicationId, string author);
+        Task RemoveReactionAsync(string publicationId);
     }
 }

@@ -5,12 +5,12 @@ namespace GhostNetwork.Gateway.Facade
     public class PublicationComment
     {
         public PublicationComment(string id, string content, string publicationId,
-            string authorId, DateTimeOffset createdOn)
+            UserInfo author, DateTimeOffset createdOn)
         {
             Id = id;
             Content = content;
             PublicationId = publicationId;
-            AuthorId = authorId;
+            Author = author;
             CreatedOn = createdOn;
         }
 
@@ -19,7 +19,10 @@ namespace GhostNetwork.Gateway.Facade
 
         public string PublicationId { get; }
 
-        public string AuthorId { get; }
+        [Obsolete]
+        public Guid AuthorId => Author.Id;
+        
+        public UserInfo Author { get; }
 
         public DateTimeOffset CreatedOn { get; }
     }
