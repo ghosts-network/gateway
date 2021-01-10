@@ -12,6 +12,7 @@ copy provided dev-compose.yml and customize for your needs
 |----------------------|---------------------------------------- |
 | PUBLICATIONS_ADDRESS | Address of publication service instance |
 | REACTIONS_ADDRESS    | Address of reactions service instance   |
+| PROFILES_ADDRESS     | Address of profiles service instance    |
 
 ## Development
 
@@ -22,7 +23,7 @@ To run dependent environment use `docker-compose -f dev-compose.yml up -d --buil
 Here is an example how to generate or update http client for publication microservice
 
 ```bash
-openapi-generator generate -i http://localhost:5300/swagger/v1/swagger.json \
+openapi-generator generate -i https://api.gn.boberneprotiv.com/swagger/v1/swagger.json \
     -g csharp-netcore \
     -o ./http \
     --additional-properties=packageName=GhostNetwork.Publications \
