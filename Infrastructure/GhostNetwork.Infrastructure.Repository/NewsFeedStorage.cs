@@ -142,11 +142,18 @@ namespace GhostNetwork.Infrastructure.Repository
             await publicationsApi.UpdateAsync(id, model);
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            await reactionsApi.DeleteAsync(id);
+            var publication = await publicationsApi.GetByIdAsync(id);
 
-            await publicationsApi.DeleteAsync(id);
+            if (publication.Author.Id.ToString() == currentUserProvider.UserId)
+            {
+                await reactionsApi.DeleteAsync(id);
+                await publicationsApi.DeleteAsync(id);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task AddCommentAsync(string publicationId, string content)

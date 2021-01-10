@@ -11,7 +11,7 @@ namespace GhostNetwork.Gateway.Facade
 
         Task UpdateAsync(string id, string content);
 
-        Task DeleteAsync(string id);
+        Task<bool> DeleteAsync(string id);
 
         Task AddCommentAsync(string publicationId, string content);
 
