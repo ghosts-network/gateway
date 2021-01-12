@@ -45,22 +45,22 @@ namespace GhostNetwork.Gateway.Api
             return Created(string.Empty, await newsFeedManager.CreateAsync(model.Content));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{publicationId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateAsync(
-            [FromRoute] string id,
+            [FromRoute] string publicationId,
             [FromBody] CreateNewsFeedPublication model)
         {
-            await newsFeedManager.UpdateAsync(id, model.Content);
+            await newsFeedManager.UpdateAsync(publicationId, model.Content);
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{publicationId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> DeleteAsync([FromRoute] string id)
+        public async Task<ActionResult> DeleteAsync([FromRoute] string publicationId)
         {
-            if (await newsFeedManager.DeleteAsync(id))
+            if (await newsFeedManager.DeleteAsync(publicationId))
             {
                 return Ok();
             }
@@ -106,14 +106,7 @@ namespace GhostNetwork.Gateway.Api
             return Ok(comments);
         }
 
-        [HttpGet("{commentId}/comment")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PublicationComment>> GetCommentByIdAsync([FromRoute] string commentId)
-        {
-            return Ok(await newsFeedManager.GetCommentByIdAsync(commentId));
-        }
-
-        [HttpPost("{publicationId}/comment")]
+        [HttpPost("{publicationId}/comments")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<PublicationComment>> AddCommentAsync(
             [FromRoute] string publicationId,
@@ -124,7 +117,7 @@ namespace GhostNetwork.Gateway.Api
             return Ok();
         }
 
-        [HttpDelete("{commentId}/comment")]
+        [HttpDelete("comments/{commentId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PublicationComment>> DeleteCommentAsync([FromRoute] string commentId)
         {
