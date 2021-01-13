@@ -62,7 +62,7 @@ namespace GhostNetwork.Gateway.Api
                         .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                         .ToDictionary(o => o.Item1, o => o.Item2);
                 }
-                catch (ApiException)
+                catch (Reactions.Client.ApiException)
                 {
                     // ignored
                 }
@@ -77,7 +77,7 @@ namespace GhostNetwork.Gateway.Api
 
                         userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                     }
-                    catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                    catch (Reactions.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
                     {
                         // ignored
                     }
@@ -132,7 +132,7 @@ namespace GhostNetwork.Gateway.Api
                     return Forbid();
                 }
             }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -157,7 +157,7 @@ namespace GhostNetwork.Gateway.Api
                     return Forbid();
                 }
             }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -234,7 +234,7 @@ namespace GhostNetwork.Gateway.Api
                     return Forbid();
                 }
             }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -294,7 +294,7 @@ namespace GhostNetwork.Gateway.Api
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
-                catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                catch (Reactions.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
                 {
                     // ignored
                 }
