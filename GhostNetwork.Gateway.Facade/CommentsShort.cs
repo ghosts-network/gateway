@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.Facade
 {
     public class CommentsShort
     {
-        public CommentsShort(IEnumerable<PublicationComment> topComments, long totalCount)
+        public CommentsShort(IEnumerable<PublicationComment> topComments)
         {
             TopComments = topComments;
-            TotalCount = totalCount;
         }
 
         public IEnumerable<PublicationComment> TopComments { get; }
-        public long TotalCount { get; }
+
+        [Obsolete]
+        public long TotalCount = 0;
     }
 }

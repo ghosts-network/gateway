@@ -6,6 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="GhostNetwork.Profiles" Version="1.1.0" />
+        <PackageReference Include="GhostNetwork.Publications" Version="2.2.0" />
+        <PackageReference Include="GhostNetwork.Reactions" Version="1.1.0" />
         <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
@@ -14,7 +17,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj" />
-      <ProjectReference Include="..\Infrastructure\GhostNetwork.Infrastructure.Repository\GhostNetwork.Infrastructure.Repository.csproj" />
     </ItemGroup>
 
 </Project>
