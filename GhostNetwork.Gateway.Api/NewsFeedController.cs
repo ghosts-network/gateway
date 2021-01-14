@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
-using GhostNetwork.Profiles.Client;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
 using GhostNetwork.Reactions.Api;
@@ -47,8 +46,7 @@ namespace GhostNetwork.Gateway.Api
             var publications = publicationsResponse.Data;
             var totalCount = GetTotalCountHeader(publicationsResponse);
 
-            var featuredComments = await commentsApi.SearchFeaturedAsync(
-                findCommentsByIdsModel: new FindCommentsByIdsModel(publications.Select(p => p.Id).ToList()));
+            var featuredComments = await commentsApi.SearchFeaturedAsync(new FeaturedQuery(publications.Select(p => p.Id).ToList()));
 
             var news = new List<NewsFeedPublication>(publications.Count);
 
