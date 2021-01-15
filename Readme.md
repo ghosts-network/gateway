@@ -16,22 +16,9 @@ copy provided dev-compose.yml and customize for your needs
 
 ## Development
 
-To run dependent environment use `docker-compose -f dev-compose.yml up -d --build`
-
-### Http client generation
-
-Here is an example how to generate or update http client for publication microservice
+To run dependent environment use
 
 ```bash
-openapi-generator generate -i https://api.gn.boberneprotiv.com/swagger/v1/swagger.json \
-    -g csharp-netcore \
-    -o ./http \
-    --additional-properties=packageName=GhostNetwork.Publications \
-    --additional-properties=netCoreProjectFile=true
-
-rm -r ./Infrastructure/Http/GhostNetwork.Publications
-mkdir ./Infrastructure/Http
-cp -r ./http/src/GhostNetwork.Publications ./Infrastructure/Http/GhostNetwork.Publications
-
-rm -r ./http
+docker-compose -f dev-compose.yml pull
+docker-compose -f dev-compose.yml up --force-recreate
 ```
