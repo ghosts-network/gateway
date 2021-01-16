@@ -81,10 +81,14 @@ namespace GhostNetwork.Gateway.Api
                     }
                 }
 
+                var comment = featuredComments.GetValueOrDefault(publication.Id);
+
                 news.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    new CommentsShort(featuredComments[publication.Id].Select(ToDomain)),
+                    new CommentsShort(
+                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
+                        comment?.TotalCount ?? 0),
                     new ReactionShort(reactions, userReaction),
                     ToUser(publication.Author)));
             }
@@ -106,7 +110,7 @@ namespace GhostNetwork.Gateway.Api
             var backModel = new NewsFeedPublication(
                 entity.Id,
                 entity.Content,
-                new CommentsShort(Enumerable.Empty<PublicationComment>()),
+                new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
                 new ReactionShort(new Dictionary<ReactionType, int>(), null),
                 ToUser(entity.Author));
 

@@ -5,14 +5,14 @@ namespace GhostNetwork.Gateway.Facade
 {
     public class CommentsShort
     {
-        public CommentsShort(IEnumerable<PublicationComment> topComments)
+        public CommentsShort(IEnumerable<PublicationComment> topComments, long totalCount)
         {
             TopComments = topComments;
+            TotalCount = totalCount;
         }
 
         public IEnumerable<PublicationComment> TopComments { get; }
 
-        [Obsolete]
-        public long TotalCount = 0;
+        public long TotalCount { get; }
     }
 }
