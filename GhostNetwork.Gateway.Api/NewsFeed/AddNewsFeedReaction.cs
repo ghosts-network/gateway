@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GhostNetwork.Gateway.Facade;
 
-namespace GhostNetwork.Gateway.Api
+namespace GhostNetwork.Gateway.Api.NewsFeed
 {
     public class AddNewsFeedReaction
     {

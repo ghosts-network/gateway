@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GhostNetwork.Gateway.Api
+namespace GhostNetwork.Gateway.Api.NewsFeed
 {
     public class AddNewsFeedComment
     {

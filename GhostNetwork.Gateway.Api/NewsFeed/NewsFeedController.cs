@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using UserInfo = GhostNetwork.Gateway.Facade.UserInfo;
 
-namespace GhostNetwork.Gateway.Api
+namespace GhostNetwork.Gateway.Api.NewsFeed
 {
     [Route("[controller]")]
     [ApiController]
