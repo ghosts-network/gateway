@@ -54,12 +54,10 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
             foreach (var publication in publications)
             {
-                var reactions = new Dictionary<ReactionType, int>();
-
                 var response = reactionsResponse.ContainsKey($"publication_{publication.Id}")
                     ? reactionsResponse[$"publication_{publication.Id}"]
                     : new Dictionary<string, int>();
-                reactions = response.Keys
+                var reactions = response.Keys
                     .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                     .ToDictionary(o => o.Item1, o => o.Item2);
 
