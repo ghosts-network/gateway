@@ -8,6 +8,7 @@ using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
 using GhostNetwork.Reactions.Api;
+using GhostNetwork.Reactions.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,23 +48,20 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             var totalCount = GetTotalCountHeader(publicationsResponse);
 
             var featuredComments = await commentsApi.SearchFeaturedAsync(new FeaturedQuery(publications.Select(p => p.Id).ToList()));
+            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery{PublicationIds = publications.Select(p => $"publication_{p.Id}").ToList()});
 
             var news = new List<NewsFeedPublication>(publications.Count);
 
             foreach (var publication in publications)
             {
                 var reactions = new Dictionary<ReactionType, int>();
-                try
-                {
-                    var response = await reactionsApi.GetAsync($"publication_{publication.Id}");
-                    reactions = response.Keys
-                        .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
-                        .ToDictionary(o => o.Item1, o => o.Item2);
-                }
-                catch (Reactions.Client.ApiException)
-                {
-                    // ignored
-                }
+
+                var response = reactionsResponse.ContainsKey($"publication_{publication.Id}")
+                    ? reactionsResponse[$"publication_{publication.Id}"]
+                    : new Dictionary<string, int>();
+                reactions = response.Keys
+                    .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
+                    .ToDictionary(o => o.Item1, o => o.Item2);
 
                 UserReaction userReaction = null;
 
