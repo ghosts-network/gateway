@@ -5,12 +5,19 @@ class NewsFeedApi:
   base_url = 'http://localhost:5000/newsfeed/'
   headers = {'Content-Type': 'application/json'}
 
-  def create_publication(self, body):
+  def post_publication(self, body):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
     return requests.post(self.base_url, headers=self.headers, data=json.dumps(body))
 
-  def get_publication_by_id(self, id):
+  def put_publication(self, id, body):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
     url = self.base_url + id + '/'
-    return requests.get(url, headers=self.headers)
+    return requests.put(url, headers=self.headers, data=json.dumps(body, indent=4))
+
+  def delete_publication(self, id):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
+    url = self.base_url + id + '/'
+    return requests.delete(url, headers=self.headers)
 
   def login_as(self, user, password):
     url = 'https://account.gn.boberneprotiv.com/connect/token'
@@ -23,4 +30,6 @@ class NewsFeedApi:
       'password': password
     }
 
-    return requests.post(url, data=data)
+    response = requests.post(url, data=data)
+    self.user = response.json()
+    return response

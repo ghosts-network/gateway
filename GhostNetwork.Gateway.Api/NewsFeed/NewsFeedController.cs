@@ -135,7 +135,14 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 return NotFound();
             }
 
-            await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(model.Content));
+            try
+            {
+                await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(model.Content));
+            }
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            {
+                return NotFound();
+            }
 
             return NoContent();
         }
@@ -218,7 +225,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         }
 
         [HttpDelete("comments/{commentId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PublicationComment>> DeleteCommentAsync([FromRoute] string commentId)

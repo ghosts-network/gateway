@@ -43,7 +43,9 @@ services:
     depends_on:
       - publications
       - reactions
+      - profiles
     environment:
       - PUBLICATIONS_ADDRESS=http://publications
       - REACTIONS_ADDRESS=http://reactions
+      - PROFILES_ADDRESS=http://profiles
       - ASPNETCORE_ENVIRONMENT=Development
