@@ -12,3 +12,11 @@ class TestDeletePublication(NewsFeedApi):
     # delete publication
     delete_resp = self.delete_publication(publication_id)
     assert delete_resp.status_code == 204
+
+  def test_delete_nonexistent_publication(self):
+    # login
+    self.login_as('bob', 'bob')
+
+    # delete publication
+    delete_resp = self.delete_publication('nonexistent-id')
+    assert delete_resp.status_code == 404
