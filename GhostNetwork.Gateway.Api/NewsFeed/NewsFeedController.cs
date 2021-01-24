@@ -219,6 +219,15 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedComment model)
         {
+            try
+            {
+                await publicationsApi.GetByIdAsync(publicationId);
+            }
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            {
+                return BadRequest();
+            }
+            
             var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, model.Content, author: ToUserModel(await currentUserProvider.GetProfileAsync())));
 
             return Created(string.Empty, new PublicationComment(comment.Id, comment.Content, comment.PublicationId, ToUser(comment.Author), comment.CreatedOn));

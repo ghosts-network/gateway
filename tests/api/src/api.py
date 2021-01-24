@@ -19,6 +19,21 @@ class NewsFeedApi:
     url = self.base_url + id + '/'
     return requests.delete(url, headers=self.headers)
 
+  def get_comments_by_publication_id(self, publication_id):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
+    url = self.base_url + publication_id + '/comments'
+    return requests.get(url, headers=self.headers)
+
+  def post_comment(self, publication_id, body):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
+    url = self.base_url + publication_id + '/comments'
+    return requests.post(url, headers=self.headers, data=json.dumps(body))
+
+  def delete_comment(self, id):
+    self.headers['Authorization'] = 'Bearer ' + self.user['access_token']
+    url = self.base_url + 'comments/' + id
+    return requests.delete(url, headers=self.headers)
+
   def login_as(self, user, password):
     url = 'https://account.gn.boberneprotiv.com/connect/token'
     data = {
