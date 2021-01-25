@@ -23,7 +23,6 @@ class TestCreateCommentForPublication(NewsFeedApi):
 
     # create comment
     resp = self.post_comment('nonexistent-id', {'content': 'comment for the first publication'})
-    resp_body = resp.json()
 
     assert resp.status_code == 400
 
@@ -40,3 +39,19 @@ class TestCreateCommentForPublication(NewsFeedApi):
 
     assert resp.status_code == 400
     assert 'Content' in resp_body['errors']
+
+  def test_post_comment_unauthorized(self):
+    # login
+    self.login_as('bob', 'bob')
+
+    # create publication
+    publication_resp = self.post_publication({'content': 'My first publication #awesome'})
+    publication_id = publication_resp.json()['id']
+
+    # logout
+    self.logout()
+
+    # add comment
+    resp = self.post_comment(publication_id, {'content': 'comment for the first publication'})
+
+    assert resp.status_code == 401
