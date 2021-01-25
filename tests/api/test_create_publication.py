@@ -1,7 +1,7 @@
 from src.api import NewsFeedApi
 
 class TestCreatePublication(NewsFeedApi):
-  def test_create_correct_publication(self):
+  def test_create_publication(self):
     # login
     self.login_as('bob', 'bob')
 
@@ -25,3 +25,8 @@ class TestCreatePublication(NewsFeedApi):
 
     assert resp.status_code == 400
     assert 'Content' in resp_body['errors']
+
+  def test_create_publication_unauthorized(self):
+    # create publication
+    resp = self.post_publication({'content': 'My first publication #awesome'})
+    assert resp.status_code == 401
