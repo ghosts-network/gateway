@@ -35,6 +35,14 @@ class NewsFeedApi:
     url = self.base_url + 'comments/' + id
     return requests.delete(url, headers=self.get_headers())
 
+  def post_reaction(self, publication_id, body):
+    url = self.base_url + publication_id + '/reaction'
+    return requests.post(url, headers=self.get_headers(), data=json.dumps(body))
+
+  def delete_reaction(self, publication_id):
+    url = self.base_url + publication_id + '/reaction'
+    return requests.delete(url, headers=self.get_headers())
+
   def login_as(self, user, password):
     url = 'https://account.gn.boberneprotiv.com/connect/token'
     data = {

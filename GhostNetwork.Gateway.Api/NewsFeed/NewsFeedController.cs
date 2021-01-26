@@ -175,10 +175,19 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
         [HttpPost("{publicationId}/reaction")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> AddReactionAsync(
+        public async Task<ActionResult<ReactionShort>> AddReactionAsync(
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedReaction model)
         {
+            try
+            {
+                await publicationsApi.GetByIdAsync(publicationId);
+            }
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            {
+                return BadRequest();
+            }
+
             var result = await reactionsApi.UpsertAsync($"publication_{publicationId}", model.Reaction.ToString(), currentUserProvider.UserId);
 
             return Ok(await ToReactionShort(publicationId, result));
