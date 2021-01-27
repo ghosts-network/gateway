@@ -198,6 +198,15 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult> RemoveReactionAsync(
             [FromRoute] string publicationId)
         {
+            try
+            {
+                await publicationsApi.GetByIdAsync(publicationId);
+            }
+            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            {
+                return BadRequest();
+            }
+
             var result = await reactionsApi.DeleteByAuthorAsync($"publication_{publicationId}", currentUserProvider.UserId);
 
             return Ok(await ToReactionShort(publicationId, result));
