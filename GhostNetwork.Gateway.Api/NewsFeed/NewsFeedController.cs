@@ -48,7 +48,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             var totalCount = GetTotalCountHeader(publicationsResponse);
 
             var featuredComments = await commentsApi.SearchFeaturedAsync(new FeaturedQuery(publications.Select(p => p.Id).ToList()));
-            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery{PublicationIds = publications.Select(p => $"publication_{p.Id}").ToList()});
+            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery { PublicationIds = publications.Select(p => $"publication_{p.Id}").ToList() });
 
             var news = new List<NewsFeedPublication>(publications.Count);
 
@@ -245,7 +245,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             {
                 return BadRequest();
             }
-            
+
             var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, model.Content, author: ToUserModel(await currentUserProvider.GetProfileAsync())));
 
             return Created(string.Empty, new PublicationComment(comment.Id, comment.Content, comment.PublicationId, ToUser(comment.Author), comment.CreatedOn));
