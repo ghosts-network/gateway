@@ -47,40 +47,21 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             var publications = publicationsResponse.Data;
             var totalCount = GetTotalCountHeader(publicationsResponse);
 
-            var featuredComments = await commentsApi.SearchFeaturedAsync(new FeaturedQuery(publications.Select(p => p.Id).ToList()));
-            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery { Keys = publications.Select(p => $"publication_{p.Id}").ToList() });
-            var userReactionsResponse = await reactionsApi.SearchAsync(currentUserProvider.UserId, new ReactionsQuery { Keys = publications.Select(p => $"publication_{p.Id}").ToList() });
-
+            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
+            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
             var userReactions = currentUserProvider.UserId == null
-                ? new Dictionary<string, Reaction>()
-                : userReactionsResponse
-                    .GroupBy(r => r.Key, r => r)
-                    .ToDictionary(k => k.Key, k => k.First());
+                ? new Dictionary<string, UserReaction>()
+                : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id));
 
             var news = new List<NewsFeedPublication>(publications.Count);
 
             foreach (var publication in publications)
             {
-                var response = reactionsResponse.ContainsKey($"publication_{publication.Id}")
-                    ? reactionsResponse[$"publication_{publication.Id}"]
-                    : new Dictionary<string, int>();
-                var reactions = response.Keys
-                    .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
-                    .ToDictionary(o => o.Item1, o => o.Item2);
-
-                var userReaction = userReactions.ContainsKey($"publication_{publication.Id}")
-                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[$"publication_{publication.Id}"].Type))
-                    : null;
-
-                var comment = featuredComments.GetValueOrDefault(publication.Id);
-
                 news.Add(new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
-                    new CommentsShort(
-                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
-                        comment?.TotalCount ?? 0),
-                    new ReactionShort(reactions, userReaction),
+                    featuredComments[publication.Id],
+                    new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
                     ToUser(publication.Author)));
             }
 
@@ -328,6 +309,61 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             }
 
             return new ReactionShort(reactions, userReaction);
+        }
+
+        private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
+        {
+            var query = new FeaturedQuery(publicationIds.ToList());
+            var featuredComments = await commentsApi.SearchFeaturedAsync(query);
+
+            return publicationIds
+                .ToDictionary(id => id, id =>
+                {
+                    var comment = featuredComments.GetValueOrDefault(id);
+
+                    return new CommentsShort(
+                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
+                        comment?.TotalCount ?? 0);
+                });
+        }
+
+        private async Task<Dictionary<string, Dictionary<ReactionType, int>>> LoadReactionsAsync(IEnumerable<string> publicationIds)
+        {
+            var query = new ReactionsQuery
+            {
+                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
+            };
+            var reactions = await reactionsApi.GetGroupedReactionsAsync(query);
+
+            return publicationIds
+                .ToDictionary(id => id, id =>
+                {
+                    var r = reactions.ContainsKey($"publication_{id}")
+                        ? reactions[$"publication_{id}"]
+                        : new Dictionary<string, int>();
+                    return r.Keys
+                        .Select(k => (Enum.Parse<ReactionType>(k), r[k]))
+                        .ToDictionary(o => o.Item1, o => o.Item2);
+                });
+        }
+
+        private async Task<Dictionary<string, UserReaction>> LoadUserReactionsAsync(string userId, IEnumerable<string> publicationIds)
+        {
+            var query = new ReactionsQuery
+            {
+                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
+            };
+            var userReactionsResponse = await reactionsApi.SearchAsync(userId, query);
+            var userReactions = currentUserProvider.UserId == null
+                ? new Dictionary<string, Reaction>()
+                : userReactionsResponse
+                    .GroupBy(r => r.Key, r => r)
+                    .ToDictionary(k => k.Key, k => k.First());
+
+            return publicationIds
+                .ToDictionary(id => id, id => userReactions.ContainsKey($"publication_{id}")
+                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[$"publication_{id}"].Type))
+                    : null);
         }
     }
 }
