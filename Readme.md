@@ -22,3 +22,4 @@ To run dependent environment use
 docker-compose -f dev-compose.yml pull
 docker-compose -f dev-compose.yml up --force-recreate
 ```
+
