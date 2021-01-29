@@ -48,7 +48,14 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             var totalCount = GetTotalCountHeader(publicationsResponse);
 
             var featuredComments = await commentsApi.SearchFeaturedAsync(new FeaturedQuery(publications.Select(p => p.Id).ToList()));
-            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery { PublicationIds = publications.Select(p => $"publication_{p.Id}").ToList() });
+            var reactionsResponse = await reactionsApi.GetGroupedReactionsAsync(new ReactionsQuery { Keys = publications.Select(p => $"publication_{p.Id}").ToList() });
+            var userReactionsResponse = await reactionsApi.SearchAsync(currentUserProvider.UserId, new ReactionsQuery { Keys = publications.Select(p => $"publication_{p.Id}").ToList() });
+
+            var userReactions = currentUserProvider.UserId == null
+                ? new Dictionary<string, Reaction>()
+                : userReactionsResponse
+                    .GroupBy(r => r.Key, r => r)
+                    .ToDictionary(k => k.Key, k => k.First());
 
             var news = new List<NewsFeedPublication>(publications.Count);
 
@@ -61,21 +68,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     .Select(k => (Enum.Parse<ReactionType>(k), response[k]))
                     .ToDictionary(o => o.Item1, o => o.Item2);
 
-                UserReaction userReaction = null;
-
-                if (currentUserProvider.UserId != null)
-                {
-                    try
-                    {
-                        var reactionByAuthor = await reactionsApi.GetReactionByAuthorAsync($"publication_{publication.Id}", currentUserProvider.UserId);
-
-                        userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
-                    }
-                    catch (Reactions.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-                    {
-                        // ignored
-                    }
-                }
+                var userReaction = userReactions.ContainsKey($"publication_{publication.Id}")
+                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[$"publication_{publication.Id}"].Type))
+                    : null;
 
                 var comment = featuredComments.GetValueOrDefault(publication.Id);
 
