@@ -3,6 +3,9 @@ import json
 
 class NewsFeedApi:
   base_url = 'http://localhost:5000/newsfeed/'
+  users_base_url = 'http://localhost:5000/users/'
+  alice_id = "3fa85f64-5717-4562-b3fc-2c963f66af76"
+  bob_id = "3fa85f64-5717-4562-b3fc-2c963f66af77"
   user = None
 
   def get_headers(self):
@@ -42,6 +45,14 @@ class NewsFeedApi:
   def delete_reaction(self, publication_id):
     url = self.base_url + publication_id + '/reaction'
     return requests.delete(url, headers=self.get_headers())
+
+  def get_user(self, user_id):
+    url = self.users_base_url + user_id
+    return requests.get(url, headers=self.get_headers())
+
+  def put_user(self, user_id, body):
+    url = self.users_base_url + user_id
+    return requests.put(url, headers=self.get_headers(), data=json.dumps(body, indent=4))
 
   def login_as(self, user, password):
     url = 'https://account.gn.boberneprotiv.com/connect/token'
