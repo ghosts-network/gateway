@@ -15,10 +15,12 @@ namespace GhostNetwork.Gateway.Api.Users
     public class UsersController : ControllerBase
     {
         private readonly IProfilesApi profilesApi;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public UsersController(IProfilesApi profilesApi)
+        public UsersController(IProfilesApi profilesApi, ICurrentUserProvider currentUserProvider)
         {
             this.profilesApi = profilesApi;
+            this.currentUserProvider = currentUserProvider;
         }
 
         [HttpGet("{userId}")]
@@ -40,11 +42,17 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpPut("{userId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> UpdateAsync(
             [FromRoute] Guid userId,
             [FromBody] UpdateUserInput model)
         {
+            if (userId.ToString() != currentUserProvider.UserId)
+            {
+                return Forbid();
+            }
+
             try
             {
                 var profile = await profilesApi.GetByIdAsync(userId);
