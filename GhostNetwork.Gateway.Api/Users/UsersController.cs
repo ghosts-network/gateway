@@ -32,7 +32,7 @@ namespace GhostNetwork.Gateway.Api.Users
             try
             {
                 var profile = await profilesApi.GetByIdAsync(userId);
-                return Ok(new User(profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth));
+                return Ok(new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth));
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
