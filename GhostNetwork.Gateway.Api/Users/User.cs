@@ -19,8 +19,14 @@ namespace GhostNetwork.Gateway.Api.Users
 
         public string LastName { get; }
 
-        public string Gender { get; }
+        public string Gender { get; private set; }
 
-        public DateTime? DateOfBirth { get; }
+        public DateTime? DateOfBirth { get; private set; }
+
+        public void Update(string gender, DateTime? dateOfBirth)
+        {
+            Gender = gender;
+            DateOfBirth = dateOfBirth;
+        }
     }
 }

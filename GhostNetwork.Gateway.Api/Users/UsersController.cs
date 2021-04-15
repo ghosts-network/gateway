@@ -1,8 +1,5 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
-using GhostNetwork.Profiles.Api;
-using GhostNetwork.Profiles.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +11,12 @@ namespace GhostNetwork.Gateway.Api.Users
     [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly IProfilesApi profilesApi;
+        private readonly IUsersStorage usersStorage;
         private readonly ICurrentUserProvider currentUserProvider;
 
-        public UsersController(IProfilesApi profilesApi, ICurrentUserProvider currentUserProvider)
+        public UsersController(IUsersStorage usersStorage, ICurrentUserProvider currentUserProvider)
         {
-            this.profilesApi = profilesApi;
+            this.usersStorage = usersStorage;
             this.currentUserProvider = currentUserProvider;
         }
 
@@ -29,15 +26,14 @@ namespace GhostNetwork.Gateway.Api.Users
         public async Task<ActionResult<User>> GetByIdAsync(
             [FromRoute] Guid userId)
         {
-            try
-            {
-                var profile = await profilesApi.GetByIdAsync(userId);
-                return Ok(new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth));
-            }
-            catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            var user = await usersStorage.GetByIdAsync(userId);
+
+            if (user == null)
             {
                 return NotFound();
             }
+
+            return Ok(user);
         }
 
         [HttpPut("{userId}")]
@@ -53,25 +49,22 @@ namespace GhostNetwork.Gateway.Api.Users
                 return Forbid();
             }
 
-            try
-            {
-                var profile = await profilesApi.GetByIdAsync(userId);
+            var user = await usersStorage.GetByIdAsync(userId);
 
-                var updateCommand = new ProfileUpdateViewModel(
-                    profile.FirstName,
-                    profile.LastName,
-                    model.Gender,
-                    model.DateOfBirth,
-                    profile.City);
-
-                profilesApi.Update(userId, updateCommand);
-
-                return NoContent();
-            }
-            catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            if (user == null)
             {
                 return NotFound();
             }
+
+            user.Update(model.Gender, model.DateOfBirth);
+
+            var result = await usersStorage.UpdateAsync(user);
+            if (result.Successed)
+            {
+                return NoContent();
+            }
+
+            return BadRequest();
         }
     }
 }
