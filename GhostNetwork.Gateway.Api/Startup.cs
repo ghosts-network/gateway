@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GhostNetwork.Gateway.Api.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Publications.Api;
-using GhostNetwork.Reactions.Api;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -75,7 +74,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["REACTIONS_ADDRESS"]));
+            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<IProfilesApi>(provider => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
 
             var i = 0;

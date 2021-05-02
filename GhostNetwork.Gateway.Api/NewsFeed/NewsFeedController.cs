@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Publications.Api;
 using GhostNetwork.Publications.Model;
-using GhostNetwork.Reactions.Api;
-using GhostNetwork.Reactions.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -302,7 +300,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
-                catch (Reactions.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
                 {
                     // ignored
                 }

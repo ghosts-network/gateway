@@ -11,7 +11,6 @@ copy provided dev-compose.yml and customize for your needs
 | Environment          | Description                             |
 |----------------------|---------------------------------------- |
 | PUBLICATIONS_ADDRESS | Address of publication service instance |
-| REACTIONS_ADDRESS    | Address of reactions service instance   |
 | PROFILES_ADDRESS     | Address of profiles service instance    |
 
 ## Development
