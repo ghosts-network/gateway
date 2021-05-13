@@ -72,9 +72,10 @@ namespace GhostNetwork.Gateway.Api
             services.AddSingleton(provider => GrpcChannel.ForAddress(configuration["PROFILES_GRPC_ADDRESS"]));
             services.AddScoped(provider => new Profiles.Grpc.Profiles.ProfilesClient(provider.GetRequiredService<GrpcChannel>()));
 
-            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["PUBLICATIONS_ADDRESS"]));
+            // TODO: remove PUBLICATIONS_ADDRESS after migration
+            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
+            services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
+            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
             services.AddScoped<IProfilesApi>(provider => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
 
             var i = 0;

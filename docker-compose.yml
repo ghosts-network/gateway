@@ -1,15 +1,17 @@
 version: '3'
 
 services:
-  publications:
-    image: ghcr.io/ghosts-network/publications:latest
+  content:
+    image: ghcr.io/ghosts-network/content:latest
     ports:
       - "5300:80"
     depends_on:
       - db
+      - profiles
     environment:
       - MONGO_ADDRESS=db:27017
       - ASPNETCORE_ENVIRONMENT=Development
+      - PROFILES_ADDRESS=http://profiles
 
   profiles:
     image: ghcr.io/ghosts-network/profiles:latest
@@ -41,12 +43,11 @@ services:
     ports:
       - "5000:80"
     depends_on:
-      - publications
-      - reactions
+      - content
       - profiles
+      - profiles-grpc
     environment:
-      - PUBLICATIONS_ADDRESS=http://publications
-      - REACTIONS_ADDRESS=http://reactions
+      - CONTENT_ADDRESS=http://content
       - PROFILES_ADDRESS=http://profiles
       - PROFILES_GRPC_ADDRESS=http://profiles-grpc
       - ASPNETCORE_ENVIRONMENT=Development
