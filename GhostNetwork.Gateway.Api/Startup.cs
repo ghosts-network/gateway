@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GhostNetwork.Gateway.Api.Users;
+using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Publications.Api;
 using Grpc.Net.Client;

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.Facade", "GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj", "{7DF0A89F-D766-4AA8-A30E-D0560014B416}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.UnitTest", "..\tests\GhostNetwork.Gateway\GhostNetwork.Gateway.UnitTest\GhostNetwork.Gateway.UnitTest.csproj", "{93712AD3-6733-4344-AE93-E97448534FA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{7DF0A89F-D766-4AA8-A30E-D0560014B416}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DF0A89F-D766-4AA8-A30E-D0560014B416}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DF0A89F-D766-4AA8-A30E-D0560014B416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93712AD3-6733-4344-AE93-E97448534FA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93712AD3-6733-4344-AE93-E97448534FA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93712AD3-6733-4344-AE93-E97448534FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93712AD3-6733-4344-AE93-E97448534FA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

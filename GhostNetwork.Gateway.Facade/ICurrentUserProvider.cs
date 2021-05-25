@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.Facade;
 
-namespace GhostNetwork.Gateway.Api
+namespace GhostNetwork.Gateway.Facade
 {
     public interface ICurrentUserProvider
     {
