@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\GhostNetwork.Gateway\GhostNetwork.Gateway.Api\GhostNetwork.Gateway.Api.csproj" />
+      <ProjectReference Include="..\..\GhostNetwork.Gateway.Api\GhostNetwork.Gateway.Api.csproj" />
     </ItemGroup>
 
 </Project>
