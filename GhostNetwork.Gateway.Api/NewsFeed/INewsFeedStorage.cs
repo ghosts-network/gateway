@@ -12,8 +12,90 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 {
     public interface INewsFeedStorage
     {
+        INewsFeedReactionsStorage Reactions { get; }
+        INewsFeedCommentsStorage Comments { get; }
+        
         Task<NewsFeedPublication> GetByIdAsync(string id);
         Task<(IEnumerable<NewsFeedPublication>, long)> GetUserFeedAsync(string userId, int skip, int take);
+        Task<NewsFeedPublication> PublishAsync(string content, string userId);
+        Task UpdateAsync(string publicationId, string content);
+        Task DeleteAsync(string publicationId);
+    }
+
+    public interface INewsFeedCommentsStorage
+    {
+        Task<PublicationComment> GetByIdAsync(string id);
+        Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take);
+        Task<PublicationComment> PublishAsync(string content, string publicationId, string userId);
+        Task DeleteAsync(string id);
+    }
+
+    public class NewsFeedCommentsStorage : INewsFeedCommentsStorage
+    {
+        private readonly ICommentsApi commentsApi;
+
+        public NewsFeedCommentsStorage(ICommentsApi commentsApi)
+        {
+            this.commentsApi = commentsApi;
+        }
+
+        public async Task<PublicationComment> GetByIdAsync(string id)
+        {
+            var comment = await commentsApi.GetByIdAsync(id);
+
+            return ToDomain(comment);
+        }
+
+        public async Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take)
+        {
+            var response = await commentsApi.SearchWithHttpInfoAsync(publicationId, skip, take);
+
+            var comments = response.Data.Select(ToDomain).ToList();
+            var totalCount = GetTotalCountHeader(response);
+
+            return (comments, totalCount);
+        }
+
+        public async Task<PublicationComment> PublishAsync(string content, string publicationId, string userId)
+        {
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, content, authorId: userId));
+
+            return ToDomain(comment);
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            await commentsApi.DeleteAsync(id);
+        }
+
+        private static long GetTotalCountHeader(IApiResponse response)
+        {
+            if (!response.Headers.TryGetValue("X-TotalCount", out var headers))
+            {
+                return 0;
+            }
+
+            return int.TryParse(headers.FirstOrDefault(), out var totalCount)
+                ? totalCount
+                : 0;
+        }
+
+        private static PublicationComment ToDomain(Comment entity)
+        {
+            return entity == null
+                ? null
+                : new PublicationComment(
+                    entity.Id,
+                    entity.Content,
+                    entity.PublicationId,
+                    ToUser(entity.Author),
+                    entity.CreatedOn);
+        }
+
+        private static Facade.UserInfo ToUser(Content.Model.UserInfo userInfo)
+        {
+            return new Facade.UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+        }
     }
 
     public class NewsFeedStorage : INewsFeedStorage
@@ -27,7 +109,13 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
             this.reactionsApi = reactionsApi;
+
+            Reactions = new NewsFeedReactionsStorage(reactionsApi);
+            Comments = new NewsFeedCommentsStorage(commentsApi);
         }
+
+        public INewsFeedReactionsStorage Reactions { get; }
+        public INewsFeedCommentsStorage Comments { get; }
 
         public async Task<NewsFeedPublication> GetByIdAsync(string id)
         {
@@ -77,6 +165,31 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             return (news, totalCount);
         }
 
+        public async Task<NewsFeedPublication> PublishAsync(string content, string userId)
+        {
+            var model = new CreatePublicationModel(content, userId);
+            var entity = await publicationsApi.CreateAsync(model);
+
+            return new NewsFeedPublication(
+                entity.Id,
+                entity.Content,
+                new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
+                new ReactionShort(new Dictionary<ReactionType, int>(), null),
+                ToUser(entity.Author));
+        }
+
+        public async Task UpdateAsync(string publicationId, string content)
+        {
+            await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(content));
+        }
+
+        public async Task DeleteAsync(string publicationId)
+        {
+            await reactionsApi.DeleteAsync(KeysBuilder.PublicationReactionsKey(publicationId));
+            // TODO: Remove comments
+            await publicationsApi.DeleteAsync(publicationId);
+        }
+
         private static long GetTotalCountHeader(IApiResponse response)
         {
             if (!response.Headers.TryGetValue("X-TotalCount", out var headers))
@@ -119,15 +232,15 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         {
             var query = new ReactionsQuery
             {
-                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
+                Keys = publicationIds.Select(KeysBuilder.PublicationReactionsKey).ToList()
             };
             var reactions = await reactionsApi.GetGroupedReactionsAsync(query);
 
             return publicationIds
                 .ToDictionary(id => id, id =>
                 {
-                    var r = reactions.ContainsKey($"publication_{id}")
-                        ? reactions[$"publication_{id}"]
+                    var r = reactions.ContainsKey(KeysBuilder.PublicationReactionsKey(id))
+                        ? reactions[KeysBuilder.PublicationReactionsKey(id)]
                         : new Dictionary<string, int>();
                     return r.Keys
                         .Select(k => (Enum.Parse<ReactionType>(k), r[k]))
