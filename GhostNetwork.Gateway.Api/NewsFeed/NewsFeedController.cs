@@ -17,9 +17,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
     public class NewsFeedController : ControllerBase
     {
         private readonly INewsFeedStorage newsFeedStorage;
-        private readonly CurrentUserProvider currentUserProvider;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public NewsFeedController(INewsFeedStorage newsFeedStorage, CurrentUserProvider currentUserProvider)
+        public NewsFeedController(INewsFeedStorage newsFeedStorage, ICurrentUserProvider currentUserProvider)
         {
             this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;

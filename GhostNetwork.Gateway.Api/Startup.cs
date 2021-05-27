@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Api.NewsFeed;
 using GhostNetwork.Gateway.Api.Users;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Profiles.Api;
@@ -77,6 +78,8 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
+
+            services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             var i = 0;
             services.AddScoped<GrpcUsersStorage>();
