@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using GhostNetwork.Content.Api;
+using GhostNetwork.Content.Client;
+using GhostNetwork.Content.Model;
 using GhostNetwork.Gateway.Facade;
-using GhostNetwork.Publications.Api;
-using GhostNetwork.Publications.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
-using UserInfo = GhostNetwork.Gateway.Facade.UserInfo;
 
 namespace GhostNetwork.Gateway.Api.NewsFeed
 {
@@ -51,17 +51,14 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 ? new Dictionary<string, UserReaction>()
                 : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id));
 
-            var news = new List<NewsFeedPublication>(publications.Count);
-
-            foreach (var publication in publications)
-            {
-                news.Add(new NewsFeedPublication(
+            var news = publications
+                .Select(publication => new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
-                    ToUser(publication.Author)));
-            }
+                    ToUser(publication.Author)))
+                .ToList();
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
@@ -74,7 +71,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
             [FromBody] CreateNewsFeedPublication content)
         {
-            var model = new CreatePublicationModel(content.Content, ToUserModel(await currentUserProvider.GetProfileAsync()));
+            var model = new CreatePublicationModel(content.Content, currentUserProvider.UserId);
             var entity = await publicationsApi.CreateAsync(model);
 
             var backModel = new NewsFeedPublication(
@@ -104,7 +101,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     return Forbid();
                 }
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -113,7 +110,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             {
                 await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(model.Content));
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -136,7 +133,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     return Forbid();
                 }
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -157,7 +154,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             {
                 await publicationsApi.GetByIdAsync(publicationId);
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return BadRequest();
             }
@@ -176,7 +173,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             {
                 await publicationsApi.GetByIdAsync(publicationId);
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return BadRequest();
             }
@@ -215,12 +212,12 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             {
                 await publicationsApi.GetByIdAsync(publicationId);
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return BadRequest();
             }
 
-            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, model.Content, author: ToUserModel(await currentUserProvider.GetProfileAsync())));
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, model.Content, authorId: currentUserProvider.UserId));
 
             return Created(string.Empty, new PublicationComment(comment.Id, comment.Content, comment.PublicationId, ToUser(comment.Author), comment.CreatedOn));
         }
@@ -240,7 +237,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     return Forbid();
                 }
             }
-            catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -250,17 +247,12 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             return NoContent();
         }
 
-        private static UserInfo ToUser(Publications.Model.UserInfo userInfo)
+        private static Facade.UserInfo ToUser(Content.Model.UserInfo userInfo)
         {
-            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+            return new Facade.UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
 
-        private static UserInfoModel ToUserModel(UserInfo userInfo)
-        {
-            return new UserInfoModel(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
-        }
-
-        private static long GetTotalCountHeader<T>(Publications.Client.ApiResponse<T> response)
+        private static long GetTotalCountHeader(IApiResponse response)
         {
             var totalCount = 0;
             if (response.Headers.TryGetValue("X-TotalCount", out var headers))
@@ -300,7 +292,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
                     userReaction = new UserReaction(Enum.Parse<ReactionType>(reactionByAuthor.Type));
                 }
-                catch (Publications.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+                catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
                 {
                     // ignored
                 }
