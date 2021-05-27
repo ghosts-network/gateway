@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
 using GhostNetwork.Gateway.Facade;
@@ -20,16 +19,12 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
     [Authorize]
     public class NewsFeedController : ControllerBase
     {
-        private readonly IPublicationsApi publicationsApi;
-        private readonly ICommentsApi commentsApi;
-        private readonly IReactionsApi reactionsApi;
-        private readonly ICurrentUserProvider currentUserProvider;
+        private readonly INewsFeedStorage newsFeedStorage;
+        private readonly CurrentUserProvider currentUserProvider;
 
-        public NewsFeedController(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
+        public NewsFeedController(INewsFeedStorage newsFeedStorage, CurrentUserProvider currentUserProvider)
         {
-            this.publicationsApi = publicationsApi;
-            this.commentsApi = commentsApi;
-            this.reactionsApi = reactionsApi;
+            this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;
         }
 
@@ -41,24 +36,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, take, order: Ordering.Desc);
-            var publications = publicationsResponse.Data;
-            var totalCount = GetTotalCountHeader(publicationsResponse);
-
-            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
-            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
-            var userReactions = currentUserProvider.UserId == null
-                ? new Dictionary<string, UserReaction>()
-                : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id));
-
-            var news = publications
-                .Select(publication => new NewsFeedPublication(
-                    publication.Id,
-                    publication.Content,
-                    featuredComments[publication.Id],
-                    new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
-                    ToUser(publication.Author)))
-                .ToList();
+            var (news, totalCount) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, skip, take);
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
@@ -92,25 +70,23 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromRoute] string publicationId,
             [FromBody] CreateNewsFeedPublication model)
         {
-            try
-            {
-                var publication = await publicationsApi.GetByIdAsync(publicationId);
+            var publication = await newsFeedStorage.GetByIdAsync(publicationId);
 
-                if (publication.Author.Id.ToString() != currentUserProvider.UserId)
-                {
-                    return Forbid();
-                }
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            if (publication == null)
             {
                 return NotFound();
+            }
+
+            if (publication.Author.Id.ToString() != currentUserProvider.UserId)
+            {
+                return Forbid();
             }
 
             try
             {
                 await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(model.Content));
             }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int) HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
@@ -124,18 +100,16 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteAsync([FromRoute] string publicationId)
         {
-            try
-            {
-                var publication = await publicationsApi.GetByIdAsync(publicationId);
+            var publication = await newsFeedStorage.GetByIdAsync(publicationId);
 
-                if (publication.Author.Id.ToString() != currentUserProvider.UserId)
-                {
-                    return Forbid();
-                }
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            if (publication == null)
             {
                 return NotFound();
+            }
+
+            if (publication.Author.Id.ToString() != currentUserProvider.UserId)
+            {
+                return Forbid();
             }
 
             await reactionsApi.DeleteAsync($"publication_${publicationId}");
@@ -150,13 +124,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedReaction model)
         {
-            try
+            if (await newsFeedStorage.GetByIdAsync(publicationId) == null)
             {
-                await publicationsApi.GetByIdAsync(publicationId);
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-            {
-                return BadRequest();
+                return NotFound();
             }
 
             var result = await reactionsApi.UpsertAsync($"publication_{publicationId}", model.Reaction.ToString(), currentUserProvider.UserId);
@@ -169,13 +139,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult> RemoveReactionAsync(
             [FromRoute] string publicationId)
         {
-            try
+            if (await newsFeedStorage.GetByIdAsync(publicationId) == null)
             {
-                await publicationsApi.GetByIdAsync(publicationId);
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-            {
-                return BadRequest();
+                return NotFound();
             }
 
             var result = await reactionsApi.DeleteByAuthorAsync($"publication_{publicationId}", currentUserProvider.UserId);
@@ -208,13 +174,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromRoute] string publicationId,
             [FromBody] AddNewsFeedComment model)
         {
-            try
+            if (await newsFeedStorage.GetByIdAsync(publicationId) == null)
             {
-                await publicationsApi.GetByIdAsync(publicationId);
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
-            {
-                return BadRequest();
+                return NotFound();
             }
 
             var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, model.Content, authorId: currentUserProvider.UserId));
@@ -299,61 +261,6 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             }
 
             return new ReactionShort(reactions, userReaction);
-        }
-
-        private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
-        {
-            var query = new FeaturedQuery(publicationIds.ToList());
-            var featuredComments = await commentsApi.SearchFeaturedAsync(query);
-
-            return publicationIds
-                .ToDictionary(id => id, id =>
-                {
-                    var comment = featuredComments.GetValueOrDefault(id);
-
-                    return new CommentsShort(
-                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
-                        comment?.TotalCount ?? 0);
-                });
-        }
-
-        private async Task<Dictionary<string, Dictionary<ReactionType, int>>> LoadReactionsAsync(IEnumerable<string> publicationIds)
-        {
-            var query = new ReactionsQuery
-            {
-                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
-            };
-            var reactions = await reactionsApi.GetGroupedReactionsAsync(query);
-
-            return publicationIds
-                .ToDictionary(id => id, id =>
-                {
-                    var r = reactions.ContainsKey($"publication_{id}")
-                        ? reactions[$"publication_{id}"]
-                        : new Dictionary<string, int>();
-                    return r.Keys
-                        .Select(k => (Enum.Parse<ReactionType>(k), r[k]))
-                        .ToDictionary(o => o.Item1, o => o.Item2);
-                });
-        }
-
-        private async Task<Dictionary<string, UserReaction>> LoadUserReactionsAsync(string userId, IEnumerable<string> publicationIds)
-        {
-            var query = new ReactionsQuery
-            {
-                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
-            };
-            var userReactionsResponse = await reactionsApi.SearchAsync(userId, query);
-            var userReactions = currentUserProvider.UserId == null
-                ? new Dictionary<string, Reaction>()
-                : userReactionsResponse
-                    .GroupBy(r => r.Key, r => r)
-                    .ToDictionary(k => k.Key, k => k.First());
-
-            return publicationIds
-                .ToDictionary(id => id, id => userReactions.ContainsKey($"publication_{id}")
-                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[$"publication_{id}"].Type))
-                    : null);
         }
     }
 }
