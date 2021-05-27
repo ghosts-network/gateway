@@ -81,22 +81,9 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
-            var i = 0;
             services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
-            services.AddScoped<IUsersStorage>(provider =>
-            {
-                var logger = provider.GetRequiredService<ILogger<IUsersStorage>>();
-                i = (i + 1) % 2;
-                if (i % 2 == 0)
-                {
-                    logger.LogInformation("GRPC storage");
-                    return provider.GetRequiredService<GrpcUsersStorage>();
-                }
-
-                logger.LogInformation("REST storage");
-                return provider.GetRequiredService<RestUsersStorage>();
-            });
+            services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             services.AddControllers();
         }
