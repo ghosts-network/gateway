@@ -30,7 +30,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users
             var client = TestServerHelper.New(collection =>
             {
                 collection.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => {});
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => usersStorageMock.Object);
                 collection.AddScoped(_ => currentUserProviderMock.Object);
             });
@@ -61,7 +61,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users
             var client = TestServerHelper.New(collection =>
             {
                 collection.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => {});
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => usersStorageMock.Object);
                 collection.AddScoped(_ => currentUserProviderMock.Object);
             });
@@ -95,7 +95,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users
             var client = TestServerHelper.New(collection =>
             {
                 collection.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => {});
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => usersStorageMock.Object);
                 collection.AddScoped(_ => currentUserProviderMock.Object);
             });

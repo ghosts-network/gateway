@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Api.NewsFeed;
 using GhostNetwork.Gateway.Api.Users;
 using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Profiles.Api;
-using GhostNetwork.Publications.Api;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -70,14 +71,15 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            services.AddSingleton(provider => GrpcChannel.ForAddress(configuration["PROFILES_GRPC_ADDRESS"]));
+            services.AddSingleton(_ => GrpcChannel.ForAddress(configuration["PROFILES_GRPC_ADDRESS"]));
             services.AddScoped(provider => new Profiles.Grpc.Profiles.ProfilesClient(provider.GetRequiredService<GrpcChannel>()));
 
-            // TODO: remove PUBLICATIONS_ADDRESS after migration
-            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<ICommentsApi>(provider => new CommentsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(configuration["CONTENT_ADDRESS"] ?? configuration["PUBLICATIONS_ADDRESS"]));
-            services.AddScoped<IProfilesApi>(provider => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
+
+            services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             var i = 0;
             services.AddScoped<GrpcUsersStorage>();
