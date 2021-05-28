@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 {
     [TestFixture]
-    public class AddReactionAsyncTests : NewsFeedTestsBase
+    public class RemoveReactionAsyncTests : NewsFeedTestsBase
     {
         [Test]
         public async Task Publication_NotFound()
@@ -37,10 +37,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
-
             // Act
-            var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());
+            var response = await client.DeleteAsync($"/newsfeed/{publicationId}/reaction");
 
             // Assert
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -56,9 +54,9 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
-            
+
             NewsFeedReactionsStorageMock
-                .Setup(s => s.AddOrUpdateAsync(publicationId, ReactionType.Angry, userId.ToString()))
+                .Setup(s => s.RemoveAsync(publicationId, userId.ToString()))
                 .ReturnsAsync(new ReactionShort(new Dictionary<ReactionType, int>(), new UserReaction(ReactionType.Angry)));
 
             CurrentUserProviderMock
@@ -73,10 +71,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
-
             // Act
-            var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());
+            var response = await client.DeleteAsync($"/newsfeed/{publicationId}/reaction");
 
             // Assert
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
