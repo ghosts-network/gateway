@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.Api.NewsFeed;
 using GhostNetwork.Gateway.Facade;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,7 @@ using NUnit.Framework;
 namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 {
     [TestFixture]
-    public class DeleteAsyncTests
+    public class DeleteAsyncTests : NewsFeedTestsBase
     {
         [Test]
         public async Task Publication_NotFound()
@@ -20,13 +19,11 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
             var publicationId = Guid.NewGuid().ToString();
 
-            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
-            newsFeedStorageMock
+            NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(default(NewsFeedPublication));
 
-            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
-            currentUserProviderMock
+            CurrentUserProviderMock
                 .Setup(s => s.UserId)
                 .Returns(userId.ToString());
 
@@ -34,8 +31,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             {
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => newsFeedStorageMock.Object);
-                collection.AddScoped(_ => currentUserProviderMock.Object);
+                collection.AddScoped(_ => NewsFeedStorageMock.Object);
+                collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
             // Act
@@ -53,13 +50,11 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var currentUserId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C7");
             var publicationId = Guid.NewGuid().ToString();
 
-            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
-            newsFeedStorageMock
+            NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
 
-            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
-            currentUserProviderMock
+            CurrentUserProviderMock
                 .Setup(s => s.UserId)
                 .Returns(currentUserId.ToString());
 
@@ -67,8 +62,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             {
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => newsFeedStorageMock.Object);
-                collection.AddScoped(_ => currentUserProviderMock.Object);
+                collection.AddScoped(_ => NewsFeedStorageMock.Object);
+                collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
             // Act
@@ -85,13 +80,11 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
             var publicationId = Guid.NewGuid().ToString();
 
-            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
-            newsFeedStorageMock
+            NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
 
-            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
-            currentUserProviderMock
+            CurrentUserProviderMock
                 .Setup(s => s.UserId)
                 .Returns(userId.ToString());
 
@@ -99,8 +92,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             {
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => newsFeedStorageMock.Object);
-                collection.AddScoped(_ => currentUserProviderMock.Object);
+                collection.AddScoped(_ => NewsFeedStorageMock.Object);
+                collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
             // Act

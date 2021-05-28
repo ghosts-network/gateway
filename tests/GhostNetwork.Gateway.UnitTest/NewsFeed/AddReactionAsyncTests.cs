@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 {
     [TestFixture]
-    public class AddReactionAsyncTests
+    public class AddReactionAsyncTests : NewsFeedTestsBase
     {
         [Test]
         public async Task Publication_NotFound()
@@ -20,13 +20,11 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
             var publicationId = Guid.NewGuid().ToString();
 
-            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
-            newsFeedStorageMock
+            NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(default(NewsFeedPublication));
 
-            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
-            currentUserProviderMock
+            CurrentUserProviderMock
                 .Setup(s => s.UserId)
                 .Returns(userId.ToString());
 
@@ -34,8 +32,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             {
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => newsFeedStorageMock.Object);
-                collection.AddScoped(_ => currentUserProviderMock.Object);
+                collection.AddScoped(_ => NewsFeedStorageMock.Object);
+                collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
             var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
@@ -54,17 +52,11 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
             var publicationId = Guid.NewGuid().ToString();
 
-            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
-            var newsFeedReactionStorageMock = new Mock<INewsFeedReactionsStorage>();
-            newsFeedStorageMock
+            NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
                 .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
-            newsFeedStorageMock
-                .Setup(s => s.Reactions)
-                .Returns(newsFeedReactionStorageMock.Object);
 
-            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
-            currentUserProviderMock
+            CurrentUserProviderMock
                 .Setup(s => s.UserId)
                 .Returns(userId.ToString());
 
@@ -72,8 +64,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             {
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => newsFeedStorageMock.Object);
-                collection.AddScoped(_ => currentUserProviderMock.Object);
+                collection.AddScoped(_ => NewsFeedStorageMock.Object);
+                collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
             var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
