@@ -1,0 +1,88 @@
+using System;
+using System.Net;
+using System.Threading.Tasks;
+using GhostNetwork.Gateway.Api.NewsFeed;
+using GhostNetwork.Gateway.Facade;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using NUnit.Framework;
+
+namespace GhostNetwork.Gateway.UnitTest.NewsFeed
+{
+    [TestFixture]
+    public class AddReactionAsyncTests
+    {
+        [Test]
+        public async Task Publication_NotFound()
+        {
+            // Setup
+            var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
+            var publicationId = Guid.NewGuid().ToString();
+
+            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
+            newsFeedStorageMock
+                .Setup(s => s.GetByIdAsync(publicationId))
+                .ReturnsAsync(default(NewsFeedPublication));
+
+            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
+            currentUserProviderMock
+                .Setup(s => s.UserId)
+                .Returns(userId.ToString());
+
+            var client = TestServerHelper.New(collection =>
+            {
+                collection.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+                collection.AddScoped(_ => newsFeedStorageMock.Object);
+                collection.AddScoped(_ => currentUserProviderMock.Object);
+            });
+
+            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
+
+            // Act
+            var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Test]
+        public async Task Reaction_Added()
+        {
+            // Setup
+            var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
+            var publicationId = Guid.NewGuid().ToString();
+
+            var newsFeedStorageMock = new Mock<INewsFeedStorage>();
+            var newsFeedReactionStorageMock = new Mock<INewsFeedReactionsStorage>();
+            newsFeedStorageMock
+                .Setup(s => s.GetByIdAsync(publicationId))
+                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+            newsFeedStorageMock
+                .Setup(s => s.Reactions)
+                .Returns(newsFeedReactionStorageMock.Object);
+
+            var currentUserProviderMock = new Mock<ICurrentUserProvider>();
+            currentUserProviderMock
+                .Setup(s => s.UserId)
+                .Returns(userId.ToString());
+
+            var client = TestServerHelper.New(collection =>
+            {
+                collection.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+                collection.AddScoped(_ => newsFeedStorageMock.Object);
+                collection.AddScoped(_ => currentUserProviderMock.Object);
+            });
+
+            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
+
+            // Act
+            var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        }
+    }
+}

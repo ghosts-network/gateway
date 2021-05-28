@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 using System.Threading.Tasks;
-using GhostNetwork.Content.Client;
 using GhostNetwork.Gateway.Facade;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -71,14 +69,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 return Forbid();
             }
 
-            try
-            {
-                await newsFeedStorage.UpdateAsync(publicationId, model.Content);
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int) HttpStatusCode.NotFound)
-            {
-                return NotFound();
-            }
+            await newsFeedStorage.UpdateAsync(publicationId, model.Content);
 
             return NoContent();
         }
