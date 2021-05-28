@@ -1,6 +1,6 @@
 using System;
 
-namespace GhostNetwork.Gateway.Api.Users
+namespace GhostNetwork.Gateway.Users
 {
     public class User
     {

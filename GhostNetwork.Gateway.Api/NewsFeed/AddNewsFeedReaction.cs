@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 
 namespace GhostNetwork.Gateway.Api.NewsFeed
 {

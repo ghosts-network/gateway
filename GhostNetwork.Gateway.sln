@@ -13,11 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.Facade", "GhostNetwork.Gateway.Facade\GhostNetwork.Gateway.Facade.csproj", "{7DF0A89F-D766-4AA8-A30E-D0560014B416}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway", "GhostNetwork.Gateway\GhostNetwork.Gateway.csproj", "{7DF0A89F-D766-4AA8-A30E-D0560014B416}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D16B9189-E995-484A-BF7D-F300EE227F44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.UnitTest", "tests\GhostNetwork.Gateway.UnitTest\GhostNetwork.Gateway.UnitTest.csproj", "{1328E155-C05B-4E97-8A08-8A953F4CD0EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.Infrastructure", "GhostNetwork.Gateway.Infrastructure\GhostNetwork.Gateway.Infrastructure.csproj", "{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{1328E155-C05B-4E97-8A08-8A953F4CD0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1328E155-C05B-4E97-8A08-8A953F4CD0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1328E155-C05B-4E97-8A08-8A953F4CD0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

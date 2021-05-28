@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GhostNetwork.Gateway.Facade
+﻿namespace GhostNetwork.Gateway.NewsFeed
 {
     public class UserReaction
     {

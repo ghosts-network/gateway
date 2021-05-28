@@ -6,22 +6,10 @@ using System.Threading.Tasks;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 
-namespace GhostNetwork.Gateway.Api.NewsFeed
+namespace GhostNetwork.Gateway.Infrastructure
 {
-    public interface INewsFeedStorage
-    {
-        INewsFeedReactionsStorage Reactions { get; }
-        INewsFeedCommentsStorage Comments { get; }
-        
-        Task<NewsFeedPublication> GetByIdAsync(string id);
-        Task<(IEnumerable<NewsFeedPublication>, long)> GetUserFeedAsync(string userId, int skip, int take);
-        Task<NewsFeedPublication> PublishAsync(string content, string userId);
-        Task UpdateAsync(string publicationId, string content);
-        Task DeleteAsync(string publicationId);
-    }
-
     public class NewsFeedStorage : INewsFeedStorage
     {
         private readonly IPublicationsApi publicationsApi;
@@ -176,7 +164,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         {
             var query = new ReactionsQuery
             {
-                Keys = publicationIds.Select(id => $"publication_{id}").ToList()
+                Keys = publicationIds.Select(KeysBuilder.PublicationReactionsKey).ToList()
             };
             var userReactionsResponse = await reactionsApi.SearchAsync(userId, query);
             var userReactions = userId == null
@@ -186,14 +174,14 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     .ToDictionary(k => k.Key, k => k.First());
 
             return publicationIds
-                .ToDictionary(id => id, id => userReactions.ContainsKey($"publication_{id}")
-                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[$"publication_{id}"].Type))
+                .ToDictionary(id => id, id => userReactions.ContainsKey(KeysBuilder.PublicationReactionsKey(id))
+                    ? new UserReaction(Enum.Parse<ReactionType>(userReactions[KeysBuilder.PublicationReactionsKey(id)].Type))
                     : null);
         }
 
-        private static Facade.UserInfo ToUser(Content.Model.UserInfo userInfo)
+        private static UserInfo ToUser(Content.Model.UserInfo userInfo)
         {
-            return new Facade.UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+            return new(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }

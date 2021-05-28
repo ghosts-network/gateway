@@ -1,4 +1,4 @@
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway
 {
     public static class KeysBuilder
     {

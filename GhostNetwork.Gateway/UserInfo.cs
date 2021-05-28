@@ -1,6 +1,6 @@
 using System;
 
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway
 {
     public class UserInfo
     {

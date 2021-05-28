@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Domain;
 
-namespace GhostNetwork.Gateway.Api.Users
+namespace GhostNetwork.Gateway.Users
 {
     public interface IUsersStorage
     {

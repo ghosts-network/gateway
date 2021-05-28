@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Domain;
 using GhostNetwork.Gateway.Api.Users;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

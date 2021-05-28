@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GhostNetwork.Content.Api;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 
-namespace GhostNetwork.Gateway.Api.NewsFeed
+namespace GhostNetwork.Gateway.Infrastructure
 {
-    public interface INewsFeedReactionsStorage
-    {
-        Task<ReactionShort> AddOrUpdateAsync(string publicationId, ReactionType reactionType, string userId);
-        Task<ReactionShort> RemoveAsync(string publicationId, string userId);
-    }
-
     public class NewsFeedReactionsStorage : INewsFeedReactionsStorage
     {
         private readonly IReactionsApi reactionsApi;

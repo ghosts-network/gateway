@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Api.NewsFeed;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

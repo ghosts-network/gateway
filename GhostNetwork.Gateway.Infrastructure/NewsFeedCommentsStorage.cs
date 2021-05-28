@@ -4,18 +4,10 @@ using System.Threading.Tasks;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 
-namespace GhostNetwork.Gateway.Api.NewsFeed
+namespace GhostNetwork.Gateway.Infrastructure
 {
-    public interface INewsFeedCommentsStorage
-    {
-        Task<PublicationComment> GetByIdAsync(string id);
-        Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take);
-        Task<PublicationComment> PublishAsync(string content, string publicationId, string userId);
-        Task DeleteAsync(string id);
-    }
-
     public class NewsFeedCommentsStorage : INewsFeedCommentsStorage
     {
         private readonly ICommentsApi commentsApi;
@@ -78,9 +70,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                     entity.CreatedOn);
         }
 
-        private static Facade.UserInfo ToUser(Content.Model.UserInfo userInfo)
+        private static UserInfo ToUser(Content.Model.UserInfo userInfo)
         {
-            return new Facade.UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }

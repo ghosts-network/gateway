@@ -1,4 +1,4 @@
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway.NewsFeed
 {
     public enum ReactionType
     {

@@ -2,10 +2,11 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
 
-namespace GhostNetwork.Gateway.Api.Users
+namespace GhostNetwork.Gateway.Infrastructure
 {
     public class RestUsersStorage : IUsersStorage
     {

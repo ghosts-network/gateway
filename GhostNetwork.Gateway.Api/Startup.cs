@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using GhostNetwork.Content.Api;
-using GhostNetwork.Gateway.Api.NewsFeed;
-using GhostNetwork.Gateway.Api.Users;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.Infrastructure;
+using GhostNetwork.Gateway.NewsFeed;
+using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -124,7 +123,7 @@ namespace GhostNetwork.Gateway.Api
             app.UseCors(builder => builder
                 .WithOrigins("http://localhost:4200", "https://gn.boberneprotiv.com")
                 .AllowAnyHeader()
-                .WithExposedHeaders(Consts.Headers.All)
+                .WithExposedHeaders(Const.Headers.All)
                 .AllowAnyMethod());
 
             app.UseAuthentication();

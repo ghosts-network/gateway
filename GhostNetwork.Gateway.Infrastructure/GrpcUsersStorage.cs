@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using Domain;
+using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Grpc;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
-namespace GhostNetwork.Gateway.Api.Users
+namespace GhostNetwork.Gateway.Infrastructure
 {
     public class GrpcUsersStorage : IUsersStorage
     {

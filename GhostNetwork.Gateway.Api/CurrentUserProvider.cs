@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.Facade;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Http;
 
@@ -17,7 +16,7 @@ namespace GhostNetwork.Gateway.Api
             this.profilesApi = profilesApi;
         }
 
-        public string UserId => httpContext.HttpContext.User.FindFirst(s => s.Type == "sub")?.Value;
+        public string UserId => httpContext.HttpContext?.User.FindFirst(s => s.Type == "sub")?.Value;
 
         public async Task<UserInfo> GetProfileAsync()
         {

@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway.NewsFeed
 {
     public class CommentsShort
     {

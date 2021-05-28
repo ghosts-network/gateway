@@ -1,5 +1,4 @@
-using GhostNetwork.Gateway.Api.NewsFeed;
-using GhostNetwork.Gateway.Facade;
+using GhostNetwork.Gateway.NewsFeed;
 using Moq;
 using NUnit.Framework;
 

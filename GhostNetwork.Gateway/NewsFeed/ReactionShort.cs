@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway.NewsFeed
 {
     public class ReactionShort
     {

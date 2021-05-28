@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace GhostNetwork.Gateway.Facade
+namespace GhostNetwork.Gateway
 {
     public interface ICurrentUserProvider
     {
