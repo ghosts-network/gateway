@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -21,6 +22,23 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         {
             this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;
+        }
+
+        [HttpGet("users/{userId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Const.Headers.TotalCount, "number", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Const.Headers.HasMore, "boolean", "")]
+        public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetByUserAsync(
+            [FromRoute] Guid userId,
+            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
+            [FromQuery, Range(1, 50)] int take = 20)
+        {
+            var (news, totalCount) = await newsFeedStorage.GetUserPublicationsAsync(userId, skip, take);
+
+            Response.Headers.Add(Const.Headers.TotalCount, totalCount.ToString());
+            Response.Headers.Add(Const.Headers.HasMore, (skip + take < totalCount).ToString());
+
+            return Ok(news);
         }
 
         [HttpGet]

@@ -12,15 +12,17 @@ namespace GhostNetwork.Gateway.Infrastructure
 {
     public class NewsFeedStorage : INewsFeedStorage
     {
+        private readonly ICurrentUserProvider currentUserProvider;
         private readonly IPublicationsApi publicationsApi;
         private readonly ICommentsApi commentsApi;
         private readonly IReactionsApi reactionsApi;
 
-        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi)
+        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
             this.reactionsApi = reactionsApi;
+            this.currentUserProvider = currentUserProvider;
 
             Reactions = new NewsFeedReactionsStorage(reactionsApi);
             Comments = new NewsFeedCommentsStorage(commentsApi);
@@ -64,6 +66,30 @@ namespace GhostNetwork.Gateway.Infrastructure
             var userReactions = userId == null
                 ? new Dictionary<string, UserReaction>()
                 : await LoadUserReactionsAsync(userId, publications.Select(p => p.Id));
+
+            var news = publications
+                .Select(publication => new NewsFeedPublication(
+                    publication.Id,
+                    publication.Content,
+                    featuredComments[publication.Id],
+                    new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
+                    ToUser(publication.Author)))
+                .ToList();
+
+            return (news, totalCount);
+        }
+
+        public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserPublicationsAsync(Guid userId, int skip, int take)
+        {
+            var publicationsResponse = await publicationsApi.SearchByAuthorWithHttpInfoAsync(userId, skip, take, order: Ordering.Desc);
+            var publications = publicationsResponse.Data;
+            var totalCount = GetTotalCountHeader(publicationsResponse);
+
+            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
+            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
+            var userReactions = currentUserProvider.UserId == null
+                ? new Dictionary<string, UserReaction>()
+                : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id));
 
             var news = publications
                 .Select(publication => new NewsFeedPublication(
