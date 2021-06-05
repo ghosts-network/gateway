@@ -6,5 +6,6 @@ namespace GhostNetwork.Gateway.NewsFeed
     {
         Task<ReactionShort> AddOrUpdateAsync(string publicationId, ReactionType reactionType, string userId);
         Task<ReactionShort> RemoveAsync(string publicationId, string userId);
+        Task RemoveManyAsync(string key);
     }
 }

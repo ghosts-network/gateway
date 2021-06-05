@@ -123,8 +123,8 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task DeleteAsync(string publicationId)
         {
-            await reactionsApi.DeleteAsync(KeysBuilder.PublicationReactionsKey(publicationId));
-            // TODO: Remove comments
+            await Reactions.RemoveManyAsync(KeysBuilder.PublicationReactionsKey(publicationId));
+            await Comments.DeleteManyAsync(publicationId);
             await publicationsApi.DeleteAsync(publicationId);
         }
 
@@ -142,7 +142,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         private static PublicationComment ToDomain(Comment entity)
         {
-            return new PublicationComment(
+            return new(
                 entity.Id,
                 entity.Content,
                 entity.PublicationId,

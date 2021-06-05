@@ -9,5 +9,6 @@ namespace GhostNetwork.Gateway.NewsFeed
         Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take);
         Task<PublicationComment> PublishAsync(string content, string publicationId, string userId);
         Task DeleteAsync(string id);
+        Task DeleteManyAsync(string publicationId);
     }
 }

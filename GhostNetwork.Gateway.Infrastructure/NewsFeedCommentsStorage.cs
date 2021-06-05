@@ -46,6 +46,11 @@ namespace GhostNetwork.Gateway.Infrastructure
             await commentsApi.DeleteAsync(id);
         }
 
+        public async Task DeleteManyAsync(string publicationId)
+        {
+            await commentsApi.DeleteByPublicationAsync(publicationId);
+        }
+
         private static long GetTotalCountHeader(IApiResponse response)
         {
             if (!response.Headers.TryGetValue("X-TotalCount", out var headers))

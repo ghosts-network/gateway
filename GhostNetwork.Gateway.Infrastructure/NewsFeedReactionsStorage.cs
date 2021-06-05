@@ -35,6 +35,11 @@ namespace GhostNetwork.Gateway.Infrastructure
             return ToReactionShort(result, null);
         }
 
+        public async Task RemoveManyAsync(string key)
+        {
+            await reactionsApi.DeleteAsync(key);
+        }
+
         private static ReactionShort ToReactionShort(Dictionary<string, int> response, UserReaction userReaction)
         {
             var reactions = response.Keys
