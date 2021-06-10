@@ -174,10 +174,8 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         private async Task<Dictionary<string, Dictionary<ReactionType, int>>> LoadReactionsAsync(IEnumerable<string> publicationIds)
         {
-            var query = new ReactionsQuery
-            {
-                Keys = publicationIds.Select(KeysBuilder.PublicationReactionsKey).ToList()
-            };
+            var keys = publicationIds.Select(KeysBuilder.PublicationReactionsKey).ToList();
+            var query = new ReactionsQuery(keys);
             var reactions = await reactionsApi.GetGroupedReactionsAsync(query);
 
             return publicationIds
