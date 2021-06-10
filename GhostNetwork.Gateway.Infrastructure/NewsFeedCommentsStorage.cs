@@ -26,7 +26,8 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take)
         {
-            var response = await commentsApi.SearchWithHttpInfoAsync(publicationId, skip, take);
+            var response = await commentsApi
+                .SearchByKeyWithHttpInfoAsync(KeysBuilder.PublicationCommentKey(publicationId), skip, take);
 
             var comments = response.Data.Select(ToDomain).ToList();
             var totalCount = GetTotalCountHeader(response);
@@ -36,7 +37,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<PublicationComment> PublishAsync(string content, string publicationId, string userId)
         {
-            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, content, authorId: userId));
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
 
             return ToDomain(comment);
         }
@@ -48,7 +49,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task DeleteManyAsync(string publicationId)
         {
-            await commentsApi.DeleteByPublicationAsync(publicationId);
+            await commentsApi.DeleteByKeyAsync(KeysBuilder.PublicationCommentKey(publicationId));
         }
 
         private static long GetTotalCountHeader(IApiResponse response)
@@ -70,14 +71,14 @@ namespace GhostNetwork.Gateway.Infrastructure
                 : new PublicationComment(
                     entity.Id,
                     entity.Content,
-                    entity.PublicationId,
+                    KeysBuilder.PublicationFromCommentKey(entity.Key),
                     ToUser(entity.Author),
                     entity.CreatedOn);
         }
 
         private static UserInfo ToUser(Content.Model.UserInfo userInfo)
         {
-            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+            return new(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }
