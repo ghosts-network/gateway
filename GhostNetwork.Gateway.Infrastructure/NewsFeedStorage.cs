@@ -140,12 +140,12 @@ namespace GhostNetwork.Gateway.Infrastructure
                 : 0;
         }
 
-        private static PublicationComment ToDomain(Comment entity)
+        private static PublicationComment ToDomain(Comment entity, string publicationId)
         {
             return new(
                 entity.Id,
                 entity.Content,
-                entity.PublicationId,
+                publicationId,
                 ToUser(entity.Author),
                 entity.CreatedOn);
         }
@@ -167,7 +167,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     var comment = featuredComments.GetValueOrDefault(KeysBuilder.PublicationCommentKey(publicationId));
 
                     return new CommentsShort(
-                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
+                        comment?.Comments.Select(c => ToDomain(c, publicationId)) ?? Enumerable.Empty<PublicationComment>(),
                         comment?.TotalCount ?? 0);
                 });
         }

@@ -21,7 +21,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         {
             var comment = await commentsApi.GetByIdAsync(id);
 
-            return ToDomain(comment);
+            return ToDomain(comment, comment == null ? null : KeysBuilder.PublicationFromCommentKey(comment.Key));
         }
 
         public async Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take)
@@ -29,7 +29,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             var response = await commentsApi
                 .SearchByKeyWithHttpInfoAsync(KeysBuilder.PublicationCommentKey(publicationId), skip, take);
 
-            var comments = response.Data.Select(ToDomain).ToList();
+            var comments = response.Data.Select(c => ToDomain(c, publicationId)).ToList();
             var totalCount = GetTotalCountHeader(response);
 
             return (comments, totalCount);
@@ -39,7 +39,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         {
             var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
 
-            return ToDomain(comment);
+            return ToDomain(comment, publicationId);
         }
 
         public async Task DeleteAsync(string id)
@@ -64,14 +64,14 @@ namespace GhostNetwork.Gateway.Infrastructure
                 : 0;
         }
 
-        private static PublicationComment ToDomain(Comment entity)
+        private static PublicationComment ToDomain(Comment entity, string publicationId)
         {
             return entity == null
                 ? null
                 : new PublicationComment(
                     entity.Id,
                     entity.Content,
-                    KeysBuilder.PublicationFromCommentKey(entity.Key),
+                    publicationId,
                     ToUser(entity.Author),
                     entity.CreatedOn);
         }
