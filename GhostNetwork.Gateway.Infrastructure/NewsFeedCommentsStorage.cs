@@ -37,7 +37,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<PublicationComment> PublishAsync(string content, string publicationId, string userId)
         {
-            var comment = await commentsApi.CreateAsync(new CreateCommentModel(publicationId, KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
 
             return ToDomain(comment, publicationId);
         }
