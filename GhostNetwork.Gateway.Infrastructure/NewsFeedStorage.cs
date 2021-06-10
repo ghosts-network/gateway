@@ -152,12 +152,8 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
         {
-            var query = new FeaturedQuery
-            {
-                Keys = publicationIds
-                    .Select(KeysBuilder.PublicationCommentKey)
-                    .ToList()
-            };
+            var keys = publicationIds.Select(KeysBuilder.PublicationCommentKey).ToList();
+            var query = new FeaturedQuery(keys);
 
             var featuredComments = await commentsApi.SearchFeaturedAsync(query);
 
