@@ -12,10 +12,13 @@ namespace GhostNetwork.Gateway.Infrastructure
     {
         private readonly IProfilesApi profilesApi;
 
-        public RestUsersStorage(IProfilesApi profilesApi)
+        public RestUsersStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
         {
             this.profilesApi = profilesApi;
+            Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
         }
+
+        public IUsersRelationsStorage Relations { get; }
 
         public async Task<User> GetByIdAsync(Guid id)
         {

@@ -80,7 +80,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
-            services.AddScoped<GrpcUsersStorage>();
+            // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
