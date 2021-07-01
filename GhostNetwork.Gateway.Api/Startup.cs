@@ -76,11 +76,13 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
+
             services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
 
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
-            services.AddScoped<GrpcUsersStorage>();
+            // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
