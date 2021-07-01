@@ -46,26 +46,24 @@ namespace GhostNetwork.Gateway.Api.Users
             return Ok(friends);
         }
 
-        [HttpGet("{userId:guid}/incoming-requests")]
+        [HttpGet("friends/incoming-requests")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<User>> GetIncomingRequestsAsync(
-            [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var friends = await usersStorage.Relations.GetIncomingFriendRequestsAsync(userId, take, skip);
+            var friends = await usersStorage.Relations.GetIncomingFriendRequestsAsync(Guid.Parse(currentUserProvider.UserId), take, skip);
 
             return Ok(friends);
         }
 
-        [HttpGet("{userId:guid}/outgoing-requests")]
+        [HttpGet("friends/outgoing-requests")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<User>> GetOutgoingRequestsAsync(
-            [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var friends = await usersStorage.Relations.GetOutgoingFriendRequestsAsync(userId, take, skip);
+            var friends = await usersStorage.Relations.GetOutgoingFriendRequestsAsync(Guid.Parse(currentUserProvider.UserId), take, skip);
 
             return Ok(friends);
         }

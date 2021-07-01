@@ -21,25 +21,25 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<IEnumerable<UserInfo>> GetFriendsAsync(Guid user, int take, int skip)
         {
-            var ids = await relationsApi.SearchFriendsAsync(user, take, skip);
+            var ids = await relationsApi.SearchFriendsAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
         }
 
         public async Task<IEnumerable<UserInfo>> GetFollowersAsync(Guid user, int take, int skip)
         {
-            var ids = await relationsApi.SearchFollowersAsync(user, take, skip);
+            var ids = await relationsApi.SearchFollowersAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
         }
 
         public async Task<IEnumerable<UserInfo>> GetIncomingFriendRequestsAsync(Guid user, int take, int skip)
         {
-            var ids = await relationsApi.SearchIncomingFriendsRequestsAsync(user, take, skip);
+            var ids = await relationsApi.SearchIncomingFriendsRequestsAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
         }
 
         public async Task<IEnumerable<UserInfo>> GetOutgoingFriendRequestsAsync(Guid user, int take, int skip)
         {
-            var ids = await relationsApi.SearchOutgoingFriendsRequestsAsync(user, take, skip);
+            var ids = await relationsApi.SearchOutgoingFriendsRequestsAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
         }
 
