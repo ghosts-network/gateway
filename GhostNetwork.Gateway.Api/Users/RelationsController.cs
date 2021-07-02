@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Users;
@@ -24,7 +25,7 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet("{userId:guid}/friends")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<User>> GetFriendsAsync(
+        public async Task<ActionResult<IEnumerable<User>>> GetFriendsAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
@@ -36,7 +37,7 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet("{userId:guid}/followers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<User>> GetFollowersAsync(
+        public async Task<ActionResult<IEnumerable<User>>> GetFollowersAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
@@ -48,7 +49,7 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet("friends/incoming-requests")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<User>> GetIncomingRequestsAsync(
+        public async Task<ActionResult<IEnumerable<User>>> GetIncomingRequestsAsync(
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
@@ -59,7 +60,7 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet("friends/outgoing-requests")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<User>> GetOutgoingRequestsAsync(
+        public async Task<ActionResult<IEnumerable<User>>> GetOutgoingRequestsAsync(
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
