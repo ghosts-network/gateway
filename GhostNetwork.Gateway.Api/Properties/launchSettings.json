@@ -8,9 +8,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "CONTENT_ADDRESS": "http://localhost:5300",
-        "PROFILES_ADDRESS": "http://localhost:5400",
-        "PROFILES_GRPC_ADDRESS": "http://localhost:5600",
-        "PUBLICATION_MODIFICATION_TIME": "5"
+        "PROFILES_ADDRESS": "http://localhost:5400"
       }
     }
   }

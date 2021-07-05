@@ -9,7 +9,7 @@ services:
       - db
       - profiles
     environment:
-      - MONGO_ADDRESS=db:27017
+      - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
       - PROFILES_ADDRESS=http://profiles
 
@@ -20,17 +20,7 @@ services:
     depends_on:
       - db
     environment:
-      - MONGO_ADDRESS=db:27017
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  profiles-grpc:
-    image: ghcr.io/ghosts-network/grpcprofiles:latest
-    ports:
-      - "5600:80"
-    depends_on:
-      - db
-    environment:
-      - MONGO_ADDRESS=db:27017
+      - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
 
   db:
@@ -45,9 +35,7 @@ services:
     depends_on:
       - content
       - profiles
-      - profiles-grpc
     environment:
       - CONTENT_ADDRESS=http://content
       - PROFILES_ADDRESS=http://profiles
-      - PROFILES_GRPC_ADDRESS=http://profiles-grpc
       - ASPNETCORE_ENVIRONMENT=Development
