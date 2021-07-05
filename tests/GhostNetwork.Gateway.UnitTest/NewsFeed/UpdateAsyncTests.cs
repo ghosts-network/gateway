@@ -36,7 +36,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new CreateNewsFeedPublication {Content = "123"};
+            var input = new CreateNewsFeedPublication { Content = "123" };
 
             // Act
             var response = await client.PutAsync($"/newsfeed/{publicationId}", input.AsJsonContent());
@@ -55,7 +55,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+                .ReturnsAsync(new NewsFeedPublication(string.Empty, string.Empty, null, null, new UserInfo(userId, string.Empty, null)));
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
@@ -69,7 +69,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new CreateNewsFeedPublication {Content = "123"};
+            var input = new CreateNewsFeedPublication { Content = "123" };
 
             // Act
             var response = await client.PutAsync($"/newsfeed/{publicationId}", input.AsJsonContent());
@@ -87,7 +87,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+                .ReturnsAsync(new NewsFeedPublication(string.Empty, string.Empty, null, null, new UserInfo(userId, string.Empty, null)));
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
@@ -101,7 +101,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new CreateNewsFeedPublication {Content = "123"};
+            var input = new CreateNewsFeedPublication { Content = "123" };
 
             // Act
             var response = await client.PutAsync($"/newsfeed/{publicationId}", input.AsJsonContent());

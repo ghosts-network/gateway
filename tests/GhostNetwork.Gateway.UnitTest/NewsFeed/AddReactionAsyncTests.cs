@@ -37,7 +37,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
+            var input = new AddNewsFeedReaction { Reaction = ReactionType.Angry };
 
             // Act
             var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());
@@ -55,8 +55,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
-            
+                .ReturnsAsync(new NewsFeedPublication(string.Empty, string.Empty, null, null, new UserInfo(userId, string.Empty, null)));
+
             NewsFeedReactionsStorageMock
                 .Setup(s => s.AddOrUpdateAsync(publicationId, ReactionType.Angry, userId.ToString()))
                 .ReturnsAsync(new ReactionShort(new Dictionary<ReactionType, int>(), new UserReaction(ReactionType.Angry)));
@@ -73,7 +73,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                 collection.AddScoped(_ => CurrentUserProviderMock.Object);
             });
 
-            var input = new AddNewsFeedReaction {Reaction = ReactionType.Angry};
+            var input = new AddNewsFeedReaction { Reaction = ReactionType.Angry };
 
             // Act
             var response = await client.PostAsync($"/newsfeed/{publicationId}/reaction", input.AsJsonContent());

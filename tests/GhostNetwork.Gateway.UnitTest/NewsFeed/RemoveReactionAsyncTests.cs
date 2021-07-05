@@ -52,7 +52,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+                .ReturnsAsync(new NewsFeedPublication(string.Empty, string.Empty, null, null, new UserInfo(userId, string.Empty, null)));
 
             NewsFeedReactionsStorageMock
                 .Setup(s => s.RemoveAsync(publicationId, userId.ToString()))
