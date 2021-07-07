@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.RedisMq;
@@ -8,16 +9,16 @@ using StackExchange.Redis;
 
 namespace GhostNetwork.Gateway.Api
 {
-    class RedisHandlerService : IHostedService
+    class RedisHandlerHostedService : IHostedService
     {
         private const int Timeout = 5000;
 
-        private readonly IConfiguration configuration;
+        private readonly IServiceProvider serviceProvider;
         private ConnectionMultiplexer conn;
 
-        public RedisHandlerService(IConfiguration configuration)
+        public RedisHandlerHostedService(IServiceProvider serviceProvider)
         {
-            this.configuration = configuration;
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -41,7 +42,7 @@ namespace GhostNetwork.Gateway.Api
                 throw;
             }
 
-            RunSubsribers(new EventMessageHandler(conn.GetDatabase()));
+            RunSubsribers();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -50,9 +51,10 @@ namespace GhostNetwork.Gateway.Api
             conn.Dispose();
         }
 
-        private void RunSubsribers(EventMessageHandler handler)
+        private void RunSubsribers()
         {
-            Task.Run(() => handler.Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
+            Task.Run(() => new EventWorker(conn.GetDatabase(), serviceProvider)
+                .Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
         }
     }
 }
