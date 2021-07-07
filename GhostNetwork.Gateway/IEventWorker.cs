@@ -1,11 +1,10 @@
-﻿using GhostNetwork.Gateway.Events;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 using System.Threading.Tasks;
 
-namespace GhostNetwork.Gateway
+namespace GhostNetwork.Gateway.Events
 {
     public interface IEventWorker
     {
-        Task Handle<T>(RedisValue value) where T : BaseEvent;
+        Task Subscribe<T>(RedisKey key) where T : IEvent, new();
     }
 }
