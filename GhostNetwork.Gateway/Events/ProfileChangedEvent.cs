@@ -2,14 +2,14 @@
 
 namespace GhostNetwork.Gateway.Events
 {
-    public class ProfileChangedEvent : BaseEvent
+    public interface IEvent
     {
-        public User UpdatedUser { get; }
+        string TriggeredBy { get; init; }
+    }
 
-        public ProfileChangedEvent(string userTrigeredBy, User updatedUser)
-        {
-            TriggeredBy = userTrigeredBy;
-            UpdatedUser = updatedUser;
-        }
+    public class ProfileChangedEvent : IEvent
+    {
+        public User UpdatedUser { get; init; }
+        public string TriggeredBy { get; init; }
     }
 }
