@@ -5,6 +5,6 @@ namespace GhostNetwork.Gateway
 {
     public interface IEventMessageSender
     {
-        Task PublishAsync<T>(BaseEvent @event) where T : BaseEvent;
+        Task PublishAsync<T>(T @event) where T : BaseEvent;
     }
 }

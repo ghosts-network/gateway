@@ -16,9 +16,9 @@ namespace GhostNetwork.Gateway.RedisMq
             this.db = db;
         }
 
-        public async Task PublishAsync<T>(BaseEvent @event) where T : BaseEvent
+        public async Task PublishAsync<T>(T @event) where T : BaseEvent
         {
-            await db.ListRightPushAsync(nameof(T), JsonSerializer.Serialize(@event as T));
+            await db.ListRightPushAsync(nameof(T), JsonSerializer.Serialize(@event));
         }
     }
 }
