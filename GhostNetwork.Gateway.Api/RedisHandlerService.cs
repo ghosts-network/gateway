@@ -1,19 +1,19 @@
-﻿using GhostNetwork.Gateway.Events;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.RedisMq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Api
 {
     class RedisHandlerService : IHostedService
     {
-        private ConnectionMultiplexer _conn;
-        private readonly IConfiguration configuration;
+        private const int Timeout = 5000;
 
-        private const int _timeout = 5000;
+        private readonly IConfiguration configuration;
+        private ConnectionMultiplexer conn;
 
         public RedisHandlerService(IConfiguration configuration)
         {
@@ -26,33 +26,33 @@ namespace GhostNetwork.Gateway.Api
             {
                 ConfigurationOptions config = new ConfigurationOptions
                 {
-                    ConnectTimeout = _timeout,
-                    ReconnectRetryPolicy = new LinearRetry(_timeout),
+                    ConnectTimeout = Timeout,
+                    ReconnectRetryPolicy = new LinearRetry(Timeout),
                     EndPoints =
                     {
                         { "127.0.0.1", 50002 }
                     }
                 };
 
-                _conn = await ConnectionMultiplexer.ConnectAsync(config);
+                conn = await ConnectionMultiplexer.ConnectAsync(config);
             }
             catch (RedisTimeoutException)
             {
                 throw;
             }
 
-            RunSubsribers(new EventMessageHandler(_conn.GetDatabase()));
+            RunSubsribers(new EventMessageHandler(conn.GetDatabase()));
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await conn.CloseAsync();
+            conn.Dispose();
         }
 
         private void RunSubsribers(EventMessageHandler handler)
         {
             Task.Run(() => handler.Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await _conn.CloseAsync();
-            _conn.Dispose();
         }
     }
 }
