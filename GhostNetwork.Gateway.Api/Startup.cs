@@ -71,12 +71,6 @@ namespace GhostNetwork.Gateway.Api
                     options.Authority = "https://account.gn.boberneprotiv.com";
                 });
 
-
-            // Redis
-            services.AddHostedService(provider => new RedisHandlerService(configuration));
-            services.AddScoped<IEventMessageSender>(_ =>
-                new EventMessageSender(ConnectionMultiplexer.Connect("127.0.0.1:50002").GetDatabase()));
-
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
@@ -95,6 +89,17 @@ namespace GhostNetwork.Gateway.Api
             // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+
+            // Redis handlers
+            services.AddTransient<ProfileChangedEventHandler>();
+
+            services.AddScoped<IEventSender>(_ =>
+            {
+                return new EventSender(ConnectionMultiplexer.Connect("127.0.0.1:50002").GetDatabase());
+            });
+
+            // Redis
+            services.AddHostedService(provider => new RedisHandlerHostedService(provider));
 
             services.AddControllers();
         }

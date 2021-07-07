@@ -12,13 +12,13 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class RestUsersStorage : IUsersStorage
     {
         private readonly IProfilesApi profilesApi;
-        private readonly IEventMessageSender eventSender;
+        private readonly IEventSender eventSender;
         private readonly ICurrentUserProvider currentUserProvider;
 
         public RestUsersStorage(
             IProfilesApi profilesApi, 
             IRelationsApi relationsApi, 
-            IEventMessageSender eventSender, 
+            IEventSender eventSender, 
             ICurrentUserProvider currentUserProvider)
         {
             this.profilesApi = profilesApi;
@@ -57,7 +57,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 // await profilesApi.UpdateAsync(user.Id, updateCommand);
-                await eventSender.PublishAsync(new ProfileChangedEvent(currentUserProvider.UserId, user));
+                await eventSender.PublishAsync(new ProfileChangedEvent { TriggeredBy = currentUserProvider.UserId, UpdatedUser = user });
 
                 return DomainResult.Success();
             }
