@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
@@ -11,10 +12,19 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class RestUsersStorage : IUsersStorage
     {
         private readonly IProfilesApi profilesApi;
+        private readonly IEventMessageSender eventSender;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public RestUsersStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
+        public RestUsersStorage(
+            IProfilesApi profilesApi, 
+            IRelationsApi relationsApi, 
+            IEventMessageSender eventSender, 
+            ICurrentUserProvider currentUserProvider)
         {
             this.profilesApi = profilesApi;
+            this.eventSender = eventSender;
+            this.currentUserProvider = currentUserProvider;
+
             Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
         }
 
@@ -35,18 +45,20 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<DomainResult> UpdateAsync(User user)
         {
-            var profile = await profilesApi.GetByIdAsync(user.Id);
+            // var profile = await profilesApi.GetByIdAsync(user.Id);
 
             var updateCommand = new ProfileUpdateViewModel(
-                profile.FirstName,
-                profile.LastName,
+                "FNale",
+                "LName",
                 user.Gender,
                 user.DateOfBirth,
-                profile.City);
+                "Odessa");
 
             try
             {
-                await profilesApi.UpdateAsync(user.Id, updateCommand);
+                // await profilesApi.UpdateAsync(user.Id, updateCommand);
+                await eventSender.PublishAsync(new ProfileChangedEvent(currentUserProvider.UserId, user));
+
                 return DomainResult.Success();
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
