@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway
 {
-    public interface IEventMessageSender
+    public interface IEventSender
     {
-        Task PublishAsync<T>(T @event) where T : BaseEvent;
+        Task PublishAsync(IEvent @event);
     }
 }
