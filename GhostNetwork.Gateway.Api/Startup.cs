@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
+using GhostNetwork.Gateway.RedisMq;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using Grpc.Net.Client;
@@ -12,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api
@@ -67,6 +71,8 @@ namespace GhostNetwork.Gateway.Api
                     options.Authority = "https://account.gn.boberneprotiv.com";
                 });
 
+            services.AddHostedService(provider => new RedisHandlerService(configuration));
+
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
@@ -85,6 +91,13 @@ namespace GhostNetwork.Gateway.Api
             // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+
+            services.AddSingleton<IEventMessageSender>(_ =>
+            {
+                var connection = ConnectionMultiplexer.Connect("127.0.0.1:50002");
+
+                return new EventMessageSender(connection);
+            });
 
             services.AddControllers();
         }
