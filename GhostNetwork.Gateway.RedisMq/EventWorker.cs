@@ -24,13 +24,20 @@ namespace GhostNetwork.Gateway.RedisMq
         {
             while (true)
             {
-                var message = await db.ListLeftPopAsync(key);
-
-                if (message.HasValue)
+                try
                 {
-                    await CreateHandler<TEvent>().Handle(JsonSerializer.Deserialize<TEvent>(message));
+                    var message = await db.ListLeftPopAsync(key);
+
+                    if (message.HasValue)
+                    {
+                        await CreateHandler<TEvent>().Handle(JsonSerializer.Deserialize<TEvent>(message));
+                    }
+                    else Thread.Sleep(500);
                 }
-                else Thread.Sleep(500);
+                catch (RedisConnectionException) 
+                {  
+                    Thread.Sleep(5000);
+                }
             }
         }
 
