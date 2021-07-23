@@ -9,14 +9,14 @@ using StackExchange.Redis;
 
 namespace GhostNetwork.Gateway.Api
 {
-    class RedisHandlerHostedService : IHostedService
+    internal class RedisHandlerHostedService : IHostedService
     {
         private const int Timeout = 5000;
 
         private readonly IServiceProvider serviceProvider;
         private ConnectionMultiplexer conn;
 
-        public RedisHandlerHostedService(IServiceProvider serviceProvider)
+        public RedisHandlerHostedService(IServiceProvider serviceProvider, ConfigurationOptions redisConfiguration)
         {
             this.serviceProvider = serviceProvider;
         }
@@ -37,9 +37,9 @@ namespace GhostNetwork.Gateway.Api
 
                 conn = await ConnectionMultiplexer.ConnectAsync(config);
             }
-            catch (RedisTimeoutException)
+            catch (RedisConnectionException)
             {
-                throw;
+                throw new ApplicationException("Redis server is unavailable");
             }
 
             RunSubsribers();
