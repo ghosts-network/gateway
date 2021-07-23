@@ -23,10 +23,19 @@ namespace GhostNetwork.Gateway.Api
     public class Startup
     {
         private readonly IConfiguration configuration;
+        private readonly ConfigurationOptions redisConfiguration;
 
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
+            this.redisConfiguration = new ConfigurationOptions
+            {
+                ConnectTimeout = 5000,
+                EndPoints =
+                {
+                    { "127.0.0.1", 50002 }
+                }
+            };
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -90,16 +99,30 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
-            // Redis handlers
-            services.AddTransient<ProfileChangedEventHandler>();
-
-            services.AddScoped<IEventSender>(_ =>
-            {
-                return new EventSender(ConnectionMultiplexer.Connect("127.0.0.1:50002").GetDatabase());
-            });
-
             // Redis
-            services.AddHostedService(provider => new RedisHandlerHostedService(provider));
+            if ((bool)configuration.GetValue("LAUNCH_REDIS", false))
+            {
+                services.AddSingleton<IEventSender>(_ =>
+                {
+                    IDatabase redisDb = null;
+
+                    try
+                    {
+                        redisDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
+                    }
+                    catch (RedisConnectionException)
+                    {
+                        throw new ApplicationException("Redis server is unavailable");
+                    }
+
+                    return new EventSender(redisDb);
+                });
+
+                services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
+
+                // Redis handlers
+                services.AddTransient<ProfileChangedEventHandler>();
+            }
 
             services.AddControllers();
         }
