@@ -51,8 +51,8 @@ namespace GhostNetwork.Gateway.Api
                     {
                         AuthorizationCode = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri("https://account.gn.boberneprotiv.com/connect/authorize"),
-                            TokenUrl = new Uri("https://account.gn.boberneprotiv.com/connect/token"),
+                            AuthorizationUrl = new Uri(Authority, "/connect/authorize"),
+                            TokenUrl = new Uri(Authority, "/connect/token"),
                             Scopes = new Dictionary<string, string>
                             {
                                 {
@@ -68,7 +68,7 @@ namespace GhostNetwork.Gateway.Api
                 .AddIdentityServerAuthentication("Bearer", options =>
                 {
                     options.ApiName = "api";
-                    options.Authority = "https://account.gn.boberneprotiv.com";
+                    options.Authority = Authority.ToString();
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
@@ -148,5 +148,7 @@ namespace GhostNetwork.Gateway.Api
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
+
+        private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://account.gn.boberneprotiv.com"));
     }
 }
