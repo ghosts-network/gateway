@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Linq;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
@@ -43,14 +44,17 @@ namespace GhostNetwork.Gateway.RedisMq
 
         private IEventHandler<TEvent> CreateHandler<TEvent>() where TEvent : IEvent, new()
         {
-            switch (new TEvent())
-            {
-                case ProfileChangedEvent:
-                    return serviceProvider.GetService<ProfileChangedEventHandler>() as IEventHandler<TEvent>;
+            var inheritingTypes = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => typeof(IEventHandler<TEvent>).IsAssignableFrom(t));
 
-                default:
-                    throw new ArgumentException("Something went wrong");
-            }
+            var typeOfHandler = inheritingTypes.Where(types => 
+                types.GetTypeInfo().ImplementedInterfaces
+                    .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == typeof(TEvent).FullName))
+            ).First() ?? throw new ArgumentException("");
+
+            return serviceProvider.GetService(typeOfHandler) as IEventHandler<TEvent>;
         }
     }
 }
