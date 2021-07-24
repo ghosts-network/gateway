@@ -100,29 +100,26 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             // Redis
-            if ((bool)configuration.GetValue("LAUNCH_REDIS", false))
+            services.AddSingleton<IEventSender>(_ =>
             {
-                services.AddSingleton<IEventSender>(_ =>
+                IDatabase redisDb = null;
+
+                try
                 {
-                    IDatabase redisDb = null;
+                    redisDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
+                }
+                catch (RedisConnectionException)
+                {
+                    throw new ApplicationException("Redis server is unavailable");
+                }
 
-                    try
-                    {
-                        redisDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
-                    }
-                    catch (RedisConnectionException)
-                    {
-                        throw new ApplicationException("Redis server is unavailable");
-                    }
+                return new EventSender(redisDb);
+            });
 
-                    return new EventSender(redisDb);
-                });
+            services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
 
-                services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
-
-                // Redis handlers
-                services.AddTransient<ProfileChangedEventHandler>();
-            }
+            // Redis handlers
+            services.AddTransient<ProfileChangedEventHandler>();
 
             services.AddControllers();
         }
