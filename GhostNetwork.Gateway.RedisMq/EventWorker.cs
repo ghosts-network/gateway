@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
@@ -31,7 +32,10 @@ namespace GhostNetwork.Gateway.RedisMq
 
                     if (message.HasValue)
                     {
-                        await CreateHandler<TEvent>().Handle(JsonSerializer.Deserialize<TEvent>(message));
+                        foreach (var handler in CreateHandlers<TEvent>())
+                        {
+                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
+                        }
                     }
                     else Thread.Sleep(500);
                 }
@@ -42,19 +46,29 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
-        private IEventHandler<TEvent> CreateHandler<TEvent>() where TEvent : IEvent, new()
+        private IEnumerable<IEventHandler<TEvent>> CreateHandlers<TEvent>() where TEvent : IEvent, new()
         {
             var inheritingTypes = Assembly
                 .GetExecutingAssembly()
                 .GetTypes()
                 .Where(t => typeof(IEventHandler<TEvent>).IsAssignableFrom(t));
 
-            var typeOfHandler = inheritingTypes.Where(types => 
+            var typeOfHandlers = inheritingTypes.Where(types => 
                 types.GetTypeInfo().ImplementedInterfaces
                     .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == typeof(TEvent).FullName))
-            ).First() ?? throw new ArgumentException("");
+            );
 
-            return serviceProvider.GetService(typeOfHandler) as IEventHandler<TEvent>;
+            if (!typeOfHandlers.Any())
+                throw new ArgumentException("");
+
+            var handlers = new List<IEventHandler<TEvent>>();
+            
+            foreach (var type in typeOfHandlers)
+            {
+                handlers.Add(serviceProvider.GetService(type) as IEventHandler<TEvent>);
+            }
+
+            return handlers;
         }
     }
 }
