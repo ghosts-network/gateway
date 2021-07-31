@@ -11,15 +11,22 @@ using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public class EventWorker : IEventWorker
+    public class EventBus : IEventBus
     {
         private readonly IDatabase db;
         private readonly IServiceProvider serviceProvider;
 
-        public EventWorker(IDatabase db, IServiceProvider serviceProvider)
+        private bool IsAvailable { get; set; } 
+
+        public EventBus(IDatabase db, IServiceProvider serviceProvider)
         {
             this.db = db;
             this.serviceProvider = serviceProvider;
+
+            if (this.db != null)
+            {
+                IsAvailable = true;
+            }
         }
 
         public async Task Subscribe<TEvent>(RedisKey key) where TEvent : IEvent, new()
@@ -46,6 +53,23 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
+        public async Task PublishAsync(IEvent @event)
+        {
+            if (!(await CheckAndRestoreConnection()))
+            {
+                return;
+            }
+
+            try
+            {
+                await db.ListRightPushAsync(@event.GetType().Name, JsonSerializer.Serialize(@event));
+            } 
+            catch (RedisConnectionException)
+            {
+                IsAvailable = false;
+            }
+        }
+
         private IEnumerable<IEventHandler<TEvent>> CreateHandlers<TEvent>() where TEvent : IEvent, new()
         {
             var inheritingTypes = Assembly
@@ -69,6 +93,25 @@ namespace GhostNetwork.Gateway.RedisMq
             }
 
             return handlers;
+        }
+
+        private async Task<bool> CheckAndRestoreConnection()
+        {
+            if (!IsAvailable)
+            {
+                try
+                {
+                    await db.PingAsync();
+                }
+                catch (RedisConnectionException)
+                {
+                    return false;
+                }
+
+                IsAvailable = true;
+            }
+
+            return true;
         }
     }
 }
