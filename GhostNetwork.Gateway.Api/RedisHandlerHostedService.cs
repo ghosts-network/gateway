@@ -44,7 +44,7 @@ namespace GhostNetwork.Gateway.Api
 
         private void RunSubsribers()
         {
-            Task.Run(() => new EventWorker(conn.GetDatabase(), serviceProvider)
+            Task.Run(() => new EventBus(conn.GetDatabase(), serviceProvider)
                 .Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
         }
     }
