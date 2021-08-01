@@ -1,6 +1,5 @@
-﻿using GhostNetwork.Gateway.Events;
+﻿using GhostNetwork.Gateway.RedisMq.Events;
 using StackExchange.Redis;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text.Json;
 using System.Threading;
@@ -29,7 +28,7 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
-        public async Task Subscribe<TEvent>(RedisKey key) where TEvent : IEvent, new()
+        public async Task Subscribe<TEvent>(RedisKey key) where TEvent : EventBase, new()
         {
             while (true)
             {
@@ -53,9 +52,9 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
-        public async Task PublishAsync(IEvent @event)
+        public async Task PublishAsync(EventBase @event)
         {
-            if (!(await CheckAndRestoreConnection()))
+            if (!await CheckAndRestoreConnection())
             {
                 return;
             }
@@ -70,7 +69,7 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
-        private IEnumerable<IEventHandler<TEvent>> CreateHandlers<TEvent>() where TEvent : IEvent, new()
+        private IEnumerable<IEventHandler<TEvent>> CreateHandlers<TEvent>() where TEvent : EventBase, new()
         {
             var inheritingTypes = Assembly
                 .GetExecutingAssembly()
@@ -83,7 +82,7 @@ namespace GhostNetwork.Gateway.RedisMq
             );
 
             if (!typeOfHandlers.Any())
-                throw new ArgumentException("");
+                throw new ArgumentException("Input type is not declared as inheritor of IEventHandler<Event>");
 
             var handlers = new List<IEventHandler<TEvent>>();
             
