@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GhostNetwork.Gateway.RedisMq\GhostNetwork.Gateway.RedisMq.csproj" />
       <ProjectReference Include="..\GhostNetwork.Gateway\GhostNetwork.Gateway.csproj" />
     </ItemGroup>
 

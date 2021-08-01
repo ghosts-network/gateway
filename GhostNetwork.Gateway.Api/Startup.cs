@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using GhostNetwork.Content.Api;
-using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
 using GhostNetwork.Gateway.RedisMq;
+using GhostNetwork.Gateway.RedisMq.Handlers;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using Grpc.Net.Client;
@@ -17,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
+using System;
+using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.Api
 {

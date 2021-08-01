@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.Events;
-using GhostNetwork.Gateway.RedisMq;
+using GhostNetwork.Gateway.RedisMq.Events;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 
-namespace GhostNetwork.Gateway.Api
+namespace GhostNetwork.Gateway.RedisMq
 {
-    internal class RedisHandlerHostedService : IHostedService
+    public class RedisHandlerHostedService : IHostedService
     {
         private const int Timeout = 5000;
 
