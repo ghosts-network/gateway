@@ -29,8 +29,8 @@ namespace GhostNetwork.Gateway.RedisMq
 
             try
             {
-               await db.ListRightPushAsync(@event.GetType().Name, JsonSerializer.Serialize(@event));
-            } 
+               await db.ListRightPushAsync(@event.GetType().Name, JsonSerializer.Serialize(@event, @event.GetType()));
+            }
             catch (RedisConnectionException)
             {
                 IsAvailable = false;
