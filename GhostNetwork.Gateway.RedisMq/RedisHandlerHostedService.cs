@@ -43,7 +43,7 @@ namespace GhostNetwork.Gateway.RedisMq
 
         private void RunSubsribers()
         {
-            Task.Run(() => new EventBus(conn.GetDatabase(), serviceProvider)
+            Task.Run(() => new EventWorker(conn.GetDatabase(), serviceProvider)
                 .Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
         }
     }

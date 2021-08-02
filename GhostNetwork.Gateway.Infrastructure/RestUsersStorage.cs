@@ -13,13 +13,13 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class RestUsersStorage : IUsersStorage
     {
         private readonly IProfilesApi profilesApi;
-        private readonly IEventBus eventBus;
+        private readonly IEventSender eventBus;
         private readonly ICurrentUserProvider currentUserProvider;
 
         public RestUsersStorage(
             IProfilesApi profilesApi, 
             IRelationsApi relationsApi, 
-            IEventBus eventBus, 
+            IEventSender eventBus, 
             ICurrentUserProvider currentUserProvider)
         {
             this.profilesApi = profilesApi;

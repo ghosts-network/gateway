@@ -99,7 +99,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             // Redis
-            services.AddSingleton<IEventBus>(provider =>
+            services.AddSingleton<IEventSender>(provider =>
             {
                 IDatabase redisDb = null;
 
@@ -112,7 +112,7 @@ namespace GhostNetwork.Gateway.Api
                     throw new ApplicationException("Redis server is unavailable");
                 }
 
-                return new EventBus(redisDb, provider);
+                return new EventSender(redisDb);
             });
 
             services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));

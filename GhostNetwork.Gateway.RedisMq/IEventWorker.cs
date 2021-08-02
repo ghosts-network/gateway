@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public interface IEventBus
+    public interface IEventWorker
     {
         Task Subscribe<T>(RedisKey key) where T : EventBase, new();
-        Task PublishAsync(EventBase @event);
     }
 }
