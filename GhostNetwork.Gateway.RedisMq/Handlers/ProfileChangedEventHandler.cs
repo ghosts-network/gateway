@@ -5,7 +5,7 @@ namespace GhostNetwork.Gateway.RedisMq.Handlers
 {
     public class ProfileChangedEventHandler : IEventHandler<ProfileChangedEvent>
     {
-        public Task Handle(ProfileChangedEvent value)
+        public Task Handle(EventBase value)
         {
             // do some work with model
 

@@ -3,14 +3,12 @@ using StackExchange.Redis;
 using System;
 using System.Text.Json;
 using System.Threading;
+using GhostNetwork.Gateway.RedisMq.Extensions;
 using System.Threading.Tasks;
-using System.Reflection;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public class EventWorker : IEventWorker
+    internal class EventWorker : IEventWorker
     {
         private readonly IDatabase db;
         private readonly IServiceProvider serviceProvider;
@@ -31,7 +29,7 @@ namespace GhostNetwork.Gateway.RedisMq
 
                     if (message.HasValue)
                     {
-                        foreach (var handler in CreateHandlers<TEvent>())
+                        foreach (var handler in serviceProvider.GetHandlers<TEvent>())
                         {
                             await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
                         }
@@ -45,29 +43,28 @@ namespace GhostNetwork.Gateway.RedisMq
             }
         }
 
-        private IEnumerable<IEventHandler<TEvent>> CreateHandlers<TEvent>() where TEvent : EventBase, new()
+        public async Task Subscribe(RedisKey key, Type type) 
         {
-            var inheritingTypes = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => typeof(IEventHandler<TEvent>).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
-                    .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == typeof(TEvent).FullName))
-            );
-
-            if (!typeOfHandlers.Any())
-                throw new ArgumentException("Input type is not declared as inheritor of IEventHandler<Event>");
-
-            var handlers = new List<IEventHandler<TEvent>>();
-            
-            foreach (var type in typeOfHandlers)
+            while (true)
             {
-                handlers.Add(serviceProvider.GetService(type) as IEventHandler<TEvent>);
-            }
+                try
+                {
+                    var message = await db.ListLeftPopAsync(key);
 
-            return handlers;
+                    if (message.HasValue)
+                    {
+                        foreach (var handler in serviceProvider.GetHandlers(type))
+                        {
+                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize(message, type) as EventBase));
+                        }
+                    }
+                    else Thread.Sleep(500);
+                }
+                catch (RedisConnectionException) 
+                {  
+                    Thread.Sleep(5000);
+                }
+            }
         }
     }
 }

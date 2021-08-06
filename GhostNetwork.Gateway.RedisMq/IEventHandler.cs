@@ -3,8 +3,9 @@ using GhostNetwork.Gateway.RedisMq.Events;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public interface IEventHandler<TEvent> where TEvent : EventBase, new() 
+    public interface IEventHandler 
     {
-        Task Handle(TEvent value);
+        Task Handle(EventBase value);
     }
+    public interface IEventHandler<out TEvent> : IEventHandler where TEvent : EventBase { }
 }

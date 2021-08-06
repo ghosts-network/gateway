@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.RedisMq.Events;
+using GhostNetwork.Gateway.RedisMq.Extensions;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 
@@ -13,6 +13,7 @@ namespace GhostNetwork.Gateway.RedisMq
 
         private readonly IServiceProvider serviceProvider;
         private readonly ConfigurationOptions redisConfiguration;
+        private readonly string connectionString;
         private ConnectionMultiplexer conn;
 
         public RedisHandlerHostedService(IServiceProvider serviceProvider, ConfigurationOptions redisConfiguration)
@@ -21,11 +22,24 @@ namespace GhostNetwork.Gateway.RedisMq
             this.redisConfiguration = redisConfiguration;
         }
 
+        public RedisHandlerHostedService(IServiceProvider serviceProvider, string connectionString)
+        {
+            this.serviceProvider = serviceProvider;
+            this.connectionString = connectionString;
+        }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                conn = await ConnectionMultiplexer.ConnectAsync(redisConfiguration);
+                if (redisConfiguration != null)
+                {
+                    conn = await ConnectionMultiplexer.ConnectAsync(redisConfiguration);
+                }
+                else
+                {
+                    conn = await ConnectionMultiplexer.ConnectAsync(connectionString);
+                }
             }
             catch (RedisConnectionException)
             {
@@ -43,8 +57,12 @@ namespace GhostNetwork.Gateway.RedisMq
 
         private void RunSubsribers()
         {
-            Task.Run(() => new EventWorker(conn.GetDatabase(), serviceProvider)
-                .Subscribe<ProfileChangedEvent>(nameof(ProfileChangedEvent)));
+            var db = conn.GetDatabase();
+            foreach (var @event in serviceProvider.GetEventsType())
+            {
+                Task.Run(() => new EventWorker(db, serviceProvider)
+                    .Subscribe(@event.Name, @event));
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public class EventSender : IEventSender
+    internal class EventSender : IEventSender
     {
         private readonly IDatabase db;
         private bool IsAvailable { get; set; }
