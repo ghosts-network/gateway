@@ -1,7 +1,7 @@
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
-using GhostNetwork.Gateway.RedisMq;
+using GhostNetwork.Gateway.RedisMq.Extensions;
 using GhostNetwork.Gateway.RedisMq.Handlers;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
@@ -99,27 +99,14 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             // Redis
-            services.AddSingleton<IEventSender>(provider =>
-            {
-                IDatabase redisDb = null;
-
-                try
-                {
-                    redisDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
-                }
-                catch (RedisConnectionException)
-                {
-                    throw new ApplicationException("Redis server is unavailable");
-                }
-
-                return new EventSender(redisDb);
-            });
-
-            services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
+            services.AddEventSender(redisConfiguration);
+            services.AddHostedWorkerService(redisConfiguration);
 
             // Redis handlers
             services.AddTransient<ProfileChangedEventHandler>();
- 
+            services.AddTransient<NadeEventHandler>();
+            services.AddTransient<NadeEventHandlerTwo>();
+
             services.AddControllers();
         }
 
