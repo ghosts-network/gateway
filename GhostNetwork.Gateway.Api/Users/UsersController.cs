@@ -45,19 +45,20 @@ namespace GhostNetwork.Gateway.Api.Users
             [FromRoute] Guid userId,
             [FromBody] UpdateUserInput model)
         {
-            if (userId.ToString() != currentUserProvider.UserId)
-            {
-                return Forbid();
-            }
+            // if (userId.ToString() != currentUserProvider.UserId)
+            // {
+            //     return Forbid();
+            // }
 
-            var user = await usersStorage.GetByIdAsync(userId);
+            // var user = await usersStorage.GetByIdAsync(userId);
+            var user = new User(Guid.NewGuid(), "FNAme", "LName", "male", DateTime.Now);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            // if (user == null)
+            // {
+            //     return NotFound();
+            // }
 
-            user.Update(model.Gender, model.DateOfBirth);
+            // user.Update(model.Gender, model.DateOfBirth);
 
             var result = await usersStorage.UpdateAsync(user);
             if (result.Successed)

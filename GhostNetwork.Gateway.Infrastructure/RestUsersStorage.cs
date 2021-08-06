@@ -46,20 +46,20 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<DomainResult> UpdateAsync(User user)
         {
-            var profile = await profilesApi.GetByIdAsync(user.Id);
+            // var profile = await profilesApi.GetByIdAsync(user.Id);
 
             var updateCommand = new ProfileUpdateViewModel(
-                profile.FirstName,
-                profile.LastName,
+                user.FirstName,
+                user.LastName,
                 user.Gender,
                 user.DateOfBirth,
-                profile.City);
+                "Odessa");
 
             try
             {
-                await profilesApi.UpdateAsync(user.Id, updateCommand);
-                await eventBus.PublishAsync(new ProfileChangedEvent { TriggeredBy = currentUserProvider.UserId, UpdatedUser = user });
-
+                // await profilesApi.UpdateAsync(user.Id, updateCommand);
+                // await eventBus.PublishAsync(new ProfileChangedEvent { TriggeredBy = currentUserProvider.UserId, UpdatedUser = user });
+                await eventBus.PublishAsync(new NadoEvent { TriggeredBy = currentUserProvider.UserId, Nado = true });
                 return DomainResult.Success();
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
