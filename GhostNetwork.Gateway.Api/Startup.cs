@@ -1,6 +1,8 @@
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
+using GhostNetwork.Gateway.RedisMq;
+using GhostNetwork.Gateway.RedisMq.Events;
 using GhostNetwork.Gateway.RedisMq.Extensions;
 using GhostNetwork.Gateway.RedisMq.Handlers;
 using GhostNetwork.Gateway.Users;
@@ -100,12 +102,14 @@ namespace GhostNetwork.Gateway.Api
 
             // Redis
             services.AddEventSender(redisConfiguration);
-            services.AddHostedWorkerService(redisConfiguration);
+
+            services.AddHostedWorkerService(redisConfiguration,
+                provider => provider.Subscribe<ProfileChangedEvent>(),
+                provider => provider.Subscribe<NadoEvent>()
+            );
 
             // Redis handlers
             services.AddTransient<ProfileChangedEventHandler>();
-            services.AddTransient<NadeEventHandler>();
-            services.AddTransient<NadeEventHandlerTwo>();
 
             services.AddControllers();
         }

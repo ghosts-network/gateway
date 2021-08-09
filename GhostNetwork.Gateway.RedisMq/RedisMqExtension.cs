@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,87 +10,99 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
 {
     public static class RedisMqExtension
     {
+        private static IDatabase database;
+        private static string _connectionString;
+        private static ConfigurationOptions _redisConfiguration;
+
         public static IServiceCollection AddEventSender(this IServiceCollection services, ConfigurationOptions redisConfiguration)
         {
-            IDatabase redisDb = null;
+            if (_redisConfiguration == null)
+            {
+                _redisConfiguration = redisConfiguration;
+            }
 
             try
             {
-                redisDb = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
+                if (database == null)
+                {
+                    database = ConnectionMultiplexer.Connect(redisConfiguration).GetDatabase();
+                }
             }
             catch (RedisConnectionException)
             {
                 throw new ApplicationException("Redis server is unavailable");
             }
 
-            services.AddSingleton<IEventSender>(new EventSender(redisDb));
+            services.AddSingleton<IEventSender>(new EventSender(database));
             return services;
         }
 
         public static IServiceCollection AddEventSender(this IServiceCollection services, string connectionString)
         {
-            IDatabase redisDb = null;
+            if (_connectionString == null)
+            {
+                _connectionString = connectionString;
+            }
 
             try
             {
-                redisDb = ConnectionMultiplexer.Connect(connectionString).GetDatabase();
+                if (database == null)
+                {
+                    database = ConnectionMultiplexer.Connect(connectionString).GetDatabase();
+                }
             }
             catch (RedisConnectionException)
             {
                 throw new ApplicationException("Redis server is unavailable");
             }
 
-            services.AddSingleton<IEventSender>(new EventSender(redisDb));
+            services.AddSingleton<IEventSender>(new EventSender(database));
             return services;
         }
 
-        public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, ConfigurationOptions redisConfiguration)
+        public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, 
+            ConfigurationOptions redisConfiguration, 
+            params Func<IServiceProvider, IEventWorker>[] args)
         {
-            services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
+            if (args == null && !args.Any())
+            {
+                throw new ApplicationException("Don't have reserved workers!");
+            }
+                        
+            services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration, args));
             return services;
         }
 
-        public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, 
+            string connectionString, 
+            params Func<IServiceProvider, IEventWorker>[] args)
         {
-            services.AddHostedService(provider => new RedisHandlerHostedService(provider, connectionString));
+            if (args == null && !args.Any())
+            {
+                throw new ApplicationException("Don't have reserved workers!");
+            }
+            
+            services.AddHostedService(provider => new RedisHandlerHostedService(provider, connectionString, args));
             return services;
+        }
+
+        public static IEventWorker<TEvent> Subscribe<TEvent>(this IServiceProvider serviceProvider) where TEvent : EventBase, new()
+        {
+            if (database == null)
+            {
+                database = _connectionString != null ?
+                        ConnectionMultiplexer.Connect(_connectionString).GetDatabase() :
+                    _redisConfiguration != null ?
+                        ConnectionMultiplexer.Connect(_redisConfiguration).GetDatabase() : 
+                        throw new ApplicationException("Connection config is unavailable");
+            }
+
+            return new EventWorker<TEvent>(database, serviceProvider);
         }
     }
 
     internal static class InitializeHelper
     {
-        public static IEnumerable<Type> GetEventsType(this IServiceProvider serviceProvider)
-        {
-            var inheritingTypes = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => typeof(IEventHandler).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
-                    .Any(ii => ii.IsGenericType)
-            );
-
-            if (!typeOfHandlers.Any())
-                throw new ArgumentException("Input type is not declared as inheritor of IEventHandler<Event>");
-
-            var typeOfEvents = new List<Type>();
-            
-            foreach (var type in typeOfHandlers)
-            {
-                var handler = serviceProvider.GetService(type) as IEventHandler;
-                    
-                if (handler == null)
-                {
-                    continue;
-                }
-
-                typeOfEvents.Add(type.GetTypeInfo().ImplementedInterfaces.First().GetTypeInfo().GenericTypeArguments[0]);
-            }
-
-            return typeOfEvents.Distinct();
-        }
-
         public static IEnumerable<IEventHandler<TEvent>> GetHandlers<TEvent>(this IServiceProvider serviceProvider) where TEvent : EventBase, new()
         {
             var inheritingTypes = Assembly
@@ -112,38 +123,6 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
             foreach (var type in typeOfHandlers)
             {
                var handler = serviceProvider.GetService(type) as IEventHandler<TEvent>;
-                    
-                if (handler == null)
-                {
-                    continue;
-                }
-
-                handlers.Add(handler);
-            }
-
-            return handlers;
-        }
-
-        public static IEnumerable<IEventHandler> GetHandlers(this IServiceProvider serviceProvider, Type type)
-        {
-            var inheritingTypes = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => typeof(IEventHandler).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
-                    .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == type.FullName))
-            );
-
-            if (!typeOfHandlers.Any())
-                throw new ArgumentException("Input type is not declared as inheritor of IEventHandler");
-
-            var handlers = new List<IEventHandler>();
-            
-            foreach (var t in typeOfHandlers)
-            {
-               var handler = serviceProvider.GetService(t) as IEventHandler;
                     
                 if (handler == null)
                 {

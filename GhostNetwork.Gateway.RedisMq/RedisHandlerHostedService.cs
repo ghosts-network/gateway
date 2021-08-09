@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.RedisMq.Extensions;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 
@@ -16,16 +17,20 @@ namespace GhostNetwork.Gateway.RedisMq
         private readonly string connectionString;
         private ConnectionMultiplexer conn;
 
-        public RedisHandlerHostedService(IServiceProvider serviceProvider, ConfigurationOptions redisConfiguration)
+        private Func<IServiceProvider, IEventWorker>[] args;
+
+        public RedisHandlerHostedService(IServiceProvider serviceProvider, ConfigurationOptions redisConfiguration, params Func<IServiceProvider, IEventWorker>[] args)
         {
             this.serviceProvider = serviceProvider;
             this.redisConfiguration = redisConfiguration;
+            this.args = args;
         }
 
-        public RedisHandlerHostedService(IServiceProvider serviceProvider, string connectionString)
+        public RedisHandlerHostedService(IServiceProvider serviceProvider, string connectionString, params Func<IServiceProvider, IEventWorker>[] args)
         {
             this.serviceProvider = serviceProvider;
             this.connectionString = connectionString;
+            this.args = args;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -46,7 +51,7 @@ namespace GhostNetwork.Gateway.RedisMq
                 throw new ApplicationException("Redis server is unavailable");
             }
 
-            RunSubsribers();
+            RunSubsribers(args.Select(arg => arg.Invoke(serviceProvider)));
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -55,13 +60,11 @@ namespace GhostNetwork.Gateway.RedisMq
             conn.Dispose();
         }
 
-        private void RunSubsribers()
+        private void RunSubsribers(IEnumerable<IEventWorker> workers)
         {
-            var db = conn.GetDatabase();
-            foreach (var @event in serviceProvider.GetEventsType())
+            foreach (var worker in workers)
             {
-                Task.Run(() => new EventWorker(db, serviceProvider)
-                    .Subscribe(@event.Name, @event));
+                worker.Subscribe();
             }
         }
     }

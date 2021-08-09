@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    internal class EventWorker : IEventWorker
+    internal class EventWorker<TEvent> : IEventWorker<TEvent> where TEvent : EventBase, new() 
     {
         private readonly IDatabase db;
         private readonly IServiceProvider serviceProvider;
@@ -19,52 +19,30 @@ namespace GhostNetwork.Gateway.RedisMq
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task Subscribe<TEvent>(RedisKey key) where TEvent : EventBase, new()
+        public void Subscribe()
         {
-            while (true)
-            {
-                try
+            Task.Run(async () => {
+                while (true)
                 {
-                    var message = await db.ListLeftPopAsync(key);
-
-                    if (message.HasValue)
+                    try
                     {
-                        foreach (var handler in serviceProvider.GetHandlers<TEvent>())
-                        {
-                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
-                        }
-                    }
-                    else Thread.Sleep(500);
-                }
-                catch (RedisConnectionException) 
-                {  
-                    Thread.Sleep(5000);
-                }
-            }
-        }
+                        var message = await db.ListLeftPopAsync(typeof(TEvent).Name);
 
-        public async Task Subscribe(RedisKey key, Type type) 
-        {
-            while (true)
-            {
-                try
-                {
-                    var message = await db.ListLeftPopAsync(key);
-
-                    if (message.HasValue)
-                    {
-                        foreach (var handler in serviceProvider.GetHandlers(type))
+                        if (message.HasValue)
                         {
-                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize(message, type) as EventBase));
+                            foreach (var handler in serviceProvider.GetHandlers<TEvent>())
+                            {
+                                await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
+                            }
                         }
+                        else Thread.Sleep(500);
                     }
-                    else Thread.Sleep(500);
+                    catch (RedisConnectionException) 
+                    {  
+                        Thread.Sleep(5000);
+                    }
                 }
-                catch (RedisConnectionException) 
-                {  
-                    Thread.Sleep(5000);
-                }
-            }
+            });
         }
     }
 }
