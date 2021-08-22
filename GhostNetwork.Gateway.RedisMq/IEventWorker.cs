@@ -1,11 +1,10 @@
-﻿using GhostNetwork.Gateway.RedisMq.Events;
-using StackExchange.Redis;
-using System.Threading.Tasks;
+﻿using System;
+using GhostNetwork.Gateway.RedisMq.Events;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
     public interface IEventWorker
     {
-        Task Subscribe<T>(RedisKey key) where T : EventBase, new();
+        void Subscribe<T>() where T : EventBase, new();
     }
 }

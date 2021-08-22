@@ -19,52 +19,58 @@ namespace GhostNetwork.Gateway.RedisMq
             this.serviceProvider = serviceProvider;
         }
 
-        public async Task Subscribe<TEvent>(RedisKey key) where TEvent : EventBase, new()
+        public void Subscribe<TEvent>() where TEvent : EventBase, new()
         {
-            while (true)
+            Task.Run(async () => 
             {
-                try
+                while (true)
                 {
-                    var message = await db.ListLeftPopAsync(key);
-
-                    if (message.HasValue)
+                    try
                     {
-                        foreach (var handler in serviceProvider.GetHandlers<TEvent>())
+                        var message = await db.ListLeftPopAsync(typeof(TEvent).Name);
+
+                        if (message.HasValue)
                         {
-                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
+                            foreach (var handler in serviceProvider.GetHandlers<TEvent>())
+                            {
+                                await Task.Run(() => handler.Handle(JsonSerializer.Deserialize<TEvent>(message)));
+                            }
                         }
+                        else Thread.Sleep(500);
                     }
-                    else Thread.Sleep(500);
+                    catch (RedisConnectionException) 
+                    {  
+                        Thread.Sleep(5000);
+                    }
                 }
-                catch (RedisConnectionException) 
-                {  
-                    Thread.Sleep(5000);
-                }
-            }
+            });
         }
 
-        public async Task Subscribe(RedisKey key, Type type) 
+        public void Subscribe(string key, Type type) 
         {
-            while (true)
+            Task.Run(async () => 
             {
-                try
+                while (true)
                 {
-                    var message = await db.ListLeftPopAsync(key);
-
-                    if (message.HasValue)
+                    try
                     {
-                        foreach (var handler in serviceProvider.GetHandlers(type))
+                        var message = await db.ListLeftPopAsync(key);
+
+                        if (message.HasValue)
                         {
-                            await Task.Run(() => handler.Handle(JsonSerializer.Deserialize(message, type) as EventBase));
+                            foreach (var handler in serviceProvider.GetHandlers(type))
+                            {
+                                await Task.Run(() => handler.Handle(JsonSerializer.Deserialize(message, type) as EventBase));
+                            }
                         }
+                        else Thread.Sleep(500);
                     }
-                    else Thread.Sleep(500);
+                    catch (RedisConnectionException) 
+                    {  
+                        Thread.Sleep(5000);
+                    }
                 }
-                catch (RedisConnectionException) 
-                {  
-                    Thread.Sleep(5000);
-                }
-            }
+            });
         }
     }
 }
