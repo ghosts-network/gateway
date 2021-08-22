@@ -62,15 +62,9 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
     {
         public static IEnumerable<Type> GetEventsType(this IServiceProvider serviceProvider)
         {
-            var inheritingTypes = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => typeof(IEventHandler).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
-                    .Any(ii => ii.IsGenericType)
-            );
+            var typeOfHandlers = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => typeof(IEventHandler).IsAssignableFrom(t))
+                .Where(types => types.GetTypeInfo().ImplementedInterfaces.Any(ii => ii.IsGenericType));
 
             if (!typeOfHandlers.Any())
                 throw new ArgumentException("Input type is not declared as inheritor of IEventHandler<Event>");
@@ -94,15 +88,13 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
 
         public static IEnumerable<IEventHandler<TEvent>> GetHandlers<TEvent>(this IServiceProvider serviceProvider) where TEvent : EventBase, new()
         {
-            var inheritingTypes = Assembly
+            var typeOfHandlers = Assembly
                 .GetExecutingAssembly()
                 .GetTypes()
-                .Where(t => typeof(IEventHandler<TEvent>).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
+                .Where(t => typeof(IEventHandler<TEvent>).IsAssignableFrom(t))
+                .Where(types => types.GetTypeInfo().ImplementedInterfaces
                     .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == typeof(TEvent).FullName))
-            );
+                );
 
             if (!typeOfHandlers.Any())
                 throw new ArgumentException("Input type is not declared as inheritor of IEventHandler<Event>");
@@ -126,15 +118,13 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
 
         public static IEnumerable<IEventHandler> GetHandlers(this IServiceProvider serviceProvider, Type type)
         {
-            var inheritingTypes = Assembly
+            var typeOfHandlers = Assembly
                 .GetExecutingAssembly()
                 .GetTypes()
-                .Where(t => typeof(IEventHandler).IsAssignableFrom(t));
-
-            var typeOfHandlers = inheritingTypes.Where(types => 
-                types.GetTypeInfo().ImplementedInterfaces
+                .Where(t => typeof(IEventHandler).IsAssignableFrom(t))
+                .Where(types => types.GetTypeInfo().ImplementedInterfaces
                     .Any(ii => ii.IsGenericType && ii.GetTypeInfo().GenericTypeArguments.Any(arg => arg.FullName == type.FullName))
-            );
+                );
 
             if (!typeOfHandlers.Any())
                 throw new ArgumentException("Input type is not declared as inheritor of IEventHandler");
