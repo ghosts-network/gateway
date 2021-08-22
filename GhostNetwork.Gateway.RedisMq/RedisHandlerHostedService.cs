@@ -7,7 +7,7 @@ using StackExchange.Redis;
 
 namespace GhostNetwork.Gateway.RedisMq
 {
-    public class RedisHandlerHostedService : IHostedService
+    internal class RedisHandlerHostedService : IHostedService
     {
         private const int Timeout = 5000;
 
@@ -58,10 +58,9 @@ namespace GhostNetwork.Gateway.RedisMq
         private void RunSubsribers()
         {
             var db = conn.GetDatabase();
-            foreach (var @event in serviceProvider.GetEventsType())
+            foreach (var eventType in serviceProvider.GetEventsType())
             {
-                Task.Run(() => new EventWorker(db, serviceProvider)
-                    .Subscribe(@event.Name, @event));
+                new EventWorker(db, serviceProvider).Subscribe(eventType.Name, eventType);
             }
         }
     }
