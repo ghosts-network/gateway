@@ -7,5 +7,6 @@ namespace GhostNetwork.Gateway.RedisMq
     {
         Task Handle(EventBase value);
     }
-    public interface IEventHandler<out TEvent> : IEventHandler where TEvent : EventBase { }
+
+    public interface IEventHandler<TEvent> : IEventHandler where TEvent : EventBase { }
 }
