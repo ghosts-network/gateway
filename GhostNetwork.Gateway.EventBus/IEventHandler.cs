@@ -5,7 +5,7 @@ namespace GhostNetwork.Gateway.EventBus
 {
     /// <summary>
     /// Exposes the functionality to handle events.
-    /// </summary>   
+    /// </summary>
     public interface IEventHandler 
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace GhostNetwork.Gateway.EventBus
     {
         /// <summary>
         /// Starts a handling of event represented by generic-type.
-        /// </summary>   
+        /// </summary>
         Task Handle(TEvent value);
     }
 }
