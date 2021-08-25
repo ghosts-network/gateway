@@ -3,15 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using GhostNetwork.Gateway.RedisMq.Events;
+using GhostNetwork.Gateway.EventBus.Events;
+using GhostNetwork.Gateway.EventBus.RedisMq;
+using GhostNetwork.Gateway.RedisMq;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace GhostNetwork.Gateway.RedisMq.Extensions
+namespace GhostNetwork.Gateway.EventBus.Extensions.RedisMq
 {
-    public static class RedisMqExtension
+    public static class RedisEventBusExtension
     {
-        public static IServiceCollection AddEventSender(this IServiceCollection services, ConfigurationOptions redisConfiguration)
+        public static IServiceCollection AddEventSenderAsSingletone(this IServiceCollection services, ConfigurationOptions redisConfiguration)
         {
             IDatabase redisDb = null;
 
@@ -28,7 +30,7 @@ namespace GhostNetwork.Gateway.RedisMq.Extensions
             return services;
         }
 
-        public static IServiceCollection AddEventSender(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddEventSenderAsSingletone(this IServiceCollection services, string connectionString)
         {
             IDatabase redisDb = null;
 

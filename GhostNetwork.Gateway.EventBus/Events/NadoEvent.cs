@@ -1,4 +1,4 @@
-namespace GhostNetwork.Gateway.RedisMq.Events
+namespace GhostNetwork.Gateway.EventBus.Events
 {
     public class NadoEvent : EventBase
     {

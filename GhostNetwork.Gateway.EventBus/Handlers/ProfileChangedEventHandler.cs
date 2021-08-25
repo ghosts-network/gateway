@@ -1,7 +1,7 @@
-﻿using GhostNetwork.Gateway.RedisMq.Events;
+﻿using GhostNetwork.Gateway.EventBus.Events;
 using System.Threading.Tasks;
 
-namespace GhostNetwork.Gateway.RedisMq.Handlers
+namespace GhostNetwork.Gateway.EventBus.RedisMq
 {
     public class ProfileChangedEventHandler : IEventHandler<ProfileChangedEvent>
     {
@@ -10,6 +10,11 @@ namespace GhostNetwork.Gateway.RedisMq.Handlers
             // do some work with model
 
             return Task.CompletedTask;
+        }
+
+        public Task Handle(ProfileChangedEvent value)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

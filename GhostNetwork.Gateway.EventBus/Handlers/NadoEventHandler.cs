@@ -1,7 +1,7 @@
-using GhostNetwork.Gateway.RedisMq.Events;
+using GhostNetwork.Gateway.EventBus.Events;
 using System.Threading.Tasks;
 
-namespace GhostNetwork.Gateway.RedisMq.Handlers
+namespace GhostNetwork.Gateway.EventBus.RedisMq
 {
     public class NadeEventHandler : IEventHandler<NadoEvent>
     {
@@ -10,6 +10,11 @@ namespace GhostNetwork.Gateway.RedisMq.Handlers
             // do some work with model
 
             return Task.CompletedTask;
+        }
+
+        public Task Handle(NadoEvent value)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -20,6 +25,11 @@ namespace GhostNetwork.Gateway.RedisMq.Handlers
             // do some work with model
 
             return Task.CompletedTask;
+        }
+
+        public Task Handle(NadoEvent value)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

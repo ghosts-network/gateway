@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.RedisMq.Extensions;
+using GhostNetwork.Gateway.EventBus.Extensions.RedisMq;
+using GhostNetwork.Gateway.EventBus.RedisMq;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 

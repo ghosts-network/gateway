@@ -1,8 +1,7 @@
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
-using GhostNetwork.Gateway.RedisMq.Extensions;
-using GhostNetwork.Gateway.RedisMq.Handlers;
+using GhostNetwork.Gateway.EventBus.RedisMq;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using Grpc.Net.Client;
@@ -16,6 +15,7 @@ using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
+using GhostNetwork.Gateway.EventBus.Extensions;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -99,7 +99,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             // Redis
-            services.AddEventSender(redisConfiguration);
+            services.AddEventSenderAsSingletone(redisConfiguration);
             services.AddHostedWorkerService(redisConfiguration);
 
             // Redis handlers

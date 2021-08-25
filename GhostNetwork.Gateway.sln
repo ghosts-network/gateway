@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.UnitTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.Infrastructure", "GhostNetwork.Gateway.Infrastructure\GhostNetwork.Gateway.Infrastructure.csproj", "{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.RedisMq", "GhostNetwork.Gateway.RedisMq\GhostNetwork.Gateway.RedisMq.csproj", "{CF541D71-87B9-42B4-BA25-0F2AB775FCC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.EventBus", "GhostNetwork.Gateway.EventBus\GhostNetwork.Gateway.EventBus.csproj", "{CF541D71-87B9-42B4-BA25-0F2AB775FCC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using GhostNetwork.Gateway.RedisMq.Events;
+using GhostNetwork.Gateway.EventBus.Events;
 
-namespace GhostNetwork.Gateway.RedisMq
+namespace GhostNetwork.Gateway.EventBus
 {
     public interface IEventSender
     {
