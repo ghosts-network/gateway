@@ -13,6 +13,9 @@ namespace GhostNetwork.Gateway.EventBus.Extensions.RedisMq
 {
     public static class RedisEventBusExtension
     {
+        /// <summary>
+        /// Add IEventSender to your DI.
+        /// </summary>
         public static IServiceCollection AddEventSenderAsSingletone(this IServiceCollection services, ConfigurationOptions redisConfiguration)
         {
             IDatabase redisDb = null;
@@ -30,6 +33,9 @@ namespace GhostNetwork.Gateway.EventBus.Extensions.RedisMq
             return services;
         }
 
+        /// <summary>
+        /// Add IEventSender to your DI.
+        /// </summary>s
         public static IServiceCollection AddEventSenderAsSingletone(this IServiceCollection services, string connectionString)
         {
             IDatabase redisDb = null;
@@ -47,12 +53,18 @@ namespace GhostNetwork.Gateway.EventBus.Extensions.RedisMq
             return services;
         }
 
+        /// <summary>
+        /// Add IHostedService that start redis event-bus to your DI.
+        /// </summary>
         public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, ConfigurationOptions redisConfiguration)
         {
             services.AddHostedService(provider => new RedisHandlerHostedService(provider, redisConfiguration));
             return services;
         }
 
+        /// <summary>
+        /// Add IHostedService that start redis event-bus to your DI.
+        /// </summary>
         public static IServiceCollection AddHostedWorkerService(this IServiceCollection services, string connectionString)
         {
             services.AddHostedService(provider => new RedisHandlerHostedService(provider, connectionString));

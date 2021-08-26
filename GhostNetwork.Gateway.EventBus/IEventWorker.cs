@@ -16,7 +16,7 @@ namespace GhostNetwork.Gateway.EventBus
         /// <summary>
         /// Starts listening Queue and run handler on event.
         /// </summary>
-        /// <param  name="type">The type of event that listens to represented by System.Type.</param>
+        /// <param name="type">The type of event that listens to represented by System.Type.</param>
         void Subscribe(string key, Type type);
     }
 }

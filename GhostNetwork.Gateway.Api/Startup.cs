@@ -15,7 +15,7 @@ using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
-using GhostNetwork.Gateway.EventBus.Extensions;
+using GhostNetwork.Gateway.EventBus.Extensions.RedisMq;
 
 namespace GhostNetwork.Gateway.Api
 {
