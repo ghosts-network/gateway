@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Ghost-EventBus" Version="1.0.1" />
       <PackageReference Include="GhostNetwork.Content" Version="2.0.0" />
       <PackageReference Include="GhostNetwork.Profiles" Version="1.2.0" />
       <PackageReference Include="Google.Protobuf" Version="3.11.2" />
@@ -18,6 +19,10 @@
 
     <ItemGroup>
         <Protobuf Include="Protos\profiles.proto" GrpcServices="Client" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Handlers\" />
     </ItemGroup>
 
 </Project>
