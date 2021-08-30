@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GhostEventBus.RedisMq.Extensions;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api
@@ -19,10 +21,19 @@ namespace GhostNetwork.Gateway.Api
     public class Startup
     {
         private readonly IConfiguration configuration;
+        private readonly ConfigurationOptions redisConfiguration;
 
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
+            this.redisConfiguration = new ConfigurationOptions
+            {
+                ConnectTimeout = 5000,
+                EndPoints =
+                {
+                    { "127.0.0.1", 50002 }
+                }
+            };
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -85,6 +96,12 @@ namespace GhostNetwork.Gateway.Api
             // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+
+            // EventBus based on Redis
+            if (configuration["EVENT_PROCESSING"])
+            {
+                services.AddEventSenderAsSingletone(redisConfiguration);
+            }
 
             services.AddControllers();
         }
