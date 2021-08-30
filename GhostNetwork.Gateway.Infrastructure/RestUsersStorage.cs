@@ -2,6 +2,8 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using GhostEventBus;
+using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
@@ -11,10 +13,14 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class RestUsersStorage : IUsersStorage
     {
         private readonly IProfilesApi profilesApi;
-
-        public RestUsersStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
+        private readonly IEventSender eventSender;
+        private readonly ICurrentUserProvider currentUserProvider;
+        public RestUsersStorage(IProfilesApi profilesApi, IRelationsApi relationsApi, IEventSender eventSender, ICurrentUserProvider currentUserProvider)
         {
             this.profilesApi = profilesApi;
+            this.eventSender = eventSender;
+            this.currentUserProvider = currentUserProvider;
+
             Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
         }
 
@@ -47,6 +53,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 await profilesApi.UpdateAsync(user.Id, updateCommand);
+                await eventSender.PublishAsync(new ProfileChangedEvent { TriggeredBy = currentUserProvider.UserId, UpdatedUser = user });
+
                 return DomainResult.Success();
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
