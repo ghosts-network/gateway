@@ -9,7 +9,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AUTHORITY": "https://account.gn.boberneprotiv.com",
         "CONTENT_ADDRESS": "http://localhost:5300",
-        "PROFILES_ADDRESS": "http://localhost:5400"
+        "PROFILES_ADDRESS": "http://localhost:5400",
+        "EVENT_PROCESSING": "false"
       }
     }
   }
