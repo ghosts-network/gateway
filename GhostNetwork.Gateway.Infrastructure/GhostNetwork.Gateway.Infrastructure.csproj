@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Ghost-EventBus" Version="1.0.1" />
+      <PackageReference Include="Ghost-EventBus" Version="1.0.2" />
       <PackageReference Include="GhostNetwork.Content" Version="2.0.0" />
       <PackageReference Include="GhostNetwork.Profiles" Version="1.2.0" />
       <PackageReference Include="Google.Protobuf" Version="3.11.2" />
