@@ -52,6 +52,12 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 await profilesApi.UpdateAsync(user.Id, updateCommand);
+                await eventSender.PublishAsync(new ProfileChangedEvent 
+                    { 
+                        TriggeredBy = currentUserProvider.UserId, 
+                        UpdatedUser = new UserInfo(user.Id, user.FirstName + user.LastName, null)
+                    });
+
                 return DomainResult.Success();
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
