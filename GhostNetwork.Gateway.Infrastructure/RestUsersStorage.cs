@@ -2,6 +2,8 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using GhostEventBus;
+using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
@@ -11,10 +13,15 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class RestUsersStorage : IUsersStorage
     {
         private readonly IProfilesApi profilesApi;
+        private readonly IEventSender eventSender;
+        private readonly ICurrentUserProvider currentUserProvider;
 
-        public RestUsersStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
+        public RestUsersStorage(IProfilesApi profilesApi, ICurrentUserProvider currentUserProvider, IEventSender eventSender, IRelationsApi relationsApi)
         {
             this.profilesApi = profilesApi;
+            this.currentUserProvider = currentUserProvider;
+            this.eventSender = eventSender;
+
             Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
         }
 
