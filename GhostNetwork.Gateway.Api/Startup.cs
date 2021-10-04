@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GhostEventBus.RedisMq.Extensions;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
@@ -85,6 +86,12 @@ namespace GhostNetwork.Gateway.Api
             // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+
+            // Event bus
+            if (configuration.GetValue<bool>("EVENT-BUS_ENABLED"))
+            {
+                services.AddEventSenderAsSingletone(configuration.GetValue<string>("REDIS_ADDRESS"));
+            }
 
             services.AddControllers();
         }
