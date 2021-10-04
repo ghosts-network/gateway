@@ -10,7 +10,7 @@
         "AUTHORITY": "https://accounts.ghost-network.boberneprotiv.com",
         "CONTENT_ADDRESS": "http://localhost:5300",
         "PROFILES_ADDRESS": "http://localhost:5400",
-        "REDIS_ADDRESS": "http://localhost:50002",
+        "REDIS_ADDRESS": "localhost:50002",
         "EVENT-BUS_ENABLED": "true"
       }
     }
