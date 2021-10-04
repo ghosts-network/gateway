@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Domain;
 using GhostEventBus;
-using GhostNetwork.Gateway.Events;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
