@@ -89,11 +89,9 @@ namespace GhostNetwork.Gateway.Api
 
             // Event bus
             bool eventBusIsEnabled = configuration.GetValue<bool>("EVENT-BUS_ENABLED");
-            string redisAddress = 
-                configuration.GetValue<string>("REDIS_ADDRESS") ?? 
-                throw new ArgumentNullException("Cannot find 'REDIS_ADDRESS property in configuration'");
+            string redisAddress = configuration.GetValue<string>("REDIS_ADDRESS");
 
-            services.AddEventSenderAsSingletone(redisAddress, returnDisabledSender: eventBusIsEnabled);
+            services.AddEventSenderAsSingletone(redisAddress, returnDisabledSender: !eventBusIsEnabled);
 
             services.AddControllers();
         }
