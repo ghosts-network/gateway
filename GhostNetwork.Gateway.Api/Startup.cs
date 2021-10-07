@@ -88,10 +88,12 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             // Event bus
-            if (configuration.GetValue<bool>("EVENT-BUS_ENABLED"))
-            {
-                services.AddEventSenderAsSingletone(configuration.GetValue<string>("REDIS_ADDRESS"));
-            }
+            bool eventBusIsEnabled = configuration.GetValue<bool>("EVENT-BUS_ENABLED");
+            string redisAddress = 
+                configuration.GetValue<string>("REDIS_ADDRESS") ?? 
+                throw new ArgumentNullException("Cannot find 'REDIS_ADDRESS property in configuration'");
+
+            services.AddEventSenderAsSingletone(redisAddress, returnDisabledSender: eventBusIsEnabled);
 
             services.AddControllers();
         }
