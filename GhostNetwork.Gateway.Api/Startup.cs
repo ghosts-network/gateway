@@ -123,7 +123,7 @@ namespace GhostNetwork.Gateway.Api
             app.UseRouting();
 
             app.UseCors(builder => builder
-                .WithOrigins("http://localhost:4200", "https://gn.boberneprotiv.com")
+                .WithOrigins("http://localhost:4200", "https://ghost-network.boberneprotiv.com")
                 .AllowAnyHeader()
                 .WithExposedHeaders(Const.Headers.All)
                 .AllowAnyMethod());
@@ -134,6 +134,6 @@ namespace GhostNetwork.Gateway.Api
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
-        private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://account.gn.boberneprotiv.com"));
+        private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://accounts.ghost-network.boberneprotiv.com"));
     }
 }
