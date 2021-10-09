@@ -91,7 +91,10 @@ namespace GhostNetwork.Gateway.Api
             bool eventBusIsEnabled = configuration.GetValue<bool>("EVENT-BUS_ENABLED");
             string redisAddress = configuration.GetValue<string>("REDIS_ADDRESS");
 
-            services.AddEventSenderAsSingletone(redisAddress, returnDisabledSender: !eventBusIsEnabled);
+            if (eventBusIsEnabled)
+                services.AddEventSenderAsSingletone(redisAddress);
+            else
+                services.AddSingleton<NullEventSender>();
 
             services.AddControllers();
         }
