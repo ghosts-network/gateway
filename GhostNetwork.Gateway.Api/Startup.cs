@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GhostEventBus;
 using GhostEventBus.RedisMq.Extensions;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
@@ -92,9 +93,13 @@ namespace GhostNetwork.Gateway.Api
             string redisAddress = configuration.GetValue<string>("REDIS_ADDRESS");
 
             if (eventBusIsEnabled)
+            {
                 services.AddEventSenderAsSingletone(redisAddress);
+            }
             else
-                services.AddSingleton<NullEventSender>();
+            {
+                services.AddSingleton<IEventSender>(_ => new NullEventSender());
+            }
 
             services.AddControllers();
         }
