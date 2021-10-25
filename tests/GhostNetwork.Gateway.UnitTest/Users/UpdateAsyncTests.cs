@@ -82,7 +82,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users
             var usersStorageMock = new Mock<IUsersStorage>();
             usersStorageMock
                 .Setup(s => s.GetByIdAsync(userId))
-                .ReturnsAsync(new User(userId, "FirstName", "LastName", "Gender", DateTime.Today));
+                .ReturnsAsync(new User(userId, "FirstName", "LastName", "Gender", DateTime.Today, string.Empty));
             usersStorageMock
                 .Setup(s => s.UpdateAsync(It.IsAny<User>()))
                 .ReturnsAsync(DomainResult.Success);

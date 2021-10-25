@@ -41,7 +41,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users
         {
             // Setup
             var id = Guid.NewGuid();
-            var user = new User(id, "FirstName", "LastName", "Gender", DateTime.Today);
+            var user = new User(id, "FirstName", "LastName", "Gender", DateTime.Today, string.Empty);
             var serviceMock = new Mock<IUsersStorage>();
             serviceMock
                 .Setup(s => s.GetByIdAsync(id))
