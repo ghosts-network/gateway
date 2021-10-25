@@ -25,7 +25,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 var profile = await profilesApi.GetByIdAsync(id);
-                return new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth);
+                return new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth, profile.City);
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
@@ -35,14 +35,12 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public async Task<DomainResult> UpdateAsync(User user)
         {
-            var profile = await profilesApi.GetByIdAsync(user.Id);
-
             var updateCommand = new ProfileUpdateViewModel(
-                profile.FirstName,
-                profile.LastName,
+                user.FirstName,
+                user.LastName,
                 user.Gender,
                 user.DateOfBirth,
-                profile.City);
+                user.City);
 
             try
             {
