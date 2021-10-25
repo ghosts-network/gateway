@@ -54,7 +54,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                 await eventSender.PublishAsync(new ProfileChangedEvent 
                     { 
                         TriggeredBy = currentUserProvider.UserId, 
-                        UpdatedUser = new UserInfo(user.Id, user.FirstName + user.LastName, null)
+                        UpdatedUser = new UserInfo(user.Id, $"{user.FirstName} {user.LastName}", null)
                     });
 
                 return DomainResult.Success();
