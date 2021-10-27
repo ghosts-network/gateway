@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks;
+using GhostNetwork.Content.Client;
 using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -181,6 +183,39 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 .PublishAsync(model.Content, publicationId, currentUserProvider.UserId);
 
             return Created(string.Empty, comment);
+        }
+
+        [HttpPut("comments/{commentId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> UpdateCommentAsync(
+            [FromRoute] string commentId,
+            [FromBody][Required] UpdateNewsFeedComment model)
+        {
+            var comment = await newsFeedStorage.GetCommentByIdAsync(commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            if (comment.Author.Id != new Guid(currentUserProvider.UserId))
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                await newsFeedStorage.UpdateCommentAsync(commentId, model.Content);
+            }
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
         }
 
         [HttpDelete("comments/{commentId}")]
