@@ -139,7 +139,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 var comment = await commentsApi.GetByIdAsync(commentId);
-                await commentsApi.UpdateAsync(commentId, new UpdateCommentModel { Content = content });
+                await commentsApi.UpdateAsync(commentId, new UpdateCommentModel(content));
             }
             catch (ApiException)
             {
