@@ -121,6 +121,32 @@ namespace GhostNetwork.Gateway.Infrastructure
             await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(content));
         }
 
+        public async Task<PublicationComment> GetCommentByIdAsync(string commentId)
+        {
+            try
+            {
+                var comment = await commentsApi.GetByIdAsync(commentId);
+                return ToDomain(comment);
+            }
+            catch (ApiException)
+            {
+                return null;
+            }
+        }
+
+        public async Task UpdateCommentAsync(string commentId, string content)
+        {
+            try
+            {
+                var comment = await commentsApi.GetByIdAsync(commentId);
+                await commentsApi.UpdateAsync(commentId, new UpdateCommentModel { Content = content });
+            }
+            catch (ApiException)
+            {
+                throw;
+            }
+        }
+
         public async Task DeleteAsync(string publicationId)
         {
             await Reactions.RemoveManyAsync(KeysBuilder.PublicationReactionsKey(publicationId));
@@ -140,12 +166,12 @@ namespace GhostNetwork.Gateway.Infrastructure
                 : 0;
         }
 
-        private static PublicationComment ToDomain(Comment entity, string publicationId)
+        private static PublicationComment ToDomain(Comment entity)
         {
             return new(
                 entity.Id,
                 entity.Content,
-                publicationId,
+                KeysBuilder.PublicationCommentKey(entity.Key),
                 ToUser(entity.Author),
                 entity.CreatedOn);
         }
@@ -163,7 +189,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     var comment = featuredComments.GetValueOrDefault(KeysBuilder.PublicationCommentKey(publicationId));
 
                     return new CommentsShort(
-                        comment?.Comments.Select(c => ToDomain(c, publicationId)) ?? Enumerable.Empty<PublicationComment>(),
+                        comment?.Comments.Select(c => ToDomain(c)) ?? Enumerable.Empty<PublicationComment>(),
                         comment?.TotalCount ?? 0);
                 });
         }
