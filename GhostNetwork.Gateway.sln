@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.EventBus", "Li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{3E0CDF72-F781-4442-A594-A0DF5340D3C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.EventBus.RabbitMq", "Libraries\GhostNetwork.EventBus.RabbitMq\GhostNetwork.EventBus.RabbitMq.csproj", "{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{9A41B98C-835C-4A64-B385-92CD78DDC1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A41B98C-835C-4A64-B385-92CD78DDC1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A41B98C-835C-4A64-B385-92CD78DDC1E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1328E155-C05B-4E97-8A08-8A953F4CD0EC} = {D16B9189-E995-484A-BF7D-F300EE227F44}
 		{9A41B98C-835C-4A64-B385-92CD78DDC1E0} = {3E0CDF72-F781-4442-A594-A0DF5340D3C3}
+		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816} = {3E0CDF72-F781-4442-A594-A0DF5340D3C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {213788C2-864B-454C-AF67-DC1DAD3901D7}
