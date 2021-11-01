@@ -121,32 +121,6 @@ namespace GhostNetwork.Gateway.Infrastructure
             await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(content));
         }
 
-        public async Task<PublicationComment> GetCommentByIdAsync(string commentId)
-        {
-            try
-            {
-                var comment = await commentsApi.GetByIdAsync(commentId);
-                return ToDomain(comment);
-            }
-            catch (ApiException)
-            {
-                return null;
-            }
-        }
-
-        public async Task UpdateCommentAsync(string commentId, string content)
-        {
-            try
-            {
-                var comment = await commentsApi.GetByIdAsync(commentId);
-                await commentsApi.UpdateAsync(commentId, new UpdateCommentModel(content));
-            }
-            catch (ApiException)
-            {
-                throw;
-            }
-        }
-
         public async Task DeleteAsync(string publicationId)
         {
             await Reactions.RemoveManyAsync(KeysBuilder.PublicationReactionsKey(publicationId));

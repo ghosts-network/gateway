@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
@@ -40,6 +41,20 @@ namespace GhostNetwork.Gateway.Infrastructure
             var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
 
             return ToDomain(comment, publicationId);
+        }
+
+        public async Task<DomainResult> UpdateAsync(string commentId, string content)
+        {
+            try
+            {
+                await commentsApi.UpdateAsync(commentId, new UpdateCommentModel(content));
+            }
+            catch (ApiException)
+            {
+                return DomainResult.Error("API error!");
+            }
+
+            return DomainResult.Success();
         }
 
         public async Task DeleteAsync(string id)
