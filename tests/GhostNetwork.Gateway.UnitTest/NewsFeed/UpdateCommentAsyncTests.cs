@@ -1,4 +1,5 @@
-﻿using GhostNetwork.Content.Client;
+﻿using Domain;
+using GhostNetwork.Content.Client;
 using GhostNetwork.Gateway.Api.NewsFeed;
 using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authentication;
@@ -23,8 +24,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             const string content = "New Content";
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetCommentByIdAsync(commentId))
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.GetByIdAsync(commentId))
                 .ReturnsAsync(default(PublicationComment));
 
             var client = TestServerHelper.New(collection =>
@@ -53,8 +54,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             const string content = "New Content";
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetCommentByIdAsync(commentId))
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.GetByIdAsync(commentId))
                 .ReturnsAsync(
                     new PublicationComment(
                         commentId,
@@ -95,8 +96,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             const string oldContent = "Old Content";
             string newContent = string.Empty;
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetCommentByIdAsync(commentId))
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.GetByIdAsync(commentId))
                 .ReturnsAsync(
                     new PublicationComment(
                         commentId,
@@ -105,8 +106,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                         new UserInfo(userId, string.Empty, null),
                         DateTimeOffset.Now));
 
-            NewsFeedStorageMock
-                .Setup(s => s.UpdateCommentAsync(commentId, newContent))
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.UpdateAsync(commentId, newContent))
                 .ThrowsAsync(new ApiException { ErrorCode = (int)HttpStatusCode.BadRequest });
 
             CurrentUserProviderMock
@@ -141,8 +142,8 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             const string oldContent = "Old Content";
             string newContent = "New Content";
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetCommentByIdAsync(commentId))
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.GetByIdAsync(commentId))
                 .ReturnsAsync(
                     new PublicationComment(
                         commentId,
@@ -151,9 +152,9 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
                         new UserInfo(userId, string.Empty, null),
                         DateTimeOffset.Now));
 
-            NewsFeedStorageMock
-                .Setup(s => s.UpdateCommentAsync(commentId, newContent))
-                .Returns(Task.CompletedTask);
+            NewsFeedCommentsStorageMock
+                .Setup(s => s.UpdateAsync(commentId, newContent))
+                .ReturnsAsync(DomainResult.Success);
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
