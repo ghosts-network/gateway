@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 using System.Threading.Tasks;
-using GhostNetwork.Content.Client;
 using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -194,7 +192,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromRoute] string commentId,
             [FromBody][Required] UpdateNewsFeedComment model)
         {
-            var comment = await newsFeedStorage.GetCommentByIdAsync(commentId);
+            var comment = await newsFeedStorage.Comments.GetByIdAsync(commentId);
 
             if (comment == null)
             {
@@ -206,11 +204,9 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 return Forbid();
             }
 
-            try
-            {
-                await newsFeedStorage.UpdateCommentAsync(commentId, model.Content);
-            }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
+            var result = await newsFeedStorage.Comments.UpdateAsync(commentId, model.Content);
+
+            if (!result.Successed)
             {
                 return BadRequest();
             }
