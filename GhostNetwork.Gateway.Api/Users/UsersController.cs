@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -66,6 +67,17 @@ namespace GhostNetwork.Gateway.Api.Users
             }
 
             return BadRequest();
+        }
+
+        [HttpPut("{userId}/profile-picture")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> UpsertProfilePictureAsync(
+            IFormFile file,
+            [FromRoute] Guid userId)
+        {
+            var r = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
+            
+            return Ok();
         }
     }
 }
