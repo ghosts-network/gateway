@@ -1,6 +1,9 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using GhostNetwork.Gateway.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -73,10 +76,21 @@ namespace GhostNetwork.Gateway.Api.Users
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> UpsertProfilePictureAsync(
             IFormFile file,
-            [FromRoute] Guid userId)
+            [FromRoute] Guid userId,
+            CancellationToken cancellationToken)
         {
-            var r = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
+            var connectionString =
+                "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;";
+
+            var client = new BlobServiceClient(connectionString);
+
+            var blobContainer = client.GetBlobContainerClient("photos");
+            await blobContainer.CreateIfNotExistsAsync(PublicAccessType.BlobContainer, cancellationToken: cancellationToken);
+
             
+            var blob = blobContainer.GetBlobClient($"{userId.ToString()}/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+            await blob.UploadAsync(file.OpenReadStream(), cancellationToken);
+
             return Ok();
         }
     }

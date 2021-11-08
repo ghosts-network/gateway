@@ -23,6 +23,11 @@ services:
       - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
 
+  s3:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+
   db:
     image: mvertes/alpine-mongo
     ports:
