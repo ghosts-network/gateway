@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
@@ -68,6 +69,10 @@ namespace GhostNetwork.Gateway.Api
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+
+            services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
+                new BlobServiceClient(configuration["BLOB_CONNECTION"]),
+                provider.GetRequiredService<IProfilesApi>()));
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             services.AddSingleton(_ => GrpcChannel.ForAddress(configuration["PROFILES_GRPC_ADDRESS"]));
