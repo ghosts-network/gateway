@@ -183,6 +183,37 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             return Created(string.Empty, comment);
         }
 
+        [HttpPut("comments/{commentId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> UpdateCommentAsync(
+            [FromRoute] string commentId,
+            [FromBody][Required] UpdateNewsFeedComment model)
+        {
+            var comment = await newsFeedStorage.Comments.GetByIdAsync(commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            if (comment.Author.Id != new Guid(currentUserProvider.UserId))
+            {
+                return Forbid();
+            }
+
+            var result = await newsFeedStorage.Comments.UpdateAsync(commentId, model.Content);
+
+            if (!result.Successed)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("comments/{commentId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
