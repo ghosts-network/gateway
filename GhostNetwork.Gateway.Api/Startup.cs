@@ -6,7 +6,6 @@ using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.NewsFeed;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +24,8 @@ namespace GhostNetwork.Gateway.Api
         {
             this.configuration = configuration;
         }
+
+        private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://accounts.ghost-network.boberneprotiv.com"));
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -74,10 +75,6 @@ namespace GhostNetwork.Gateway.Api
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),
                 provider.GetRequiredService<IProfilesApi>()));
 
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            services.AddSingleton(_ => GrpcChannel.ForAddress(configuration["PROFILES_GRPC_ADDRESS"]));
-            services.AddScoped(provider => new Profiles.Grpc.Profiles.ProfilesClient(provider.GetRequiredService<GrpcChannel>()));
-
             services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
@@ -87,7 +84,6 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
-            // services.AddScoped<GrpcUsersStorage>();
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
@@ -130,7 +126,7 @@ namespace GhostNetwork.Gateway.Api
             app.UseCors(builder => builder
                 .WithOrigins("http://localhost:4200", "https://ghost-network.boberneprotiv.com")
                 .AllowAnyHeader()
-                .WithExposedHeaders(Const.Headers.All)
+                .WithExposedHeaders(Consts.Headers.All)
                 .AllowAnyMethod());
 
             app.UseAuthentication();
@@ -138,7 +134,5 @@ namespace GhostNetwork.Gateway.Api
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
-
-        private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://accounts.ghost-network.boberneprotiv.com"));
     }
 }

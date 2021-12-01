@@ -11,7 +11,7 @@ namespace GhostNetwork.EventBus.RabbitMq
         {
             this.serviceProvider = serviceProvider;
         }
-        
+
         public IEventHandler<TEvent> GetRequiredService<TEvent>(Type type)
             where TEvent : Event
         {

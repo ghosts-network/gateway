@@ -21,7 +21,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             this.profilesApi = profilesApi;
         }
 
-        public async Task UploadAsync(Guid userId,
+        public async Task UploadAsync(
+            Guid userId,
             string fileName,
             Stream stream,
             CancellationToken cancellationToken = default)
@@ -34,8 +35,10 @@ namespace GhostNetwork.Gateway.Infrastructure
             var blob = blobContainer.GetBlobClient($"{userId.ToString()}/{fileName}");
             await blob.UploadAsync(stream, cancellationToken);
 
-            await profilesApi.UpdateAsync(userId,
-                new ProfileUpdateViewModel(user.FirstName,
+            await profilesApi.UpdateAsync(
+                userId,
+                new ProfileUpdateViewModel(
+                    user.FirstName,
                     user.LastName,
                     user.Gender,
                     user.DateOfBirth,

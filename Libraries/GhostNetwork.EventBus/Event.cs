@@ -1,4 +1,3 @@
-namespace GhostNetwork.EventBus
-{
-    public abstract record Event;
-}
+namespace GhostNetwork.EventBus;
+
+public abstract record Event;

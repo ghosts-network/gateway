@@ -4,8 +4,12 @@ namespace GhostNetwork.Gateway.NewsFeed
 {
     public class PublicationComment
     {
-        public PublicationComment(string id, string content, string publicationId,
-            UserInfo author, DateTimeOffset createdOn)
+        public PublicationComment(
+            string id,
+            string content,
+            string publicationId,
+            UserInfo author,
+            DateTimeOffset createdOn)
         {
             Id = id;
             Content = content;
@@ -15,13 +19,14 @@ namespace GhostNetwork.Gateway.NewsFeed
         }
 
         public string Id { get; }
+
         public string Content { get; }
 
         public string PublicationId { get; }
 
         [Obsolete]
         public Guid AuthorId => Author.Id;
-        
+
         public UserInfo Author { get; }
 
         public DateTimeOffset CreatedOn { get; }

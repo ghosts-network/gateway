@@ -46,28 +46,28 @@ namespace GhostNetwork.Gateway.Infrastructure
         public async Task<DomainResult> SendFriendRequestAsync(Guid fromUser, Guid toUser)
         {
             await relationsApi.SendFriendRequestAsync(fromUser, toUser);
-            
+
             return DomainResult.Success();
         }
 
         public async Task<DomainResult> ApproveFriendRequestAsync(Guid user, Guid requester)
         {
             await relationsApi.ApproveFriendRequestAsync(user, requester);
-            
+
             return DomainResult.Success();
         }
 
         public async Task<DomainResult> DeclineFriendRequestAsync(Guid user, Guid requester)
         {
             await relationsApi.DeclineFriendRequestAsync(user, requester);
-            
+
             return DomainResult.Success();
         }
 
         public async Task<DomainResult> RemoveFriendAsync(Guid user, Guid friend)
         {
             await relationsApi.DeleteFriendRequestAsync(user, friend);
-            
+
             return DomainResult.Success();
         }
 

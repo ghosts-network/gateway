@@ -11,6 +11,7 @@ namespace GhostNetwork.EventBus
         }
 
         public DateTimeOffset CreatedOn { get; }
+
         public Guid TrackerId { get; }
     }
 }

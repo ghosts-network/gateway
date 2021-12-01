@@ -6,7 +6,8 @@ namespace GhostNetwork.EventBus.RabbitMq
 {
     public class JsonMessageProvider : IMessageProvider
     {
-        public byte[] GetMessage<TEvent>(TEvent @event) where TEvent : Event
+        public byte[] GetMessage<TEvent>(TEvent @event)
+            where TEvent : Event
         {
             return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(@event));
         }

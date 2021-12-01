@@ -20,6 +20,7 @@ namespace GhostNetwork.EventBus.RabbitMq
 
         private static string GetSubscriptionName<TEvent, THandler>() =>
             $"{typeof(TEvent).FullName}-{typeof(THandler).FullName}";
+
         private record Subscription(Type Event, Type Handler, IModel Channel);
     }
 }

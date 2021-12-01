@@ -7,9 +7,9 @@ namespace GhostNetwork.EventBus.RabbitMq
     {
         private readonly ConnectionFactory connectionFactory;
 
-        private IConnection connection;
-
         private readonly object connectionLock = new();
+
+        private IConnection connection;
 
         public ConnectionProvider(ConnectionFactory connectionFactory)
         {

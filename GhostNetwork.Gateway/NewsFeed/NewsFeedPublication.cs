@@ -18,7 +18,7 @@ namespace GhostNetwork.Gateway.NewsFeed
         public CommentsShort Comments { get; }
 
         public ReactionShort Reactions { get; }
-        
+
         public UserInfo Author { get; }
     }
 }

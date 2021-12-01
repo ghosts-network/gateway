@@ -29,6 +29,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         }
 
         public INewsFeedReactionsStorage Reactions { get; }
+
         public INewsFeedCommentsStorage Comments { get; }
 
         public async Task<NewsFeedPublication> GetByIdAsync(string id)
@@ -36,11 +37,11 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 var publication = await publicationsApi.GetByIdAsync(id);
-                var featuredComments = await LoadCommentsAsync(new[] {id});
-                var reactions = await LoadReactionsAsync(new[] {id});
+                var featuredComments = await LoadCommentsAsync(new[] { id });
+                var reactions = await LoadReactionsAsync(new[] { id });
                 var userReactions = publication.Author?.Id == null
                     ? new Dictionary<string, UserReaction>()
-                    : await LoadUserReactionsAsync(publication.Author?.Id.ToString(), new[] {id});
+                    : await LoadUserReactionsAsync(publication.Author?.Id.ToString(), new[] { id });
 
                 return new NewsFeedPublication(
                     publication.Id,
@@ -207,7 +208,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         private static UserInfo ToUser(Content.Model.UserInfo userInfo)
         {
-            return new(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }

@@ -12,7 +12,8 @@ namespace GhostNetwork.Gateway.Infrastructure
     {
         private readonly IProfilesApi profilesApi;
 
-        public RestUsersStorage(IProfilesApi profilesApi,
+        public RestUsersStorage(
+            IProfilesApi profilesApi,
             IRelationsApi relationsApi,
             IUsersPictureStorage usersPictureStorage)
         {
@@ -22,6 +23,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         }
 
         public IUsersRelationsStorage Relations { get; }
+
         public IUsersPictureStorage ProfilePictures { get; }
 
         public async Task<User> GetByIdAsync(Guid id)

@@ -1,6 +1,6 @@
 namespace GhostNetwork.Gateway.Api
 {
-    public static class Const
+    public static class Consts
     {
         public static class Headers
         {

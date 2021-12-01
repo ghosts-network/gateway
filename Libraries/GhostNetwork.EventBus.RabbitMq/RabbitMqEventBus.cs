@@ -22,19 +22,22 @@ namespace GhostNetwork.EventBus.RabbitMq
             this.nameProvider = nameProvider ?? new DefaultQueueNameProvider();
         }
 
-        public Task PublishAsync<TEvent>(TEvent @event) where TEvent : Event
+        public Task PublishAsync<TEvent>(TEvent @event)
+            where TEvent : Event
         {
             using var channel = connectionProvider.GetConnection().CreateModel();
 
             var exchangeName = nameProvider.GetExchangeName<TEvent>();
             channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
-            channel.BasicPublish(exchangeName, "", null, messageProvider.GetMessage(@event));
+            channel.BasicPublish(exchangeName, string.Empty, null, messageProvider.GetMessage(@event));
 
             channel.Close();
             return Task.CompletedTask;
         }
 
-        public void Subscribe<TEvent, THandler>() where THandler : IEventHandler<TEvent> where TEvent : Event
+        public void Subscribe<TEvent, THandler>()
+            where THandler : IEventHandler<TEvent>
+            where TEvent : Event
         {
             var channel = connectionProvider.GetConnection().CreateModel();
 
@@ -42,7 +45,7 @@ namespace GhostNetwork.EventBus.RabbitMq
             var queueName = nameProvider.GetQueueName<TEvent, THandler>();
             channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
             channel.QueueDeclare(queueName);
-            channel.QueueBind(queueName, exchangeName, "");
+            channel.QueueBind(queueName, exchangeName, string.Empty);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (_, ea) =>
@@ -56,7 +59,9 @@ namespace GhostNetwork.EventBus.RabbitMq
             subscriptionManager.Subscribe<TEvent, THandler>(channel);
         }
 
-        public void Unsubscribe<TEvent, THandler>() where TEvent : Event where THandler : IEventHandler<TEvent>
+        public void Unsubscribe<TEvent, THandler>()
+            where TEvent : Event
+            where THandler : IEventHandler<TEvent>
         {
             subscriptionManager.Unsubscribe<TEvent, THandler>();
         }

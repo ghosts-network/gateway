@@ -78,11 +78,12 @@ namespace GhostNetwork.Gateway.Api.Users
             CancellationToken cancellationToken)
         {
             await usersStorage.ProfilePictures
-                .UploadAsync(userId,
+                .UploadAsync(
+                    userId,
                     $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
                     file.OpenReadStream(),
                     cancellationToken);
-            
+
             return NoContent();
         }
     }
