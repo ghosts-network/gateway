@@ -22,23 +22,44 @@ namespace GhostNetwork.EventBus.RabbitMq
         {
             lock (connectionLock)
             {
-                Policy
-                .Handle<BrokerUnreachableException>()
-                .WaitAndRetryForever(retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
-                .Execute(() =>
-                {
-                    connection ??= connectionFactory.CreateConnection();
-                });
+                TryConnect();
             }
+
+            connection.ConnectionShutdown += OnConnectionLost;
 
             return connection;
         }
 
+        /// <summary>
+        /// Close connection to RabbitMq.
+        /// </summary>
         public void Dispose()
         {
             connection?.Close();
             connection?.Dispose();
+        }
+
+        private void OnConnectionLost(object sender, ShutdownEventArgs args)
+        {
+            lock (connectionLock)
+            {
+                Dispose();
+                connection = null;
+
+                TryConnect();
+            }
+        }
+
+        private void TryConnect()
+        {
+            Policy
+                .Handle<BrokerUnreachableException>()
+                .WaitAndRetryForever(retryAttempt =>
+                    TimeSpan.FromMinutes(retryAttempt))
+                .Execute(() =>
+                {
+                    connection ??= connectionFactory.CreateConnection();
+                });
         }
     }
 }
