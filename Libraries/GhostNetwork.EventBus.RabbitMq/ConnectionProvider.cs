@@ -55,7 +55,12 @@ namespace GhostNetwork.EventBus.RabbitMq
             Policy
                 .Handle<BrokerUnreachableException>()
                 .WaitAndRetryForever(retryAttempt =>
-                    TimeSpan.FromMinutes(retryAttempt))
+                    retryAttempt switch
+                    {
+                        1 => TimeSpan.FromSeconds(10),
+                        2 => TimeSpan.FromSeconds(30),
+                        _ => TimeSpan.FromSeconds(60)
+                    })
                 .Execute(() =>
                 {
                     connection ??= connectionFactory.CreateConnection();
