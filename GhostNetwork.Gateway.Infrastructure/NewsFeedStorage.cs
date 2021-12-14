@@ -141,16 +141,6 @@ namespace GhostNetwork.Gateway.Infrastructure
                 : 0;
         }
 
-        private static PublicationComment ToDomain(Comment entity)
-        {
-            return new(
-                entity.Id,
-                entity.Content,
-                KeysBuilder.PublicationCommentKey(entity.Key),
-                ToUser(entity.Author),
-                entity.CreatedOn);
-        }
-
         private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
         {
             var keys = publicationIds.Select(KeysBuilder.PublicationCommentKey).ToList();
@@ -204,6 +194,16 @@ namespace GhostNetwork.Gateway.Infrastructure
                 .ToDictionary(id => id, id => userReactions.ContainsKey(KeysBuilder.PublicationReactionsKey(id))
                     ? new UserReaction(Enum.Parse<ReactionType>(userReactions[KeysBuilder.PublicationReactionsKey(id)].Type))
                     : null);
+        }
+
+        private static PublicationComment ToDomain(Comment entity)
+        {
+            return new(
+                entity.Id,
+                entity.Content,
+                KeysBuilder.PublicationCommentKey(entity.Key),
+                ToUser(entity.Author),
+                entity.CreatedOn);
         }
 
         private static UserInfo ToUser(Content.Model.UserInfo userInfo)
