@@ -198,7 +198,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         private static PublicationComment ToDomain(Comment entity)
         {
-            return new(
+            return new PublicationComment(
                 entity.Id,
                 entity.Content,
                 KeysBuilder.PublicationCommentKey(entity.Key),
