@@ -129,6 +129,21 @@ namespace GhostNetwork.Gateway.Infrastructure
             await publicationsApi.DeleteAsync(publicationId);
         }
 
+        private static PublicationComment ToDomain(Comment entity)
+        {
+            return new PublicationComment(
+                entity.Id,
+                entity.Content,
+                KeysBuilder.PublicationCommentKey(entity.Key),
+                ToUser(entity.Author),
+                entity.CreatedOn);
+        }
+
+        private static UserInfo ToUser(Content.Model.UserInfo userInfo)
+        {
+            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
+        }
+
         private static long GetTotalCountHeader(IApiResponse response)
         {
             if (!response.Headers.TryGetValue("X-TotalCount", out var headers))
@@ -194,21 +209,6 @@ namespace GhostNetwork.Gateway.Infrastructure
                 .ToDictionary(id => id, id => userReactions.ContainsKey(KeysBuilder.PublicationReactionsKey(id))
                     ? new UserReaction(Enum.Parse<ReactionType>(userReactions[KeysBuilder.PublicationReactionsKey(id)].Type))
                     : null);
-        }
-
-        private static PublicationComment ToDomain(Comment entity)
-        {
-            return new PublicationComment(
-                entity.Id,
-                entity.Content,
-                KeysBuilder.PublicationCommentKey(entity.Key),
-                ToUser(entity.Author),
-                entity.CreatedOn);
-        }
-
-        private static UserInfo ToUser(Content.Model.UserInfo userInfo)
-        {
-            return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
     }
 }
