@@ -1,7 +1,7 @@
+using System;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
-using System;
 
 namespace GhostNetwork.EventBus.RabbitMq
 {

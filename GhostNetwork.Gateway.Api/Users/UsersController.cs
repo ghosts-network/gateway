@@ -71,12 +71,23 @@ namespace GhostNetwork.Gateway.Api.Users
         }
 
         [HttpPut("{userId}/profile-picture")]
+        [RequestSizeLimit(1048576)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpsertProfilePictureAsync(
             IFormFile file,
             [FromRoute] Guid userId,
             CancellationToken cancellationToken)
         {
+            if (userId.ToString() != currentUserProvider.UserId)
+            {
+                return Forbid();
+            }
+
+            if (Path.GetExtension(file.FileName) != ".jpg" && Path.GetExtension(file.FileName) != ".png")
+            {
+                return BadRequest();
+            }
+
             await usersStorage.ProfilePictures
                 .UploadAsync(
                     userId,
