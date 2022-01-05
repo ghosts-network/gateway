@@ -46,6 +46,8 @@ namespace GhostNetwork.Gateway.Infrastructure
                 return new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
+                    publication.CreatedOn,
+                    publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
                     ToUser(publication.Author));
@@ -72,6 +74,8 @@ namespace GhostNetwork.Gateway.Infrastructure
                 .Select(publication => new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
+                    publication.CreatedOn,
+                    publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
                     ToUser(publication.Author)))
@@ -96,6 +100,8 @@ namespace GhostNetwork.Gateway.Infrastructure
                 .Select(publication => new NewsFeedPublication(
                     publication.Id,
                     publication.Content,
+                    publication.CreatedOn,
+                    publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
                     ToUser(publication.Author)))
@@ -112,6 +118,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             return new NewsFeedPublication(
                 entity.Id,
                 entity.Content,
+                entity.CreatedOn,
+                entity.UpdatedOn,
                 new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
                 new ReactionShort(new Dictionary<ReactionType, int>(), null),
                 ToUser(entity.Author));
