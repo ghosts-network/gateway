@@ -4,7 +4,7 @@ namespace GhostNetwork.Gateway.NewsFeed
 {
     public class NewsFeedPublication
     {
-        public NewsFeedPublication(string id, string content, DateTimeOffset createdeOn, DateTimeOffset? updatedOn, CommentsShort comments, ReactionShort reactions, UserInfo author)
+        public NewsFeedPublication(string id, string content, DateTimeOffset createdeOn, DateTimeOffset updatedOn, CommentsShort comments, ReactionShort reactions, UserInfo author)
         {
             Id = id;
             Content = content;
@@ -27,6 +27,6 @@ namespace GhostNetwork.Gateway.NewsFeed
 
         public DateTimeOffset CreatedOn { get; }
 
-        public DateTimeOffset? UpdatedOn { get;  }
+        public DateTimeOffset UpdatedOn { get;  }
     }
 }
