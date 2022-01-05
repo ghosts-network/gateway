@@ -55,7 +55,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+                .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null)));
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
@@ -87,7 +87,7 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
 
             NewsFeedStorageMock
                 .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", null, null, new UserInfo(userId, "", null)));
+                .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null)));
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
