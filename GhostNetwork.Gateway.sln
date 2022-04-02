@@ -1,31 +1,33 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30523.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.Api", "GhostNetwork.Gateway.Api\GhostNetwork.Gateway.Api.csproj", "{71E6C0EC-8D8F-4439-BDFB-1FBC9DD9213C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{05B80664-E911-4C78-81E7-07123CE1990E}"
 	ProjectSection(SolutionItems) = preProject
 		dev-compose.yml = dev-compose.yml
+		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
 		Readme.md = Readme.md
-		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway", "GhostNetwork.Gateway\GhostNetwork.Gateway.csproj", "{7DF0A89F-D766-4AA8-A30E-D0560014B416}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D16B9189-E995-484A-BF7D-F300EE227F44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.UnitTest", "tests\GhostNetwork.Gateway.UnitTest\GhostNetwork.Gateway.UnitTest.csproj", "{1328E155-C05B-4E97-8A08-8A953F4CD0EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.UnitTest", "tests\GhostNetwork.Gateway.UnitTest\GhostNetwork.Gateway.UnitTest.csproj", "{1328E155-C05B-4E97-8A08-8A953F4CD0EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.Infrastructure", "GhostNetwork.Gateway.Infrastructure\GhostNetwork.Gateway.Infrastructure.csproj", "{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.Gateway.Infrastructure", "GhostNetwork.Gateway.Infrastructure\GhostNetwork.Gateway.Infrastructure.csproj", "{5CDB76CE-574D-41D9-9AB9-01D057B6AE9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.EventBus", "Libraries\GhostNetwork.EventBus\GhostNetwork.EventBus.csproj", "{9A41B98C-835C-4A64-B385-92CD78DDC1E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus", "Libraries\GhostNetwork.EventBus\GhostNetwork.EventBus.csproj", "{9A41B98C-835C-4A64-B385-92CD78DDC1E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{3E0CDF72-F781-4442-A594-A0DF5340D3C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.EventBus.RabbitMq", "Libraries\GhostNetwork.EventBus.RabbitMq\GhostNetwork.EventBus.RabbitMq.csproj", "{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.RabbitMq", "Libraries\GhostNetwork.EventBus.RabbitMq\GhostNetwork.EventBus.RabbitMq.csproj", "{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.AzureServiceBus", "GhostNetwork.EventBus.AzureServiceBus\GhostNetwork.EventBus.AzureServiceBus.csproj", "{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{1328E155-C05B-4E97-8A08-8A953F4CD0EC} = {D16B9189-E995-484A-BF7D-F300EE227F44}
 		{9A41B98C-835C-4A64-B385-92CD78DDC1E0} = {3E0CDF72-F781-4442-A594-A0DF5340D3C3}
 		{2B4CC237-A1EC-4A60-82EB-5C02FD32F816} = {3E0CDF72-F781-4442-A594-A0DF5340D3C3}
+		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158} = {3E0CDF72-F781-4442-A594-A0DF5340D3C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {213788C2-864B-454C-AF67-DC1DAD3901D7}
