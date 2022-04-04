@@ -15,7 +15,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
 
         private IList<ServiceBusProcessor> _processorList;
 
-        public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider messageProvider = null, INameProvider nameProvider = null)
+        public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider? messageProvider = null, INameProvider? nameProvider = null)
         {
             serviceBusClient = new ServiceBusClient(connectionString);
             subscriptionManager = new ServiceBusAdministrationClient(connectionString);
