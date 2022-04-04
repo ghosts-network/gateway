@@ -1,5 +1,3 @@
-using System;
-
 namespace GhostNetwork.EventBus.AzureServiceBus
 {
     public interface IMessageProvider
