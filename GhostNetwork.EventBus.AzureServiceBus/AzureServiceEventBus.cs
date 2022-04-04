@@ -1,6 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
-using System.Text.Json;
 
 namespace GhostNetwork.EventBus.AzureServiceBus
 {
@@ -13,13 +12,13 @@ namespace GhostNetwork.EventBus.AzureServiceBus
         private readonly ServiceBusClient serviceBusClient;
         private readonly ServiceBusAdministrationClient subscriptionManager;
 
-        private IList<ServiceBusProcessor> _processorList;
+        private IList<ServiceBusProcessor> processorList;
 
         public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider? messageProvider = null, INameProvider? nameProvider = null)
         {
             serviceBusClient = new ServiceBusClient(connectionString);
             subscriptionManager = new ServiceBusAdministrationClient(connectionString);
-            _processorList = new List<ServiceBusProcessor>();
+            processorList = new List<ServiceBusProcessor>();
 
             this.handlerProvider = handlerProvider;
 
@@ -56,14 +55,15 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             }
 
             var processor = serviceBusClient.CreateProcessor(topicName, subscriptionName);
-            _processorList.Add(processor);
+            processorList.Add(processor);
 
             processor.ProcessMessageAsync += async args =>
             {
                 var message = messageProvider.GetEvent(args.Message.Body.ToArray(), typeof(TEvent)) as TEvent;
                 var handler = handlerProvider.GetRequiredService<TEvent>(typeof(THandler));
-                
+
                 await handler.ProcessAsync(message!);
+
                 await args.CompleteMessageAsync(args.Message);
             };
 
@@ -82,13 +82,13 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             var topicName = nameProvider.GetTopicName<TEvent>();
             var subscriptionName = nameProvider.GetSubscriptionName<THandler, TEvent>();
 
-            subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).ConfigureAwait(false);
+            _ = subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).GetAwaiter().GetResult();
         }
 
         public async ValueTask DisposeAsync()
         {
             await serviceBusClient.DisposeAsync();
-            foreach (var proccesor in _processorList)
+            foreach (var proccesor in processorList)
             {
                 await proccesor.DisposeAsync();
             }
