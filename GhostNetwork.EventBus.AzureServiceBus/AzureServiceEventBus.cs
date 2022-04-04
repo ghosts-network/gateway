@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace GhostNetwork.EventBus.AzureServiceBus
 {
-    public class AzureServiceEventBus : IEventBus, IDisposable
+    public class AzureServiceEventBus : IEventBus, IAsyncDisposable
     {
         private readonly IHandlerProvider _handlerProvider;
         private readonly IMessageProvider _messageProvider;
@@ -85,7 +85,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).ConfigureAwait(false);
         }
 
-        public async void Dispose()
+        public async ValueTask DisposeAsync()
         {
             await serviceBusClient.DisposeAsync();
             foreach (var proccesor in _processorList)
