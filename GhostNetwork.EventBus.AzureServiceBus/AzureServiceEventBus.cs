@@ -6,9 +6,9 @@ namespace GhostNetwork.EventBus.AzureServiceBus
 {
     public class AzureServiceEventBus : IEventBus, IAsyncDisposable
     {
-        private readonly IHandlerProvider _handlerProvider;
-        private readonly IMessageProvider _messageProvider;
-        private readonly INameProvider _nameProvider;
+        private readonly IHandlerProvider handlerProvider;
+        private readonly IMessageProvider messageProvider;
+        private readonly INameProvider nameProvider;
 
         private readonly ServiceBusClient serviceBusClient;
         private readonly ServiceBusAdministrationClient subscriptionManager;
@@ -21,18 +21,18 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             subscriptionManager = new ServiceBusAdministrationClient(connectionString);
             _processorList = new List<ServiceBusProcessor>();
 
-            _handlerProvider = handlerProvider;
+            this.handlerProvider = handlerProvider;
 
-            _nameProvider = nameProvider ?? new DefaultNameProvider();
-            _messageProvider = messageProvider ?? new JsonMessageProvider();
+            this.nameProvider = nameProvider ?? new DefaultNameProvider();
+            this.messageProvider = messageProvider ?? new JsonMessageProvider();
         }
 
         public async  Task PublishAsync<TEvent>(TEvent @event) where TEvent : Event
         {
-            var topicName = _nameProvider.GetTopicName<TEvent>();
+            var topicName = nameProvider.GetTopicName<TEvent>();
 
             await using var sender = serviceBusClient.CreateSender(topicName);
-            var body = JsonSerializer.Serialize(@event);
+            var body = messageProvider.GetMessage(@event);
 
             await sender.SendMessageAsync(new ServiceBusMessage(body));
             await sender.CloseAsync();
@@ -42,8 +42,8 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             where TEvent : Event
             where THandler : IEventHandler<TEvent>
         {
-            string topicName = _nameProvider.GetTopicName<TEvent>();
-            string subscriptionName = _nameProvider.GetSubscriptionName<THandler, TEvent>();
+            string topicName = nameProvider.GetTopicName<TEvent>();
+            string subscriptionName = nameProvider.GetSubscriptionName<THandler, TEvent>();
 
             if (!await subscriptionManager.TopicExistsAsync(topicName))
             {
@@ -60,8 +60,8 @@ namespace GhostNetwork.EventBus.AzureServiceBus
 
             processor.ProcessMessageAsync += async args =>
             {
-                var message = _messageProvider.GetEvent(args.Message.Body.ToArray(), typeof(TEvent)) as TEvent;
-                var handler = _handlerProvider.GetRequiredService<TEvent>(typeof(THandler));
+                var message = messageProvider.GetEvent(args.Message.Body.ToArray(), typeof(TEvent)) as TEvent;
+                var handler = handlerProvider.GetRequiredService<TEvent>(typeof(THandler));
                 
                 await handler.ProcessAsync(message!);
                 await args.CompleteMessageAsync(args.Message);
@@ -79,8 +79,8 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             where TEvent : Event
             where THandler : IEventHandler<TEvent>
         {
-            var topicName = _nameProvider.GetTopicName<TEvent>();
-            var subscriptionName = _nameProvider.GetSubscriptionName<THandler, TEvent>();
+            var topicName = nameProvider.GetTopicName<TEvent>();
+            var subscriptionName = nameProvider.GetSubscriptionName<THandler, TEvent>();
 
             subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).ConfigureAwait(false);
         }
