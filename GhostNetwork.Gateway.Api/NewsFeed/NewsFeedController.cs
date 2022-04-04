@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using GhostNetwork.EventBus;
-using GhostNetwork.EventBus.AzureServiceBus;
 using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,13 +17,11 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
     {
         private readonly INewsFeedStorage newsFeedStorage;
         private readonly ICurrentUserProvider currentUserProvider;
-        private readonly IEventBus eventBus;
 
-        public NewsFeedController(INewsFeedStorage newsFeedStorage, ICurrentUserProvider currentUserProvider, IEventBus eventBus)
+        public NewsFeedController(INewsFeedStorage newsFeedStorage, ICurrentUserProvider currentUserProvider)
         {
             this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;
-            this.eventBus = eventBus;
         }
 
         [HttpGet("users/{userId:guid}")]
@@ -53,8 +49,12 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            await eventBus.PublishAsync(new UpdatedEvent(new Guid(currentUserProvider.UserId), "asd asd2", "path_to_profile"));
-            return Ok();
+            var (news, totalCount) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, skip, take);
+
+            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
+            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
+
+            return Ok(news);
         }
 
         [HttpPost]
