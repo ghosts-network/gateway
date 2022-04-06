@@ -4,7 +4,7 @@ namespace GhostNetwork.Gateway.Users
 {
     public class User
     {
-        public User(Guid id, string firstName, string lastName, string gender, DateTime? dateOfBirth, string profilePicture)
+        public User(Guid id, string firstName, string lastName, string gender, DateTime? dateOfBirth, string city, string profilePicture)
         {
             Id = id;
             FirstName = firstName;
@@ -12,6 +12,7 @@ namespace GhostNetwork.Gateway.Users
             Gender = gender;
             DateOfBirth = dateOfBirth;
             ProfilePicture = profilePicture;
+            City = city;
         }
 
         public Guid Id { get; }
@@ -26,10 +27,13 @@ namespace GhostNetwork.Gateway.Users
 
         public string ProfilePicture { get; }
 
-        public void Update(string gender, DateTime? dateOfBirth)
+        public string? City { get; private set; }
+
+        public void Update(string gender, DateTime? dateOfBirth, string? city)
         {
             Gender = gender;
             DateOfBirth = dateOfBirth;
+            City = city;
         }
     }
 }
