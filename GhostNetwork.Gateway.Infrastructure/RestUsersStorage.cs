@@ -31,7 +31,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             try
             {
                 var profile = await profilesApi.GetByIdAsync(id);
-                return new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth, profile.ProfilePicture);
+                return new User(profile.Id, profile.FirstName, profile.LastName, profile.Gender, profile.DateOfBirth, profile.City, profile.ProfilePicture);
             }
             catch (Profiles.Client.ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
             {
@@ -48,7 +48,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                 profile.LastName,
                 user.Gender,
                 user.DateOfBirth,
-                profile.City);
+                city: user.City);
 
             try
             {
