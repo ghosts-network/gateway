@@ -59,7 +59,7 @@ namespace GhostNetwork.Gateway.Api.Users
                 return NotFound();
             }
 
-            user.Update(model.Gender, model.DateOfBirth);
+            user.Update(model.Gender, model.DateOfBirth, model.City);
 
             var result = await usersStorage.UpdateAsync(user);
             if (result.Successed)
