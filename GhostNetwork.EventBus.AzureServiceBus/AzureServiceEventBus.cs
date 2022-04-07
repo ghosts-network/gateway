@@ -12,7 +12,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
         private readonly ServiceBusClient serviceBusClient;
         private readonly ServiceBusAdministrationClient subscriptionManager;
 
-        private IList<ServiceBusProcessor> processorList;
+        private readonly IList<ServiceBusProcessor> processorList;
 
         public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider? messageProvider = null, INameProvider? nameProvider = null)
         {
@@ -81,15 +81,15 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             var topicName = nameProvider.GetTopicName<TEvent>();
             var subscriptionName = nameProvider.GetSubscriptionName<THandler, TEvent>();
 
-            subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).ConfigureAwait(false);
+            subscriptionManager.DeleteSubscriptionAsync(topicName, subscriptionName).GetAwaiter().GetResult();
         }
 
         public async ValueTask DisposeAsync()
         {
             await serviceBusClient.DisposeAsync();
-            foreach (var proccesor in processorList)
+            foreach (var processor in processorList)
             {
-                await proccesor.DisposeAsync();
+                await processor.DisposeAsync();
             }
         }
     }
