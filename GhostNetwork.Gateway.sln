@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.RabbitMq", "Libraries\GhostNetwork.EventBus.RabbitMq\GhostNetwork.EventBus.RabbitMq.csproj", "{2B4CC237-A1EC-4A60-82EB-5C02FD32F816}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.AzureServiceBus", "GhostNetwork.EventBus.AzureServiceBus\GhostNetwork.EventBus.AzureServiceBus.csproj", "{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.AzureServiceBus", "Libraries\GhostNetwork.EventBus.AzureServiceBus\GhostNetwork.EventBus.AzureServiceBus.csproj", "{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
