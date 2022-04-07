@@ -1,0 +1,23 @@
+name: Release GhostNetwork.EventHub.AzureServiceBus nuget
+
+on:
+  workflow_dispatch:
+
+env:
+  PACKAGE_REGISTRY: https://api.nuget.org/v3/index.json
+
+jobs:
+  generate-nupkg:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.100
+      - name: Create package
+        run: dotnet pack -o .
+        working-directory: ./Libraries/GhostNetwork.EventBus.AzureServiceBus
+      - name: Publish package
+        run: dotnet nuget push $(ls | grep GhostNetwork.EventBus.AzureServiceBus.*.nupkg) --source $PACKAGE_REGISTRY --api-key ${{ secrets.NUGET_KEY }}
+        working-directory: ./Libraries/GhostNetwork.EventBus.AzureServiceBus
