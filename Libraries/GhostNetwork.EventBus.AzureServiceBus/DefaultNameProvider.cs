@@ -17,7 +17,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             where TEvent : Event
             where THandler : IEventHandler<TEvent>
         {
-            return typeof(THandler).Name!.ToLower();
+            return typeof(THandler).FullName!.ToLower();
         }
     }
 }
