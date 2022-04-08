@@ -33,6 +33,11 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             await using var sender = serviceBusClient.CreateSender(topicName);
             var body = messageProvider.GetMessage(@event);
 
+            if (!await subscriptionManager.TopicExistsAsync(topicName))
+            {
+                await subscriptionManager.CreateTopicAsync(topicName);
+            }
+
             await sender.SendMessageAsync(new ServiceBusMessage(body));
             await sender.CloseAsync();
         }
