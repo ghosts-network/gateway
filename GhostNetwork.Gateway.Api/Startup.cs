@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
@@ -123,16 +124,27 @@ namespace GhostNetwork.Gateway.Api
 
             app.UseRouting();
 
-            app.UseCors(builder => builder
-                .WithOrigins("http://localhost:4200", "https://ghost-network.boberneprotiv.com")
-                .AllowAnyHeader()
-                .WithExposedHeaders(Consts.Headers.All)
-                .AllowAnyMethod());
+            app.UseCors(builder =>
+            {
+                var allowOrigins = GetAllowOrigins();
+                builder = allowOrigins.Any()
+                    ? builder.WithOrigins(allowOrigins)
+                    : builder.AllowAnyOrigin();
+
+                builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private string[] GetAllowOrigins()
+        {
+            return configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',').ToArray() ?? Array.Empty<string>();
         }
     }
 }
