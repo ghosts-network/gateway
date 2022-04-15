@@ -60,5 +60,13 @@ namespace GhostNetwork.Gateway.Infrastructure
                 return DomainResult.Error("ERROR!!!!");
             }
         }
+
+        public async Task UpdateAvatarAsync(Guid userId, string avatar)
+        {
+            await profilesApi.UpdateAvatarAsync(userId, new AvatarUpdateViewModel
+            {
+                ProfilePicture = avatar
+            });
+        }
     }
 }

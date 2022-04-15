@@ -35,16 +35,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             var blob = blobContainer.GetBlobClient($"{userId.ToString()}/{fileName}");
             await blob.UploadAsync(stream, cancellationToken);
 
-            await profilesApi.UpdateAsync(
-                userId,
-                new ProfileUpdateViewModel(
-                    user.FirstName,
-                    user.LastName,
-                    user.Gender,
-                    user.DateOfBirth,
-                    user.City,
-                    blob.Uri.ToString()),
-                cancellationToken);
+            var updateModel = new AvatarUpdateViewModel(blob.Uri.ToString());
+            await profilesApi.UpdateAvatarAsync(userId, updateModel, cancellationToken);
         }
     }
 }
