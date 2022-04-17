@@ -96,6 +96,21 @@ namespace GhostNetwork.Gateway.Api.Users
             return NoContent();
         }
 
+        [HttpDelete("outgoing/{to:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> CancelOutgoingRequestAsync([FromRoute] Guid to)
+        {
+            if (currentUserProvider.UserId == to.ToString())
+            {
+                return BadRequest();
+            }
+
+            await usersStorage.Relations.RemoveOutgoingRequestAsync(new Guid(currentUserProvider.UserId), to);
+
+            return NoContent();
+        }
+
         [HttpDelete("friends/{friend:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> RemoveFriendAsync([FromRoute] Guid friend)
