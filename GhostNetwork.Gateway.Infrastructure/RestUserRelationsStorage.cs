@@ -64,6 +64,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             return DomainResult.Success();
         }
 
+        public async Task<DomainResult> RemoveOutgoingRequestAsync(Guid from, Guid to)
+        {
+            await relationsApi.CancelOutgoingRequestAsync(from, to);
+
+            return DomainResult.Success();
+        }
+
         public async Task<DomainResult> RemoveFriendAsync(Guid user, Guid friend)
         {
             await relationsApi.DeleteFriendRequestAsync(user, friend);
