@@ -21,6 +21,8 @@ namespace GhostNetwork.Gateway.Users
 
         Task<DomainResult> DeclineFriendRequestAsync(Guid user, Guid requester);
 
+        Task<DomainResult> RemoveOutgoingRequestAsync(Guid from, Guid to);
+
         Task<DomainResult> RemoveFriendAsync(Guid user, Guid friend);
     }
 }
