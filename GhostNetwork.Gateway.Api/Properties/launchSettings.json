@@ -3,11 +3,11 @@
   "profiles": {
     "GhostNetwork.Gateway.Api": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "http://localhost:5000/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "AUTHORITY": "https://accounts.ghost-network.boberneprotiv.com",
+        "AUTHORITY": "https://localhost:5501",
         "CONTENT_ADDRESS": "http://localhost:5300",
         "PROFILES_ADDRESS": "http://localhost:5400",
         "BLOB_CONNECTION": "AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;DefaultEndpointsProtocol=http;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;"
