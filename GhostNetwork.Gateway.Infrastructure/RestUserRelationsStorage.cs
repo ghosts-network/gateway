@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 
@@ -12,15 +13,24 @@ namespace GhostNetwork.Gateway.Infrastructure
     {
         private readonly IProfilesApi profilesApi;
         private readonly IRelationsApi relationsApi;
+        private readonly ISecuritySettingsResolver securitySettingsResolver;
 
-        public RestUserRelationsStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
+        public RestUserRelationsStorage(IProfilesApi profilesApi, IRelationsApi relationsApi, ISecuritySettingsResolver securitySettingsResolver)
         {
             this.profilesApi = profilesApi;
             this.relationsApi = relationsApi;
+            this.securitySettingsResolver = securitySettingsResolver;
         }
 
         public async Task<IEnumerable<UserInfo>> GetFriendsAsync(Guid user, int take, int skip)
         {
+            var resolveResult = await securitySettingsResolver.ResolveFriendsAccessAsync(user);
+
+            if (!resolveResult.Successed)
+            {
+                return Enumerable.Empty<UserInfo>();
+            }
+
             var ids = await relationsApi.SearchFriendsAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
         }
