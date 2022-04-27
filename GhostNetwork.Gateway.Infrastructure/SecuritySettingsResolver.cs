@@ -15,10 +15,11 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly IRelationsApi relationsApi;
         private readonly ICurrentUserProvider currentUserProvider;
 
-        public SecuritySettingsResolver(ISecuritySettingsApi securitySettingsApi, ICurrentUserProvider currentUserProvider)
+        public SecuritySettingsResolver(ISecuritySettingsApi securitySettingsApi, ICurrentUserProvider currentUserProvider, IRelationsApi relationsApi)
         {
             this.securitySettingsApi = securitySettingsApi;
             this.currentUserProvider = currentUserProvider;
+            this.relationsApi = relationsApi;
         }
 
         public async Task<DomainResult> ResolveFriendsAccessAsync(Guid userId)

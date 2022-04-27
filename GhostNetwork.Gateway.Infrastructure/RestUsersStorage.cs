@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
@@ -15,16 +16,21 @@ namespace GhostNetwork.Gateway.Infrastructure
         public RestUsersStorage(
             IProfilesApi profilesApi,
             IRelationsApi relationsApi,
-            IUsersPictureStorage usersPictureStorage)
+            IUsersPictureStorage usersPictureStorage,
+            ISecuritySettingsApi securitySettingsApi,
+            ISecuritySettingsResolver securitySettingsResolver)
         {
             this.profilesApi = profilesApi;
-            Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
+            Relations = new RestUserRelationsStorage(profilesApi, relationsApi, securitySettingsResolver);
+            SecuritySettings = new SecuritySettingStorage(securitySettingsApi);
             ProfilePictures = usersPictureStorage;
         }
 
         public IUsersRelationsStorage Relations { get; }
 
         public IUsersPictureStorage ProfilePictures { get; }
+
+        public ISecuritySettingStorage SecuritySettings { get; }
 
         public async Task<User> GetByIdAsync(Guid id)
         {
