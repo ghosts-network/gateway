@@ -17,13 +17,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             IProfilesApi profilesApi,
             IRelationsApi relationsApi,
             IUsersPictureStorage usersPictureStorage,
-            ISecuritySettingStorage securitySettingStorage,
+            ISecuritySettingsApi securitySettingsApi,
             ISecuritySettingsResolver securitySettingsResolver)
         {
             this.profilesApi = profilesApi;
             Relations = new RestUserRelationsStorage(profilesApi, relationsApi, securitySettingsResolver);
+            SecuritySettings = new SecuritySettingStorage(securitySettingsApi);
             ProfilePictures = usersPictureStorage;
-            SecuritySettings = securitySettingStorage;
         }
 
         public IUsersRelationsStorage Relations { get; }
