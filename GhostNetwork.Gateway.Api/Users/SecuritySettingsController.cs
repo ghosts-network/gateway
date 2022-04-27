@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Api.Users
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class SecuritySettingsController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace GhostNetwork.Gateway.Api.Users
             return Ok(settings);
         }
 
-        [HttpPut]
+        [HttpPut("{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateAsync([FromRoute] Guid userId, [FromBody] SecuritySettingUpdateViewModel model)
