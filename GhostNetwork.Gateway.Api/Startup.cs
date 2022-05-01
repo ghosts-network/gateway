@@ -90,6 +90,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+            services.AddScoped<ISecuritySettingStorage, SecuritySettingStorage>();
 
             services.AddControllers();
         }
