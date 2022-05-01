@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 using GhostNetwork.Gateway.SecuritySettings;
-using GhostNetwork.Profiles.Api;
-using GhostNetwork.Profiles.Model;
+using GhostNetwork.Gateway.Users;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -11,15 +11,17 @@ namespace GhostNetwork.Gateway.Infrastructure
     {
         private const string friendsAccessMessage = "You cannot see friends of this user";
 
-        private readonly ISecuritySettingsApi securitySettingsApi;
-        private readonly IRelationsApi relationsApi;
+        private readonly ISecuritySettingStorage securitySettingStorage;
         private readonly ICurrentUserProvider currentUserProvider;
+        private readonly IUsersRelationsStorage relationsStorage;
 
-        public SecuritySettingsResolver(ISecuritySettingsApi securitySettingsApi, ICurrentUserProvider currentUserProvider, IRelationsApi relationsApi)
+        public SecuritySettingsResolver(ISecuritySettingStorage securitySettingStorage,
+                                        ICurrentUserProvider currentUserProvider,
+                                        IUsersRelationsStorage relationsStorage)
         {
-            this.securitySettingsApi = securitySettingsApi;
+            this.securitySettingStorage = securitySettingStorage;
             this.currentUserProvider = currentUserProvider;
-            this.relationsApi = relationsApi;
+            this.relationsStorage = relationsStorage;
         }
 
         public async Task<DomainResult> ResolveFriendsAccessAsync(Guid userId)
@@ -29,7 +31,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                 return DomainResult.Success();
             }
 
-            var setting = await securitySettingsApi.FindByProfileAsync(userId);
+            var setting = await securitySettingStorage.FindByProfileAsync(userId);
 
             if (setting.Friends.Access == Access.NoOne)
             {
@@ -38,9 +40,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
             if (setting.Friends.Access == Access.OnlyFriends)
             {
-                var friendsIds = await relationsApi.SearchFriendsAsync(userId);
-
-                if (!friendsIds.Contains(new Guid(currentUserProvider.UserId)))
+                if (!await relationsStorage.IsFriendAsync(new Guid(currentUserProvider.UserId), ofUserId: userId))
                 {
                     return DomainResult.Error(friendsAccessMessage);
                 }
@@ -67,7 +67,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
         public Task<DomainResult> ResolveFriendsAccessAsync(string userId)
         {
-            return ResolveFriendsAccessAsync(new Guid(userId));
+            return ResolveFriendsAccessAsync(Guid.Parse(userId));
         }
     }
 }
