@@ -11,6 +11,8 @@ namespace GhostNetwork.Gateway.Users
 
         Task<IEnumerable<UserInfo>> GetFollowersAsync(Guid user, int take, int skip);
 
+        Task<bool> IsFriendAsync(Guid userId, Guid ofUserId);
+
         Task<IEnumerable<UserInfo>> GetIncomingFriendRequestsAsync(Guid user, int take, int skip);
 
         Task<IEnumerable<UserInfo>> GetOutgoingFriendRequestsAsync(Guid user, int take, int skip);
