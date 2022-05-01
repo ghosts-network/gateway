@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain;
 using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -39,6 +39,11 @@ namespace GhostNetwork.Gateway.Infrastructure
         {
             var ids = await relationsApi.SearchFollowersAsync(user, skip, take);
             return await GetProfilesByIdsAsync(ids);
+        }
+
+        public Task<bool> IsFriendAsync(Guid userId, Guid ofUserId)
+        {
+            return relationsApi.IsFriendAsync(userId, ofUserId);
         }
 
         public async Task<IEnumerable<UserInfo>> GetIncomingFriendRequestsAsync(Guid user, int take, int skip)
