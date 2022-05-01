@@ -40,7 +40,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                 await securitySettingsApi.UpdateAsync(userId, model);
                 return DomainResult.Success();
             }
-            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
             {
                 return DomainResult.Error(ex.Message);
             }
