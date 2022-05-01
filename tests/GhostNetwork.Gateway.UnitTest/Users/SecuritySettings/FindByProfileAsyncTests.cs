@@ -1,5 +1,4 @@
 ﻿using GhostNetwork.Gateway.Users;
-using GhostNetwork.Profiles.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -18,7 +17,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
         {
             //Setup
             var userId = Guid.NewGuid();
-            var settins = new SecuritySetting();
+            var settins = SecuritySetting.DefaultForUser(userId);
             
             var serviceMock = new Mock<ISecuritySettingStorage>();
             serviceMock

@@ -22,8 +22,8 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
 
             var model = new SecuritySettingUpdateViewModel(
-                new SecuritySettingsSectionInputModel(Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Access.NoOne, Enumerable.Empty<Guid>().ToList()));
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
 
             var domainResult = DomainResult.Error(string.Empty);
 
@@ -54,8 +54,8 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             
             var model = new SecuritySettingUpdateViewModel(
-                new SecuritySettingsSectionInputModel(Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Access.NoOne, Enumerable.Empty<Guid>().ToList()));
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
 
             var domainResult = DomainResult.Success();
 
