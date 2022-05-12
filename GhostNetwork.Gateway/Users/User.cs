@@ -27,9 +27,9 @@ namespace GhostNetwork.Gateway.Users
 
         public string ProfilePicture { get; }
 
-        public string? City { get; private set; }
+        public string City { get; private set; }
 
-        public void Update(string gender, DateTime? dateOfBirth, string? city)
+        public void Update(string gender, DateTime? dateOfBirth, string city)
         {
             Gender = gender;
             DateOfBirth = dateOfBirth;

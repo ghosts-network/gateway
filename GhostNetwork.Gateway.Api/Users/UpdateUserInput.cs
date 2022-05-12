@@ -8,6 +8,6 @@ namespace GhostNetwork.Gateway.Api.Users
 
         public DateTime? DateOfBirth { get; set; }
 
-        public string? City { get; set; }
+        public string City { get; set; }
     }
 }
