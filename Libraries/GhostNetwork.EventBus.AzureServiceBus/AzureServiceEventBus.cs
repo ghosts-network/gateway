@@ -1,4 +1,7 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
 
 namespace GhostNetwork.EventBus.AzureServiceBus
@@ -14,7 +17,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
 
         private readonly IList<ServiceBusProcessor> processorList;
 
-        public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider? messageProvider = null, INameProvider? nameProvider = null)
+        public AzureServiceEventBus(string connectionString, IHandlerProvider handlerProvider, IMessageProvider messageProvider = null, INameProvider nameProvider = null)
         {
             serviceBusClient = new ServiceBusClient(connectionString);
             subscriptionManager = new ServiceBusAdministrationClient(connectionString);
@@ -71,10 +74,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
                 await args.CompleteMessageAsync(args.Message);
             };
 
-            processor.ProcessErrorAsync += args =>
-            {
-                throw args.Exception;
-            };
+            processor.ProcessErrorAsync += args => throw args.Exception;
 
             await processor.StartProcessingAsync();
         }
