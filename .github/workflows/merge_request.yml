@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --no-restore
       - name: Install dotCover
         run: dotnet tool install JetBrains.dotCover.GlobalTool -g
       - name: Calculate coverage
