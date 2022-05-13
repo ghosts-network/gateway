@@ -31,5 +31,5 @@ jobs:
       - name: Validate coverage
         run: |
           total=$(grep -o 'CoveragePercent="[^"]*"' -m 1 dotCover.Output.xml | cut -c 18-19)
-          echo $total
+          echo "Code Coverage: $total%"
           if [ $total -lt $MIN_COVERAGE ]; then exit 1; fi
