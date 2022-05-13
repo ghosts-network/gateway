@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GhostNetwork.EventBus.AzureServiceBus
