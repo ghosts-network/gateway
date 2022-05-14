@@ -17,6 +17,7 @@ copy provided dev-compose.yml and customize for your needs
 |----------------------|---------------------------------------- |
 | CONTENT_ADDRESS      | Address of publication service instance |
 | PROFILES_ADDRESS     | Address of profiles service instance    |
+| MESSAGES_ADDRESS     | Address of messages service instance    |
 | AUTHORITY            | Address of oauth2 authority server      |
 
 ## Development
