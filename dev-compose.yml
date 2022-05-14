@@ -22,6 +22,18 @@ services:
     environment:
       - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
+  
+  messages:
+    image: ghcr.io/ghosts-network/messages:latest
+    ports:
+      - "5252:80"
+    depends_on:
+      - db
+      - profiles
+    environment:
+      - MONGO_CONNECTION=mongodb://db:27017/ghost-network
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PROFILES_ADDRESS=http://profiles
 
   s3:
     image: mcr.microsoft.com/azure-storage/azurite
