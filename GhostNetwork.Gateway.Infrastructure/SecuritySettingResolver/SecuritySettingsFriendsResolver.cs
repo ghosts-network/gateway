@@ -5,9 +5,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GhostNetwork.Gateway.Infrastructure
+namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 {
-    public class SecuritySettingsResolver : ISecuritySettingsResolver
+    public class SecuritySettingsFriendsResolver : ISecuritySettingsResolver
     {
         private const string friendsAccessMessage = "You cannot see friends of this user";
 
@@ -15,7 +15,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly ICurrentUserProvider currentUserProvider;
         private readonly IUsersRelationsStorage relationsStorage;
 
-        public SecuritySettingsResolver(ISecuritySettingStorage securitySettingStorage,
+        public SecuritySettingsFriendsResolver(ISecuritySettingStorage securitySettingStorage,
                                         ICurrentUserProvider currentUserProvider,
                                         IUsersRelationsStorage relationsStorage)
         {
@@ -24,7 +24,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             this.relationsStorage = relationsStorage;
         }
 
-        public async Task<DomainResult> ResolveFriendsAccessAsync(Guid userId)
+        public async Task<DomainResult> ResolveAccessAsync(Guid userId)
         {
             if (userId == new Guid(currentUserProvider.UserId))
             {
@@ -65,9 +65,9 @@ namespace GhostNetwork.Gateway.Infrastructure
             return DomainResult.Success();
         }
 
-        public Task<DomainResult> ResolveFriendsAccessAsync(string userId)
+        public Task<DomainResult> ResolveAccessAsync(string userId)
         {
-            return ResolveFriendsAccessAsync(Guid.Parse(userId));
+            return ResolveAccessAsync(Guid.Parse(userId));
         }
     }
 }
