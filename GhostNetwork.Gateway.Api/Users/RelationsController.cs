@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,35 +17,54 @@ namespace GhostNetwork.Gateway.Api.Users
     {
         private readonly IUsersStorage usersStorage;
         private readonly ICurrentUserProvider currentUserProvider;
+        private readonly SecuritySettingsFriendsResolver friendsAccessResolver;
+        private readonly SecuritySettingsFollowersResolver followersAccessResolver;
 
-        public RelationsController(IUsersStorage usersStorage, ICurrentUserProvider currentUserProvider)
+        public RelationsController(IUsersStorage usersStorage,
+            ICurrentUserProvider currentUserProvider,
+            SecuritySettingsFriendsResolver friendsAccessResolver,
+            SecuritySettingsFollowersResolver followersAccessResolver)
         {
             this.usersStorage = usersStorage;
             this.currentUserProvider = currentUserProvider;
+            this.friendsAccessResolver = friendsAccessResolver;
+            this.followersAccessResolver = followersAccessResolver;
         }
 
         [HttpGet("{userId:guid}/friends")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<User>>> GetFriendsAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var friends = await usersStorage.Relations.GetFriendsAsync(userId, take, skip);
+            var resolveResult = await friendsAccessResolver.ResolveAccessAsync(userId);
+            if (!resolveResult.Successed)
+            {
+                return Forbid();
+            }
 
+            var friends = await usersStorage.Relations.GetFriendsAsync(userId, take, skip);
             return Ok(friends);
         }
 
         [HttpGet("{userId:guid}/followers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<User>>> GetFollowersAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20)
         {
-            var friends = await usersStorage.Relations.GetFollowersAsync(userId, take, skip);
+            var resolveResult = await followersAccessResolver.ResolveAccessAsync(userId);
+            if (!resolveResult.Successed)
+            {
+                return Forbid();
+            }
 
-            return Ok(friends);
+            var followers = await usersStorage.Relations.GetFollowersAsync(userId, take, skip);
+            return Ok(followers);
         }
 
         [HttpGet("friends/incoming-requests")]
