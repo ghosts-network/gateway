@@ -1,11 +1,10 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using Domain;
-using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Model;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -17,11 +16,10 @@ namespace GhostNetwork.Gateway.Infrastructure
             IProfilesApi profilesApi,
             IRelationsApi relationsApi,
             IUsersPictureStorage usersPictureStorage,
-            ISecuritySettingsApi securitySettingsApi,
-            ISecuritySettingsResolver securitySettingsResolver)
+            ISecuritySettingsApi securitySettingsApi)
         {
             this.profilesApi = profilesApi;
-            Relations = new RestUserRelationsStorage(profilesApi, relationsApi, securitySettingsResolver);
+            Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
             SecuritySettings = new SecuritySettingStorage(securitySettingsApi);
             ProfilePictures = usersPictureStorage;
         }
