@@ -1,6 +1,7 @@
 using Domain;
 using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
+using GhostNetwork.Profiles.Api;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,15 +14,15 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 
         private readonly ISecuritySettingStorage securitySettingStorage;
         private readonly ICurrentUserProvider currentUserProvider;
-        private readonly IUsersRelationsStorage relationsStorage;
+        private readonly IRelationsApi relationsApi;
 
         public SecuritySettingsFollowersResolver(ISecuritySettingStorage securitySettingStorage,
                                         ICurrentUserProvider currentUserProvider,
-                                        IUsersRelationsStorage relationsStorage)
+                                        IRelationsApi relationsApi)
         {
             this.securitySettingStorage = securitySettingStorage;
             this.currentUserProvider = currentUserProvider;
-            this.relationsStorage = relationsStorage;
+            this.relationsApi = relationsApi;
         }
 
         public async Task<DomainResult> ResolveAccessAsync(Guid userId)
@@ -37,10 +38,10 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
             {
                 return DomainResult.Error(followersAccessMessage);
             }
-            
+
             if (setting.Followers.Access == Access.OnlyFriends)
             {
-                if (!await relationsStorage.IsFriendAsync(new Guid(currentUserProvider.UserId), ofUserId: userId))
+                if (!await relationsApi.IsFriendAsync(new Guid(currentUserProvider.UserId), friend: userId))
                 {
                     return DomainResult.Error(followersAccessMessage);
                 }
