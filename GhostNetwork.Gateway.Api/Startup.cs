@@ -4,6 +4,7 @@ using System.Linq;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
+using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.NewsFeed;
 using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
@@ -72,7 +73,9 @@ namespace GhostNetwork.Gateway.Api
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-            services.AddTransient<ISecuritySettingsResolver, SecuritySettingsResolver>();
+            
+            services.AddTransient<SecuritySettingsFriendsResolver>();
+            services.AddTransient<SecuritySettingsFollowersResolver>();
 
             services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),
