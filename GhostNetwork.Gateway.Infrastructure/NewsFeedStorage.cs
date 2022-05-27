@@ -58,11 +58,12 @@ namespace GhostNetwork.Gateway.Infrastructure
             }
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserFeedAsync(string userId, int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, long, string)> GetUserFeedAsync(string userId, int skip, int take, string cursor)
         {
-            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, cursor, take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
             var totalCount = GetTotalCountHeader(publicationsResponse);
+            var crs = GetCursorHeader(publicationsResponse);
 
             var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
             var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
@@ -81,7 +82,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     ToUser(publication.Author)))
                 .ToList();
 
-            return (news, totalCount);
+            return (news, totalCount, crs);
         }
 
         public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserPublicationsAsync(Guid userId, int skip, int take)
@@ -162,6 +163,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             return int.TryParse(headers.FirstOrDefault(), out var totalCount)
                 ? totalCount
                 : 0;
+        }
+
+        private static string GetCursorHeader(IApiResponse response)
+        {
+            return !response.Headers.TryGetValue("X-Cursor", out var headers)
+                ? default
+                : headers.FirstOrDefault();
         }
 
         private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
