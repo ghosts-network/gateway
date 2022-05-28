@@ -133,7 +133,8 @@ namespace GhostNetwork.Gateway.Api
 
                 builder
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .WithExposedHeaders(Consts.Headers.All);
             });
 
             app.UseAuthentication();

@@ -11,6 +11,7 @@ namespace GhostNetwork.Gateway.Api
             public static string[] All => new[]
             {
                 TotalCount,
+                Cursor,
                 HasMore
             };
         }
