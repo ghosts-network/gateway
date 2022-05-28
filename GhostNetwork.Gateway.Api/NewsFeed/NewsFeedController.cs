@@ -26,38 +26,29 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
         [HttpGet("users/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetByUserAsync(
             [FromRoute] Guid userId,
-            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20,
             [FromQuery] string cursor = null)
         {
-            var (news, totalCount, nextCursor) = await newsFeedStorage.GetUserPublicationsAsync(userId, skip, take, cursor);
+            var (news, nextCursor) = await newsFeedStorage.GetUserPublicationsAsync(userId, take, cursor);
 
-            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
-            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
 
             return Ok(news);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
-            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
             [FromQuery, Range(1, 50)] int take = 20,
             [FromQuery] string cursor = null)
         {
-            var (news, totalCount, nextCursor) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, skip, take, cursor);
+            var (news, nextCursor) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, take, cursor);
 
-            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
-            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
 
             return Ok(news);
         }

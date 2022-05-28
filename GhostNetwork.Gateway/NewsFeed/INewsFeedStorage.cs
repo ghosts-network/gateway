@@ -12,9 +12,9 @@ namespace GhostNetwork.Gateway.NewsFeed
 
         Task<NewsFeedPublication> GetByIdAsync(string id);
 
-        Task<(IEnumerable<NewsFeedPublication>, long, string)> GetUserFeedAsync(string userId, int skip, int take, string cursor);
+        Task<(IEnumerable<NewsFeedPublication>, string)> GetUserFeedAsync(string userId, int take, string cursor);
 
-        Task<(IEnumerable<NewsFeedPublication>, long, string)> GetUserPublicationsAsync(Guid userId, int skip, int take, string cursor);
+        Task<(IEnumerable<NewsFeedPublication>, string)> GetUserPublicationsAsync(Guid userId, int take, string cursor);
 
         Task<NewsFeedPublication> PublishAsync(string content, string userId);
 
