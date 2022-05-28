@@ -31,11 +31,13 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetByUserAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(0, int.MaxValue)] int skip = 0,
-            [FromQuery, Range(1, 50)] int take = 20)
+            [FromQuery, Range(1, 50)] int take = 20,
+            [FromQuery] string cursor = null)
         {
-            var (news, totalCount) = await newsFeedStorage.GetUserPublicationsAsync(userId, skip, take);
+            var (news, totalCount, nextCursor) = await newsFeedStorage.GetUserPublicationsAsync(userId, skip, take, cursor);
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
+            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
 
             return Ok(news);

@@ -85,11 +85,12 @@ namespace GhostNetwork.Gateway.Infrastructure
             return (news, totalCount, crs);
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserPublicationsAsync(Guid userId, int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, long, string)> GetUserPublicationsAsync(Guid userId, int skip, int take, string cursor)
         {
-            var publicationsResponse = await publicationsApi.SearchByAuthorWithHttpInfoAsync(userId, skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.SearchByAuthorWithHttpInfoAsync(userId, skip, cursor, take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
             var totalCount = GetTotalCountHeader(publicationsResponse);
+            var crs = GetCursorHeader(publicationsResponse);
 
             var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
             var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
@@ -108,7 +109,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     ToUser(publication.Author)))
                 .ToList();
 
-            return (news, totalCount);
+            return (news, totalCount, crs);
         }
 
         public async Task<NewsFeedPublication> PublishAsync(string content, string userId)
