@@ -147,17 +147,20 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         [HttpGet("{publicationId}/comments")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SearchCommentsAsync(
             [FromRoute] string publicationId,
             [FromQuery, Range(0, int.MaxValue)] int skip,
-            [FromQuery, Range(0, 100)] int take = 10)
+            [FromQuery, Range(0, 100)] int take = 10,
+            [FromQuery] string cursor = null)
         {
-            var (comments, totalCount) = await newsFeedStorage.Comments
-                .GetAsync(publicationId, skip, take);
+            var (comments, totalCount, nextCursor) = await newsFeedStorage.Comments
+                .GetAsync(publicationId, skip, take, cursor);
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
+            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
 
             return Ok(comments);
         }

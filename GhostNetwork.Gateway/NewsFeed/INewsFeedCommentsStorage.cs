@@ -8,7 +8,7 @@ namespace GhostNetwork.Gateway.NewsFeed
     {
         Task<PublicationComment> GetByIdAsync(string id);
 
-        Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take);
+        Task<(IEnumerable<PublicationComment>, long, string)> GetAsync(string publicationId, int skip, int take, string cursor);
 
         Task<PublicationComment> PublishAsync(string content, string publicationId, string userId);
 
