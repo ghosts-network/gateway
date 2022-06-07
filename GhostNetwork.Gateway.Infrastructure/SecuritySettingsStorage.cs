@@ -6,7 +6,6 @@ using GhostNetwork.Profiles.Model;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Access = GhostNetwork.Gateway.Users.Access;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -19,7 +18,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             this.securitySettingsApi = securitySettingsApi;
         }
 
-        public async Task<Users.SecuritySetting?> FindByProfileAsync(Guid userId)
+        public async Task<SecuritySettingModel?> FindByProfileAsync(Guid userId)
         {
             var setting = await securitySettingsApi.FindByProfileAsync(userId);
 
@@ -28,9 +27,12 @@ namespace GhostNetwork.Gateway.Infrastructure
                 return null;
             }
 
-            return new Users.SecuritySetting(setting.UserId,
-                new SecuritySettingSection((Access)setting.Posts.Access, setting.Posts.CertainUsers),
-                new SecuritySettingSection((Access)setting.Posts.Access, setting.Posts.CertainUsers));
+            return new SecuritySettingModel(setting.UserId,
+                new SecuritySettingSection((AccessLevel)setting.Friends.Access, setting.Friends.CertainUsers),
+                new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers),
+                new SecuritySettingSection((AccessLevel)setting.Posts.Access, setting.Posts.CertainUsers),
+                new SecuritySettingSection((AccessLevel)setting.Comments.Access, setting.Comments.CertainUsers),
+                new SecuritySettingSection((AccessLevel)setting.ProfilePhoto.Access, setting.ProfilePhoto.CertainUsers));
         }
 
         public async Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model)

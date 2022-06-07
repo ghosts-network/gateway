@@ -34,12 +34,12 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 
             var setting = await securitySettingStorage.FindByProfileAsync(userId);
 
-            if (setting.Followers.Access == Access.NoOne)
+            if (setting.Followers.Access == AccessLevel.NoOne)
             {
                 return DomainResult.Error(followersAccessMessage);
             }
 
-            if (setting.Followers.Access == Access.OnlyFriends)
+            if (setting.Followers.Access == AccessLevel.OnlyFriends)
             {
                 if (!await relationsApi.IsFriendAsync(new Guid(currentUserProvider.UserId), friend: userId))
                 {
@@ -47,7 +47,7 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
                 }
             }
 
-            if (setting.Followers.Access == Access.OnlyCertainUsers)
+            if (setting.Followers.Access == AccessLevel.OnlyCertainUsers)
             {
                 if (!setting.Followers.CertainUsers.Contains(new Guid(currentUserProvider.UserId)))
                 {
@@ -55,7 +55,7 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
                 }
             }
 
-            if (setting.Followers.Access == Access.EveryoneExceptCertainUsers)
+            if (setting.Followers.Access == AccessLevel.EveryoneExceptCertainUsers)
             {
                 if (setting.Followers.CertainUsers.Contains(new Guid(currentUserProvider.UserId)))
                 {

@@ -1,6 +1,6 @@
 ﻿namespace GhostNetwork.Gateway.Users
 {
-    public enum Access
+    public enum AccessLevel
     {
         Everyone,
         OnlyFriends,

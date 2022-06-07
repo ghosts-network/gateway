@@ -3,13 +3,13 @@ using System.Linq;
 
 namespace GhostNetwork.Gateway.Users
 {
-    public class SecuritySetting
+    public class SecuritySettingModel
     {
-        public SecuritySetting(
+        public SecuritySettingModel(
             Guid userId,
-            SecuritySettingSection posts,
             SecuritySettingSection friends,
             SecuritySettingSection followers,
+            SecuritySettingSection posts,
             SecuritySettingSection comments,
             SecuritySettingSection profilePhoto)
         {
@@ -34,15 +34,15 @@ namespace GhostNetwork.Gateway.Users
         public SecuritySettingSection ProfilePhoto { get; private set; }
 
 
-        public static SecuritySetting DefaultForUser(Guid userId)
+        public static SecuritySettingModel DefaultForUser(Guid userId)
         {
-            return new SecuritySetting(
+            return new SecuritySettingModel(
                 userId,
-                new SecuritySettingSection(Access.Everyone, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.Everyone, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.Everyone, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.Everyone, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.Everyone, Enumerable.Empty<Guid>()));
+                new SecuritySettingSection(AccessLevel.Everyone, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.Everyone, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.Everyone, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.Everyone, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.Everyone, Enumerable.Empty<Guid>()));
         }
 
         public void Update(SecuritySettingSection posts, SecuritySettingSection friends)

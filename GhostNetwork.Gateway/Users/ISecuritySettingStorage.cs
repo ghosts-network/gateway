@@ -7,7 +7,7 @@ namespace GhostNetwork.Gateway.Users
 {
     public interface ISecuritySettingStorage
     {
-        Task<SecuritySetting> FindByProfileAsync(Guid userId);
+        Task<SecuritySettingModel> FindByProfileAsync(Guid userId);
 
         Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model);
     }
