@@ -20,14 +20,14 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = SecuritySetting.DefaultForUser(userId);
+            var settings = SecuritySettingModel.DefaultForUser(userId);
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(true);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -53,14 +53,14 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = userId;
 
-            var settings = SecuritySetting.DefaultForUser(userId);
+            var settings = SecuritySettingModel.DefaultForUser(userId);
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(true);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -86,19 +86,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyFriends, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.OnlyFriends, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), default, default))
                 .ReturnsAsync(true);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -124,19 +124,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyFriends, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.OnlyFriends, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), default, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -162,19 +162,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyCertainUsers, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.OnlyCertainUsers, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -201,19 +201,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var currentUserId = Guid.NewGuid();
             var anotherUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyCertainUsers, new List<Guid> { anotherUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.OnlyCertainUsers, new List<Guid> { anotherUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -240,19 +240,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var currentUserId = Guid.NewGuid();
             var anotherUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.EveryoneExceptCertainUsers, new List<Guid> { anotherUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.EveryoneExceptCertainUsers, new List<Guid> { anotherUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -278,19 +278,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.EveryoneExceptCertainUsers, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.EveryoneExceptCertainUsers, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -316,19 +316,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(true);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
@@ -354,19 +354,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
                 .ReturnsAsync(true);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();

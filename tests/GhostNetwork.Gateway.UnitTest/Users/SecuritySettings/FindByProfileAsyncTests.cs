@@ -17,7 +17,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
         {
             //Setup
             var userId = Guid.NewGuid();
-            var settins = SecuritySetting.DefaultForUser(userId);
+            var settins = SecuritySettingModel.DefaultForUser(userId);
             
             var serviceMock = new Mock<ISecuritySettingStorage>();
             serviceMock
@@ -51,7 +51,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var serviceMock = new Mock<ISecuritySettingStorage>();
             serviceMock
                 .Setup(s => s.FindByProfileAsync(userId))
-                .ReturnsAsync(default(SecuritySetting));
+                .ReturnsAsync(default(SecuritySettingModel));
 
             var userStorage = new Mock<IUsersStorage>();
             userStorage.Setup(s => s.SecuritySettings).Returns(serviceMock.Object);
