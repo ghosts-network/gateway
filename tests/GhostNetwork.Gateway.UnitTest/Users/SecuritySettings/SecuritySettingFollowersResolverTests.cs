@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
 {
     [TestFixture]
-    public class SecuritySettingFollowersResolver
+    public class SecuritySettingFollowersResolverTests
     {
         [Test]
         public async Task ResolveFollowersAccess_Everyone_Ok()
@@ -20,7 +20,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = SecuritySetting.DefaultForUser(userId);
+            var settings = SecuritySettingModel.DefaultForUser(userId);
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -53,7 +53,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = userId;
 
-            var settings = SecuritySetting.DefaultForUser(userId);
+            var settings = SecuritySettingModel.DefaultForUser(userId);
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -86,12 +86,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyFriends, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.OnlyFriends, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -124,12 +124,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyFriends, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.OnlyFriends, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -162,12 +162,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyCertainUsers, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.OnlyCertainUsers, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -201,12 +201,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var currentUserId = Guid.NewGuid();
             var anotherUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.OnlyCertainUsers, new List<Guid> { anotherUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.OnlyCertainUsers, new List<Guid> { anotherUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -240,12 +240,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var currentUserId = Guid.NewGuid();
             var anotherUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.EveryoneExceptCertainUsers, new List<Guid> { anotherUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.EveryoneExceptCertainUsers, new List<Guid> { anotherUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -278,12 +278,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.EveryoneExceptCertainUsers, new List<Guid> { currentUserId }),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.EveryoneExceptCertainUsers, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -316,12 +316,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
@@ -354,12 +354,12 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             var userId = Guid.NewGuid();
             var currentUserId = Guid.NewGuid();
 
-            var settings = new SecuritySetting(userId,
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(Access.NoOne, Enumerable.Empty<Guid>()));
+            var settings = new SecuritySettingModel(userId,
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
             var currentUserMock = new Mock<ICurrentUserProvider>();
             currentUserMock.Setup(x => x.UserId)
