@@ -73,7 +73,7 @@ namespace GhostNetwork.Gateway.Api
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-            
+
             services.AddTransient<SecuritySettingsFriendsResolver>();
             services.AddTransient<SecuritySettingsFollowersResolver>();
 
