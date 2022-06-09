@@ -24,7 +24,7 @@ namespace GhostNetwork.Gateway.Infrastructure
 
             if (setting == null)
             {
-                return null;
+                return SecuritySettingModel.DefaultForUser(userId);
             }
 
             return new SecuritySettingModel(setting.UserId,
