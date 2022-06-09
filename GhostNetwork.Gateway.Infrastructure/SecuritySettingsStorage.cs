@@ -18,7 +18,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             this.securitySettingsApi = securitySettingsApi;
         }
 
-        public async Task<SecuritySettingModel?> FindByProfileAsync(Guid userId)
+        public async Task<SecuritySettingModel> FindByProfileAsync(Guid userId)
         {
             var setting = await securitySettingsApi.FindByProfileAsync(userId);
 
