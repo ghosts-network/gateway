@@ -348,7 +348,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
         }
 
         [Test]
-        public async Task ResolveFriendsAccess_Parse_StringToGuid_Error()
+        public void ResolveFriendsAccess_Parse_StringToGuid_Error()
         {
             // Setup
             var userId = Guid.NewGuid();

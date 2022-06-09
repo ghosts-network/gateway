@@ -126,8 +126,8 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
 
             var settings = new SecuritySettingModel(userId,
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.OnlyFriends, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
@@ -280,8 +280,8 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
 
             var settings = new SecuritySettingModel(userId,
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
-                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.EveryoneExceptCertainUsers, new List<Guid> { currentUserId }),
+                new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()),
                 new SecuritySettingSection(AccessLevel.NoOne, Enumerable.Empty<Guid>()));
 
@@ -348,7 +348,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
         }
 
         [Test]
-        public async Task ResolveFollowersAccess_Parse_StringToGuid_Error()
+        public void ResolveFollowersAccess_Parse_StringToGuid_Error()
         {
             // Setup
             var userId = Guid.NewGuid();
