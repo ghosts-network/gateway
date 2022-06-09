@@ -22,15 +22,9 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserSecuritySettings()
         {
             var settings = await usersStorage.SecuritySettings.FindByProfileAsync(new Guid(currentUserProvider.UserId));
-            if (settings == null)
-            {
-                return NotFound();
-            }
-
             return Ok(settings);
         }
 
