@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.NewsFeed;
-using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -76,6 +75,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddTransient<SecuritySettingsFriendsResolver>();
             services.AddTransient<SecuritySettingsFollowersResolver>();
+            services.AddTransient<SecuritySettingsPublicationResolver>();
 
             services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),
