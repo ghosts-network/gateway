@@ -35,6 +35,29 @@ namespace GhostNetwork.Gateway.Infrastructure
                 new SecuritySettingSection((AccessLevel)setting.ProfilePhoto.Access, setting.ProfilePhoto.CertainUsers));
         }
 
+        public async Task<bool> CheckAccessAsync(Guid userId, Guid toUserId, string sectionName)
+        {
+            if (string.IsNullOrEmpty(sectionName))
+            {
+                throw new ArgumentException(nameof(sectionName));
+            }
+
+            try
+            {
+                await securitySettingsApi.CheckAccessWithHttpInfoAsync(userId, new SecuritySettingResolvingInputModel
+                {
+                    ToUserId = toUserId,
+                    SectionName = sectionName,
+                });
+            }
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.Forbidden)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public async Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model)
         {
             try
