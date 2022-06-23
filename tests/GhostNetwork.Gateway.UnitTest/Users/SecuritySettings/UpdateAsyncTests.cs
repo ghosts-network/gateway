@@ -23,9 +23,16 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
 
             var model = new SecuritySettingUpdateViewModel(
                 new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
                 new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
 
             var domainResult = DomainResult.Error(string.Empty);
+
+            var currentProviderMock = new Mock<ICurrentUserProvider>();
+            currentProviderMock.Setup(s => s.UserId)
+                .Returns(userId.ToString());
 
             var serviceMock = new Mock<ISecuritySettingStorage>();
             serviceMock.Setup(s => s.UpdateAsync(userId, model)).ReturnsAsync(domainResult);
@@ -38,10 +45,11 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => userStorage.Object);
+                collection.AddScoped(_ => currentProviderMock.Object);
             });
 
             //Act
-            var response = await client.PutAsync($"/SecuritySettings/{userId}", model.AsJsonContent());
+            var response = await client.PutAsync($"/SecuritySettings", model.AsJsonContent());
 
             //Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -52,12 +60,19 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
         {
             //Setup
             var userId = Guid.NewGuid();
-            
+
             var model = new SecuritySettingUpdateViewModel(
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
+                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
                 new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
                 new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
 
             var domainResult = DomainResult.Success();
+
+            var currentProviderMock = new Mock<ICurrentUserProvider>();
+            currentProviderMock.Setup(s => s.UserId)
+                .Returns(userId.ToString());
 
             var serviceMock = new Mock<ISecuritySettingStorage>();
             serviceMock.Setup(s => s.UpdateAsync(userId, model)).ReturnsAsync(domainResult);
@@ -70,10 +85,11 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 collection.AddAuthentication("Test")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => userStorage.Object);
+                collection.AddScoped(_ => currentProviderMock.Object);
             });
 
             //Act
-            var response = await client.PutAsync($"/SecuritySettings/{userId}", model.AsJsonContent());
+            var response = await client.PutAsync($"/SecuritySettings", model.AsJsonContent());
 
             //Assert
             Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);

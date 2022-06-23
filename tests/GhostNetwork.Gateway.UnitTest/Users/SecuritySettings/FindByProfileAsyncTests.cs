@@ -24,6 +24,10 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 .Setup(s => s.FindByProfileAsync(userId))
                 .ReturnsAsync(settins);
 
+            var currentProviderMock = new Mock<ICurrentUserProvider>();
+            currentProviderMock.Setup(s => s.UserId)
+                .Returns(userId.ToString());
+
             var userStorage = new Mock<IUsersStorage>();
             userStorage.Setup(s => s.SecuritySettings).Returns(serviceMock.Object);
             
@@ -33,42 +37,14 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
                 collection.AddScoped(_ => serviceMock.Object);
                 collection.AddScoped(_ => userStorage.Object);
+                collection.AddScoped(_ => currentProviderMock.Object);
             });
 
             //Act
-            var response = await client.GetAsync($"/SecuritySettings/{userId}");
+            var response = await client.GetAsync($"/SecuritySettings");
 
             //Assert
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        }
-
-        [Test]
-        public async Task FindByProfileAsync_NotFound()
-        {
-            //Setup
-            var userId = Guid.NewGuid();
-            
-            var serviceMock = new Mock<ISecuritySettingStorage>();
-            serviceMock
-                .Setup(s => s.FindByProfileAsync(userId))
-                .ReturnsAsync(default(SecuritySettingModel));
-
-            var userStorage = new Mock<IUsersStorage>();
-            userStorage.Setup(s => s.SecuritySettings).Returns(serviceMock.Object);
-
-            var client = TestServerHelper.New(collection =>
-            {
-                collection.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-                collection.AddScoped(_ => serviceMock.Object);
-                collection.AddScoped(_ => userStorage.Object);
-            });
-
-            //Act
-            var response = await client.GetAsync($"/SecuritySettings/{userId}");
-
-            //Assert
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

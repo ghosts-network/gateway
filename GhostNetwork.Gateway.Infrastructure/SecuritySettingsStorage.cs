@@ -18,13 +18,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             this.securitySettingsApi = securitySettingsApi;
         }
 
-        public async Task<SecuritySettingModel?> FindByProfileAsync(Guid userId)
+        public async Task<SecuritySettingModel> FindByProfileAsync(Guid userId)
         {
             var setting = await securitySettingsApi.FindByProfileAsync(userId);
 
             if (setting == null)
             {
-                return null;
+                return SecuritySettingModel.DefaultForUser(userId);
             }
 
             return new SecuritySettingModel(setting.UserId,
@@ -33,6 +33,29 @@ namespace GhostNetwork.Gateway.Infrastructure
                 new SecuritySettingSection((AccessLevel)setting.Posts.Access, setting.Posts.CertainUsers),
                 new SecuritySettingSection((AccessLevel)setting.Comments.Access, setting.Comments.CertainUsers),
                 new SecuritySettingSection((AccessLevel)setting.ProfilePhoto.Access, setting.ProfilePhoto.CertainUsers));
+        }
+
+        public async Task<bool> CheckAccessAsync(Guid userId, Guid toUserId, string sectionName)
+        {
+            if (string.IsNullOrEmpty(sectionName))
+            {
+                throw new ArgumentException(nameof(sectionName));
+            }
+
+            try
+            {
+                await securitySettingsApi.CheckAccessWithHttpInfoAsync(userId, new SecuritySettingResolvingInputModel
+                {
+                    ToUserId = toUserId,
+                    SectionName = sectionName,
+                });
+            }
+            catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.Forbidden)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model)
