@@ -68,6 +68,7 @@ namespace GhostNetwork.Gateway.Api
                 {
                     options.ApiName = "api";
                     options.Authority = Authority.ToString();
+                    options.RequireHttpsMetadata = configuration.GetValue("AUTHORITY_REQUIRE_HTTPS", true);
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
