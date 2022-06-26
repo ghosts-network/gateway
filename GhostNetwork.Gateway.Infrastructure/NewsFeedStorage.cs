@@ -58,17 +58,17 @@ namespace GhostNetwork.Gateway.Infrastructure
             }
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserFeedAsync(string userId, int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, string)> GetUserFeedAsync(string userId, int take, string cursor)
         {
-            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.SearchWithHttpInfoAsync(cursor: cursor, take: take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
-            var totalCount = GetTotalCountHeader(publicationsResponse);
+            var crs = GetCursorHeader(publicationsResponse);
 
-            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
-            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
+            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id).ToList());
+            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id).ToList());
             var userReactions = userId == null
                 ? new Dictionary<string, UserReaction>()
-                : await LoadUserReactionsAsync(userId, publications.Select(p => p.Id));
+                : await LoadUserReactionsAsync(userId, publications.Select(p => p.Id).ToList());
 
             var news = publications
                 .Select(publication => new NewsFeedPublication(
@@ -81,20 +81,20 @@ namespace GhostNetwork.Gateway.Infrastructure
                     ToUser(publication.Author)))
                 .ToList();
 
-            return (news, totalCount);
+            return (news, crs);
         }
 
-        public async Task<(IEnumerable<NewsFeedPublication>, long)> GetUserPublicationsAsync(Guid userId, int skip, int take)
+        public async Task<(IEnumerable<NewsFeedPublication>, string)> GetUserPublicationsAsync(Guid userId, int take, string cursor)
         {
-            var publicationsResponse = await publicationsApi.SearchByAuthorWithHttpInfoAsync(userId, skip, take, order: Ordering.Desc);
+            var publicationsResponse = await publicationsApi.SearchByAuthorWithHttpInfoAsync(userId, cursor: cursor, take: take, order: Ordering.Desc);
             var publications = publicationsResponse.Data;
-            var totalCount = GetTotalCountHeader(publicationsResponse);
+            var crs = GetCursorHeader(publicationsResponse);
 
-            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id));
-            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id));
+            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id).ToList());
+            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id).ToList());
             var userReactions = currentUserProvider.UserId == null
                 ? new Dictionary<string, UserReaction>()
-                : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id));
+                : await LoadUserReactionsAsync(currentUserProvider.UserId, publications.Select(p => p.Id).ToList());
 
             var news = publications
                 .Select(publication => new NewsFeedPublication(
@@ -107,7 +107,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     ToUser(publication.Author)))
                 .ToList();
 
-            return (news, totalCount);
+            return (news, crs);
         }
 
         public async Task<NewsFeedPublication> PublishAsync(string content, string userId)
@@ -152,19 +152,14 @@ namespace GhostNetwork.Gateway.Infrastructure
             return new UserInfo(userInfo.Id, userInfo.FullName, userInfo.AvatarUrl);
         }
 
-        private static long GetTotalCountHeader(IApiResponse response)
+        private static string GetCursorHeader(IApiResponse response)
         {
-            if (!response.Headers.TryGetValue("X-TotalCount", out var headers))
-            {
-                return 0;
-            }
-
-            return int.TryParse(headers.FirstOrDefault(), out var totalCount)
-                ? totalCount
-                : 0;
+            return !response.Headers.TryGetValue("X-Cursor", out var headers)
+                ? default
+                : headers.FirstOrDefault();
         }
 
-        private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IEnumerable<string> publicationIds)
+        private async Task<Dictionary<string, CommentsShort>> LoadCommentsAsync(IReadOnlyCollection<string> publicationIds)
         {
             var keys = publicationIds.Select(KeysBuilder.PublicationCommentKey).ToList();
             var query = new FeaturedQuery(keys);
@@ -177,12 +172,12 @@ namespace GhostNetwork.Gateway.Infrastructure
                     var comment = featuredComments.GetValueOrDefault(KeysBuilder.PublicationCommentKey(publicationId));
 
                     return new CommentsShort(
-                        comment?.Comments.Select(c => ToDomain(c)) ?? Enumerable.Empty<PublicationComment>(),
+                        comment?.Comments.Select(ToDomain) ?? Enumerable.Empty<PublicationComment>(),
                         comment?.TotalCount ?? 0);
                 });
         }
 
-        private async Task<Dictionary<string, Dictionary<ReactionType, int>>> LoadReactionsAsync(IEnumerable<string> publicationIds)
+        private async Task<Dictionary<string, Dictionary<ReactionType, int>>> LoadReactionsAsync(IReadOnlyCollection<string> publicationIds)
         {
             var keys = publicationIds.Select(KeysBuilder.PublicationReactionsKey).ToList();
             var query = new ReactionsQuery(keys);
@@ -200,7 +195,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                 });
         }
 
-        private async Task<Dictionary<string, UserReaction>> LoadUserReactionsAsync(string userId, IEnumerable<string> publicationIds)
+        private async Task<Dictionary<string, UserReaction>> LoadUserReactionsAsync(string userId, IReadOnlyCollection<string> publicationIds)
         {
             var query = new ReactionsQuery
             {
