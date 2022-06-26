@@ -35,9 +35,10 @@ namespace GhostNetwork.Gateway.Infrastructure
                 GetCursorHeader(response));
         }
 
-        public async Task<PublicationComment> PublishAsync(string content, string publicationId, string userId)
+        public async Task<PublicationComment> PublishAsync(string content, string publicationId, UserInfo author)
         {
-            var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
+            var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, author: authorContent));
 
             return ToDomain(comment, publicationId);
         }

@@ -110,9 +110,10 @@ namespace GhostNetwork.Gateway.Infrastructure
             return (news, crs);
         }
 
-        public async Task<NewsFeedPublication> PublishAsync(string content, string userId)
+        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author)
         {
-            var model = new CreatePublicationModel(content, userId);
+            var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
+            var model = new CreatePublicationModel(content, author: authorContent);
             var entity = await publicationsApi.CreateAsync(model);
 
             return new NewsFeedPublication(

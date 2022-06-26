@@ -58,7 +58,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
             [FromBody] CreateNewsFeedPublication content)
         {
-            var publication = await newsFeedStorage.PublishAsync(content.Content, currentUserProvider.UserId);
+            var publication = await newsFeedStorage.PublishAsync(content.Content, await currentUserProvider.GetProfileAsync());
 
             return Created(string.Empty, publication);
         }
@@ -177,7 +177,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             }
 
             var comment = await newsFeedStorage.Comments
-                .PublishAsync(model.Content, publicationId, currentUserProvider.UserId);
+                .PublishAsync(model.Content, publicationId, await currentUserProvider.GetProfileAsync());
 
             return Created(string.Empty, comment);
         }

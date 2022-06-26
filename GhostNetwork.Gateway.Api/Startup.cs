@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -32,6 +33,8 @@ namespace GhostNetwork.Gateway.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = configuration.GetValue("SHOW_PII", false);
+
             services.AddCors();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
@@ -70,6 +73,7 @@ namespace GhostNetwork.Gateway.Api
                 {
                     options.ApiName = "api";
                     options.Authority = Authority.ToString();
+                    options.RequireHttpsMetadata = configuration.GetValue("AUTHORITY_REQUIRE_HTTPS", true);
                 });
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
