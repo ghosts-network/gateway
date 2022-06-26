@@ -25,20 +25,20 @@ namespace GhostNetwork.Gateway.Infrastructure
             return ToDomain(comment, comment == null ? null : KeysBuilder.PublicationFromCommentKey(comment.Key));
         }
 
-        public async Task<(IEnumerable<PublicationComment>, long)> GetAsync(string publicationId, int skip, int take)
+        public async Task<(IEnumerable<PublicationComment>, long, string)> GetAsync(string publicationId, int skip, int take, string cursor)
         {
             var response = await commentsApi
-                .SearchByKeyWithHttpInfoAsync(KeysBuilder.PublicationCommentKey(publicationId), skip, take);
+                .SearchByKeyWithHttpInfoAsync(KeysBuilder.PublicationCommentKey(publicationId), skip, cursor, take, Ordering.Desc);
 
-            var comments = response.Data.Select(c => ToDomain(c, publicationId)).ToList();
-            var totalCount = GetTotalCountHeader(response);
-
-            return (comments, totalCount);
+            return (response.Data.Select(c => ToDomain(c, publicationId)).ToList(),
+                GetTotalCountHeader(response),
+                GetCursorHeader(response));
         }
 
-        public async Task<PublicationComment> PublishAsync(string content, string publicationId, string userId)
+        public async Task<PublicationComment> PublishAsync(string content, string publicationId, UserInfo author)
         {
-            var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, authorId: userId));
+            var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
+            var comment = await commentsApi.CreateAsync(new CreateCommentModel(KeysBuilder.PublicationCommentKey(publicationId), content, author: authorContent));
 
             return ToDomain(comment, publicationId);
         }
@@ -77,6 +77,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             return int.TryParse(headers.FirstOrDefault(), out var totalCount)
                 ? totalCount
                 : 0;
+        }
+
+        private static string GetCursorHeader(IApiResponse response)
+        {
+            return !response.Headers.TryGetValue("X-Cursor", out var headers)
+                ? default
+                : headers.FirstOrDefault();
         }
 
         private static PublicationComment ToDomain(Comment entity, string publicationId)
