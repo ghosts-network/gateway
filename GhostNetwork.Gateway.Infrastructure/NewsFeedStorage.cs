@@ -7,7 +7,6 @@ using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
 using GhostNetwork.Gateway.NewsFeed;
-using GhostNetwork.Profiles.Api;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -17,14 +16,12 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly IPublicationsApi publicationsApi;
         private readonly ICommentsApi commentsApi;
         private readonly IReactionsApi reactionsApi;
-        private readonly IProfilesApi profilesApi;
 
-        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, IProfilesApi profilesApi, ICurrentUserProvider currentUserProvider)
+        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
             this.reactionsApi = reactionsApi;
-            this.profilesApi = profilesApi;
             this.currentUserProvider = currentUserProvider;
 
             Reactions = new NewsFeedReactionsStorage(reactionsApi);
@@ -113,10 +110,9 @@ namespace GhostNetwork.Gateway.Infrastructure
             return (news, crs);
         }
 
-        public async Task<NewsFeedPublication> PublishAsync(string content, string userId)
+        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author)
         {
-            var author = await profilesApi.GetByIdAsync(Guid.Parse(userId));
-            var authorContent = new UserInfoModel(author.Id, author.FullName, author.ProfilePicture);
+            var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
             var model = new CreatePublicationModel(content, author: authorContent);
             var entity = await publicationsApi.CreateAsync(model);
 
