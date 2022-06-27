@@ -13,12 +13,14 @@ copy provided dev-compose.yml and customize for your needs
 
 ### Parameters
 
-| Environment          | Description                             |
-|----------------------|---------------------------------------- |
-| CONTENT_ADDRESS      | Address of publication service instance |
-| PROFILES_ADDRESS     | Address of profiles service instance    |
-| MESSAGES_ADDRESS     | Address of messages service instance    |
-| AUTHORITY            | Address of oauth2 authority server      |
+| Environment             | Description                                            |
+|-------------------------|--------------------------------------------------------|
+| CONTENT_ADDRESS         | Address of publication service instance                |
+| PROFILES_ADDRESS        | Address of profiles service instance                   |
+| AUTHORITY               | Address of oauth2 authority server                     |
+| AUTHORITY_REQUIRE_HTTPS | Indicate AUTHORITY server https required. Default true |
+| SHOW_PII                | Show PPI inside log. Default false                     |
+| MESSAGES_ADDRESS        | Address of messages service instance                   |
 
 ## Development
 

@@ -26,33 +26,29 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
         [HttpGet("users/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetByUserAsync(
             [FromRoute] Guid userId,
-            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
-            [FromQuery, Range(1, 50)] int take = 20)
+            [FromQuery, Range(1, 50)] int take = 20,
+            [FromQuery] string cursor = null)
         {
-            var (news, totalCount) = await newsFeedStorage.GetUserPublicationsAsync(userId, skip, take);
+            var (news, nextCursor) = await newsFeedStorage.GetUserPublicationsAsync(userId, take, cursor);
 
-            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
-            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
+            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
 
             return Ok(news);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
-        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetAsync(
-            [FromQuery, Range(0, int.MaxValue)] int skip = 0,
-            [FromQuery, Range(1, 50)] int take = 20)
+            [FromQuery, Range(1, 50)] int take = 20,
+            [FromQuery] string cursor = null)
         {
-            var (news, totalCount) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, skip, take);
+            var (news, nextCursor) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, take, cursor);
 
-            Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
-            Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
+            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
 
             return Ok(news);
         }
@@ -62,7 +58,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
             [FromBody] CreateNewsFeedPublication content)
         {
-            var publication = await newsFeedStorage.PublishAsync(content.Content, currentUserProvider.UserId);
+            var publication = await newsFeedStorage.PublishAsync(content.Content, await currentUserProvider.GetProfileAsync());
 
             return Created(string.Empty, publication);
         }
@@ -151,17 +147,20 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         [HttpGet("{publicationId}/comments")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.TotalCount, "number", "")]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.HasMore, "boolean", "")]
+        [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> SearchCommentsAsync(
             [FromRoute] string publicationId,
             [FromQuery, Range(0, int.MaxValue)] int skip,
-            [FromQuery, Range(0, 100)] int take = 10)
+            [FromQuery, Range(0, 100)] int take = 10,
+            [FromQuery] string cursor = null)
         {
-            var (comments, totalCount) = await newsFeedStorage.Comments
-                .GetAsync(publicationId, skip, take);
+            var (comments, totalCount, nextCursor) = await newsFeedStorage.Comments
+                .GetAsync(publicationId, skip, take, cursor);
 
             Response.Headers.Add(Consts.Headers.TotalCount, totalCount.ToString());
             Response.Headers.Add(Consts.Headers.HasMore, (skip + take < totalCount).ToString());
+            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
 
             return Ok(comments);
         }
@@ -178,7 +177,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             }
 
             var comment = await newsFeedStorage.Comments
-                .PublishAsync(model.Content, publicationId, currentUserProvider.UserId);
+                .PublishAsync(model.Content, publicationId, await currentUserProvider.GetProfileAsync());
 
             return Created(string.Empty, comment);
         }
