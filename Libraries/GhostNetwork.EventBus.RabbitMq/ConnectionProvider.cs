@@ -25,8 +25,6 @@ namespace GhostNetwork.EventBus.RabbitMq
                 TryConnect();
             }
 
-            connection.ConnectionShutdown += OnConnectionLost;
-
             return connection;
         }
 
@@ -64,6 +62,7 @@ namespace GhostNetwork.EventBus.RabbitMq
                 .Execute(() =>
                 {
                     connection ??= connectionFactory.CreateConnection();
+                    connection.ConnectionShutdown += OnConnectionLost;
                 });
         }
     }
