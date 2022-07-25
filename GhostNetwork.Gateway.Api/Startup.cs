@@ -90,6 +90,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
 
             services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
+            services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
 
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
