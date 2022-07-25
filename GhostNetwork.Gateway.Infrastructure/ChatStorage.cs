@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Messages.Api;
 using GhostNetwork.Messages.Model;
-using Chat = GhostNetwork.Gateway.Messages.Chat;
+using Chat = GhostNetwork.Gateway.Chats.Chat;
 
 namespace GhostNetwork.Gateway.Infrastructure;
 

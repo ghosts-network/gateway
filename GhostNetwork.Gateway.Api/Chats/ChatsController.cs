@@ -2,13 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Api.Messages;
+using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Messages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace GhostNetwork.Gateway.Api.Messages;
+namespace GhostNetwork.Gateway.Api.Chats;
 
 [Route("[controller]")]
 [ApiController]

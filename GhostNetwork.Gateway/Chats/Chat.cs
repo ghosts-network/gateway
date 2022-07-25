@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GhostNetwork.Gateway.Messages;
+namespace GhostNetwork.Gateway.Chats;
 
 public class Chat
 {

@@ -98,6 +98,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             services.AddScoped<IChatStorage, ChatStorage>();
+            services.AddScoped<IMessageStorage, MessagesStorage>();
 
             services.AddControllers();
         }

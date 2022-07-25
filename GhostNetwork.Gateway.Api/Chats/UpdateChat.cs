@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GhostNetwork.Gateway.Api.Messages;
+namespace GhostNetwork.Gateway.Api.Chats;
 
-public class CreateChat
+public class UpdateChat
 {
     public string Name { get; set; }
 
