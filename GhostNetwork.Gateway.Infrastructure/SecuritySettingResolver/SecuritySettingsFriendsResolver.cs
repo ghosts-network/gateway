@@ -14,8 +14,9 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
         private readonly ISecuritySettingStorage securitySettingStorage;
         private readonly ICurrentUserProvider currentUserProvider;
 
-        public SecuritySettingsFriendsResolver(ISecuritySettingStorage securitySettingStorage,
-                                        ICurrentUserProvider currentUserProvider)
+        public SecuritySettingsFriendsResolver(
+            ISecuritySettingStorage securitySettingStorage,
+            ICurrentUserProvider currentUserProvider)
         {
             this.securitySettingStorage = securitySettingStorage;
             this.currentUserProvider = currentUserProvider;

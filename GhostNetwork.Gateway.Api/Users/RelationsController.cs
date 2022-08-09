@@ -20,7 +20,8 @@ namespace GhostNetwork.Gateway.Api.Users
         private readonly SecuritySettingsFriendsResolver friendsAccessResolver;
         private readonly SecuritySettingsFollowersResolver followersAccessResolver;
 
-        public RelationsController(IUsersStorage usersStorage,
+        public RelationsController(
+            IUsersStorage usersStorage,
             ICurrentUserProvider currentUserProvider,
             SecuritySettingsFriendsResolver friendsAccessResolver,
             SecuritySettingsFollowersResolver followersAccessResolver)

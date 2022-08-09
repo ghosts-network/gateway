@@ -13,7 +13,8 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly IProfilesApi profilesApi;
         private readonly IRelationsApi relationsApi;
 
-        public RestUserRelationsStorage(IProfilesApi profilesApi, 
+        public RestUserRelationsStorage(
+            IProfilesApi profilesApi,
             IRelationsApi relationsApi)
         {
             this.profilesApi = profilesApi;

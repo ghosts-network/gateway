@@ -33,7 +33,6 @@ namespace GhostNetwork.Gateway.Users
 
         public SecuritySettingSection ProfilePhoto { get; private set; }
 
-
         public static SecuritySettingModel DefaultForUser(Guid userId)
         {
             return new SecuritySettingModel(
