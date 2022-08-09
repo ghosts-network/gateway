@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
-    public class SecuritySettingStorage : ISecuritySettingStorage
+    public class SecuritySettingsStorage : ISecuritySettingStorage
     {
         private readonly ISecuritySettingsApi securitySettingsApi;
 
-        public SecuritySettingStorage(ISecuritySettingsApi securitySettingsApi)
+        public SecuritySettingsStorage(ISecuritySettingsApi securitySettingsApi)
         {
             this.securitySettingsApi = securitySettingsApi;
         }
@@ -27,7 +27,8 @@ namespace GhostNetwork.Gateway.Infrastructure
                 return SecuritySettingModel.DefaultForUser(userId);
             }
 
-            return new SecuritySettingModel(setting.UserId,
+            return new SecuritySettingModel(
+                setting.UserId,
                 new SecuritySettingSection((AccessLevel)setting.Friends.Access, setting.Friends.CertainUsers),
                 new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers),
                 new SecuritySettingSection((AccessLevel)setting.Posts.Access, setting.Posts.CertainUsers),

@@ -20,7 +20,7 @@ namespace GhostNetwork.Gateway.Infrastructure
         {
             this.profilesApi = profilesApi;
             Relations = new RestUserRelationsStorage(profilesApi, relationsApi);
-            SecuritySettings = new SecuritySettingStorage(securitySettingsApi);
+            SecuritySettings = new SecuritySettingsStorage(securitySettingsApi);
             ProfilePictures = usersPictureStorage;
         }
 
