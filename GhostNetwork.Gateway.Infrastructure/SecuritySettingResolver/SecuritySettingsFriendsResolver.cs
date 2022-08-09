@@ -8,8 +8,8 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 {
     public class SecuritySettingsFriendsResolver : ISecuritySettingsResolver
     {
-        private const string sectionName = "friends";
-        private const string friendsAccessMessage = "You cannot see friends of this user";
+        private const string SectionName = "friends";
+        private const string FriendsAccessMessage = "You cannot see friends of this user";
 
         private readonly ISecuritySettingStorage securitySettingStorage;
         private readonly ICurrentUserProvider currentUserProvider;
@@ -29,9 +29,9 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
                 return DomainResult.Success();
             }
 
-            if (!await securitySettingStorage.CheckAccessAsync(new Guid(currentUserProvider.UserId), userId, sectionName))
+            if (!await securitySettingStorage.CheckAccessAsync(new Guid(currentUserProvider.UserId), userId, SectionName))
             {
-                return DomainResult.Error(friendsAccessMessage);
+                return DomainResult.Error(FriendsAccessMessage);
             }
 
             return DomainResult.Success();

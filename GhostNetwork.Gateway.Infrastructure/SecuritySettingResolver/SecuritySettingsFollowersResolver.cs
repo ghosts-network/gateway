@@ -8,8 +8,8 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 {
     public class SecuritySettingsFollowersResolver : ISecuritySettingsResolver
     {
-        private const string sectionName = "followers";
-        private const string followersAccessMessage = "You cannot see followers of this user";
+        private const string SectionName = "followers";
+        private const string FollowersAccessMessage = "You cannot see followers of this user";
 
         private readonly ISecuritySettingStorage securitySettingStorage;
         private readonly ICurrentUserProvider currentUserProvider;
@@ -29,9 +29,9 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
                 return DomainResult.Success();
             }
 
-            if (!await securitySettingStorage.CheckAccessAsync(new Guid(currentUserProvider.UserId), userId, sectionName))
+            if (!await securitySettingStorage.CheckAccessAsync(new Guid(currentUserProvider.UserId), userId, SectionName))
             {
-                return DomainResult.Error(followersAccessMessage);
+                return DomainResult.Error(FollowersAccessMessage);
             }
 
             return DomainResult.Success();
