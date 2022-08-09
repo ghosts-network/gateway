@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Messages.Api;
+using GhostNetwork.Messages.Client;
 using GhostNetwork.Messages.Model;
 using Chat = GhostNetwork.Gateway.Chats.Chat;
 
@@ -18,11 +20,11 @@ public class ChatStorage : IChatStorage
         this.chatsApi = chatsApi;
     }
 
-    public async Task<IEnumerable<Chat>> GetAsync(string userId, string cursor, int limit)
+    public async Task<(IEnumerable<Chat>, string)> GetAsync(string userId, string cursor, int limit)
     {
-        var chats = await chatsApi.SearchAsync(Guid.Parse(userId), cursor, limit);
+        var response = await chatsApi.SearchWithHttpInfoAsync(Guid.Parse(userId), cursor, limit);
 
-        return chats.Select(ToGatewayChat);
+        return (response.Data.Select(ToGatewayChat), GetCursorHeader(response));
     }
 
     public async Task<Chat> GetByIdAsync(string id)
@@ -39,14 +41,30 @@ public class ChatStorage : IChatStorage
         return chat is null ? null : ToGatewayChat(chat);
     }
 
-    public async Task UpdateAsync(string id, string name, IEnumerable<Guid> participants)
+    public async Task<DomainResult> UpdateAsync(string id, string name, IEnumerable<Guid> participants)
     {
-        await chatsApi.UpdateAsync(id, new UpdateChatModel(name, participants.ToList()));
+        try
+        {
+            await chatsApi.UpdateAsync(id, new UpdateChatModel(name, participants.ToList()));
+        }
+        catch (ApiException)
+        {
+            return DomainResult.Error("API error!");
+        }
+
+        return DomainResult.Success();
     }
 
     public async Task DeleteAsync(string id)
     {
         await chatsApi.DeleteAsync(id);
+    }
+
+    private static string GetCursorHeader(IApiResponse response)
+    {
+        return !response.Headers.TryGetValue("X-Cursor", out var headers)
+            ? default
+            : headers.FirstOrDefault();
     }
 
     private static Chat ToGatewayChat(GhostNetwork.Messages.Model.Chat chat)

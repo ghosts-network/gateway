@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Messages.Api;
+using GhostNetwork.Messages.Client;
 using GhostNetwork.Messages.Model;
 using Message = GhostNetwork.Gateway.Messages.Message;
 
@@ -18,11 +20,11 @@ public class MessagesStorage : IMessageStorage
         this.messagesApi = messagesApi;
     }
 
-    public async Task<IEnumerable<Message>> SearchAsync(string chatId, string cursor, int limit)
+    public async Task<(IEnumerable<Message>, string)> SearchAsync(string chatId, string cursor, int limit)
     {
-        var messages = await messagesApi.SearchAsync(chatId, cursor, limit);
+        var response = await messagesApi.SearchWithHttpInfoAsync(chatId, cursor, limit);
 
-        return messages.Select(ToGatewayMessage);
+        return (response.Data.Select(ToGatewayMessage), GetCursorHeader(response));
     }
 
     public async Task<Message> GetByIdAsync(string chatId, string id)
@@ -39,14 +41,30 @@ public class MessagesStorage : IMessageStorage
         return entity is null ? null : ToGatewayMessage(entity);
     }
 
-    public Task UpdateAsync(string chatId, string messageId, string content)
+    public async Task<DomainResult> UpdateAsync(string chatId, string messageId, string content)
     {
-        return messagesApi.UpdateAsync(chatId, messageId, new UpdateMessageModel(content));
+        try
+        {
+            await messagesApi.UpdateAsync(chatId, messageId, new UpdateMessageModel(content));
+        }
+        catch (ApiException)
+        {
+            return DomainResult.Error("API error!");
+        }
+
+        return DomainResult.Success();
     }
 
-    public Task DeleteAsync(string chatId, string messageId)
+    public async Task DeleteAsync(string chatId, string messageId)
     {
-        return messagesApi.DeleteAsync(chatId, messageId);
+        await messagesApi.DeleteAsync(chatId, messageId);
+    }
+
+    private static string GetCursorHeader(IApiResponse response)
+    {
+        return !response.Headers.TryGetValue("X-Cursor", out var headers)
+            ? default
+            : headers.FirstOrDefault();
     }
 
     private static Message ToGatewayMessage(GhostNetwork.Messages.Model.Message message)
