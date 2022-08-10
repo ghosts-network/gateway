@@ -7,6 +7,4 @@ namespace GhostNetwork.Gateway.SecuritySettings;
 public interface ISecuritySettingsResolver
 {
     Task<DomainResult> ResolveAccessAsync(Guid userId);
-
-    Task<DomainResult> ResolveAccessAsync(string userId);
 }

@@ -36,10 +36,5 @@ namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 
             return DomainResult.Success();
         }
-
-        public Task<DomainResult> ResolveAccessAsync(string userId)
-        {
-            return ResolveAccessAsync(Guid.Parse(userId));
-        }
     }
 }
