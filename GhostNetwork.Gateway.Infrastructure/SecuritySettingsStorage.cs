@@ -30,10 +30,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             return new SecuritySettingModel(
                 setting.UserId,
                 new SecuritySettingSection((AccessLevel)setting.Friends.Access, setting.Friends.CertainUsers),
-                new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers),
-                new SecuritySettingSection((AccessLevel)setting.Posts.Access, setting.Posts.CertainUsers),
-                new SecuritySettingSection((AccessLevel)setting.Comments.Access, setting.Comments.CertainUsers),
-                new SecuritySettingSection((AccessLevel)setting.ProfilePhoto.Access, setting.ProfilePhoto.CertainUsers));
+                new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers));
         }
 
         public async Task<bool> CheckAccessAsync(Guid userId, Guid toUserId, string sectionName)
