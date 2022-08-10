@@ -254,31 +254,5 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             // Assert
             Assert.IsFalse(result.Successed);
         }
-
-        [Test]
-        public void ResolveFollowersAccess_Parse_StringToGuid_Error()
-        {
-            // Setup
-            var userId = Guid.NewGuid();
-            var currentUserId = Guid.NewGuid();
-
-            var currentUserMock = new Mock<ICurrentUserProvider>();
-            currentUserMock.Setup(x => x.UserId)
-                .Returns(currentUserId.ToString());
-
-            var securitySettingsMock = new Mock<ISecuritySettingStorage>();
-            securitySettingsMock.Setup(x => x.CheckAccessAsync(currentUserId, userId, sectionName))
-                .ReturnsAsync(true);
-
-            var resolver = new SecuritySettingsFollowersResolver(
-                securitySettingsMock.Object,
-                currentUserMock.Object);
-
-            // Act
-            var exResult = Assert.Throws<FormatException>(() => resolver.ResolveAccessAsync("123").GetAwaiter().GetResult());
-
-            // Assert
-            Assert.AreEqual(exResult.GetType(), typeof(FormatException));
-        }
     }
 }
