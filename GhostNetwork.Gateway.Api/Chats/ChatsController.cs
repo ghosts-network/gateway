@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,6 +55,8 @@ public class ChatsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Chat>> CreateAsync([FromBody] CreateChat model)
     {
+        model.Participants.Add(Guid.Parse(currentUserProvider.UserId));
+
         var chat = await chatStorage.CreateAsync(model.Name, model.Participants);
 
         return Created(string.Empty, chat);

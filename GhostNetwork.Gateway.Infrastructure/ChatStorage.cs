@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Domain;
 using GhostNetwork.Gateway.Messages;
@@ -29,9 +30,16 @@ public class ChatStorage : IChatStorage
 
     public async Task<Chat> GetByIdAsync(string id)
     {
-        var chat = await chatsApi.GetByIdAsync(id);
+        try
+        {
+            var chat = await chatsApi.GetByIdAsync(id);
 
-        return chat is null ? null : ToGatewayChat(chat);
+            return chat is null ? null : ToGatewayChat(chat);
+        }
+        catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
+        {
+            return null;
+        }
     }
 
     public async Task<Chat> CreateAsync(string name, IEnumerable<Guid> participants)
