@@ -95,6 +95,8 @@ public class ChatsController : ControllerBase
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdateAsync([FromRoute] string id, [FromBody] UpdateChat model)
     {
         var chat = await chatStorage.GetByIdAsync(id);
@@ -109,7 +111,12 @@ public class ChatsController : ControllerBase
             return Forbid();
         }
 
-        await chatStorage.UpdateAsync(id, model.Name, model.Participants);
+        var result = await chatStorage.UpdateAsync(id, model.Name, model.Participants);
+
+        if (!result.Successed)
+        {
+            return BadRequest(result.ToProblemDetails());
+        }
 
         return NoContent();
     }

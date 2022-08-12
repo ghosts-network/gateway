@@ -43,4 +43,65 @@ public class DeleteChatAsyncTests
 		// Assert
 		Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
 	}
+
+	[Test]
+	public async Task Delete_NotFound()
+	{
+		// Arrange
+		var chatId = "someId";
+		var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
+		
+		var serviceMock = new Mock<IChatStorage>();
+		var currentUserProviderMock = new Mock<ICurrentUserProvider>();
+		
+		currentUserProviderMock.Setup(x => x.UserId).Returns(userId.ToString);
+
+		serviceMock.Setup(x => x.GetByIdAsync(chatId)).ReturnsAsync(default(Chat));
+
+		var client = TestServerHelper.New(collection =>
+		{
+			collection.AddAuthentication("Test")
+				.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+			collection.AddScoped(_ => serviceMock.Object);
+			collection.AddScoped(_ => currentUserProviderMock.Object);
+		});
+		
+		// Act
+		var response = await client.DeleteAsync($"/chats/{chatId}");
+
+		// Assert
+		Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+	}
+	
+	[Test]
+	public async Task Delete_Forbidden()
+	{
+		// Arrange
+		var chatId = "someId";
+		var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
+		var otherUserId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C7");
+		
+		var chat = new Chat(chatId, "name", new[] {new UserInfo(otherUserId, "", null)});
+		
+		var serviceMock = new Mock<IChatStorage>();
+		var currentUserProviderMock = new Mock<ICurrentUserProvider>();
+		
+		currentUserProviderMock.Setup(x => x.UserId).Returns(userId.ToString);
+
+		serviceMock.Setup(x => x.GetByIdAsync(chatId)).ReturnsAsync(chat);
+		
+		var client = TestServerHelper.New(collection =>
+		{
+			collection.AddAuthentication("Test")
+				.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
+			collection.AddScoped(_ => serviceMock.Object);
+			collection.AddScoped(_ => currentUserProviderMock.Object);
+		});
+		
+		// Act
+		var response = await client.DeleteAsync($"/chats/{chatId}");
+
+		// Assert
+		Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+	}
 }

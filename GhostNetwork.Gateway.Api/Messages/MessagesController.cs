@@ -10,7 +10,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api.Messages;
 
-[Route("[controller]/{chatId}/messages")]
+[Route("[controller]/{chatId}")]
 [ApiController]
 [Authorize]
 public class MessagesController : ControllerBase

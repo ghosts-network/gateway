@@ -4,15 +4,25 @@ namespace GhostNetwork.Gateway.Messages;
 
 public class Message
 {
-    public string Id { get; set; }
+    public Message(string id, string chatId, UserInfo author, string content, DateTimeOffset sentOn, DateTimeOffset updatedOn)
+    {
+        Id = id;
+        ChatId = chatId;
+        Author = author;
+        Content = content;
+        SentOn = sentOn;
+        UpdatedOn = updatedOn;
+    }
 
-    public string ChatId { get; set; }
+    public string Id { get; init; }
 
-    public UserInfo Author { get; set; }
+    public string ChatId { get; init; }
 
-    public string Content { get; set; }
+    public UserInfo Author { get; init; }
 
-    public DateTimeOffset SentOn { get; set; }
+    public string Content { get; init; }
 
-    public DateTimeOffset UpdatedOn { get; set; }
+    public DateTimeOffset SentOn { get; init; }
+
+    public DateTimeOffset UpdatedOn { get; init; }
 }

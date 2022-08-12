@@ -77,14 +77,12 @@ public class MessagesStorage : IMessageStorage
 
     private static Message ToGatewayMessage(GhostNetwork.Messages.Model.Message message)
     {
-        return new Message
-        {
-            Id = message.Id,
-            ChatId = message.ChatId,
-            Author = new(message.Author.Id, message.Author.FullName, message.Author.AvatarUrl),
-            Content = message.Content,
-            SentOn = message.SentOn,
-            UpdatedOn = message.UpdatedOn
-        };
+        return new Message(
+            message.Id,
+            message.ChatId,
+            new UserInfo(message.Author.Id, message.Author.FullName, message.Author.AvatarUrl),
+            message.Content,
+            message.SentOn,
+            message.UpdatedOn);
     }
 }
