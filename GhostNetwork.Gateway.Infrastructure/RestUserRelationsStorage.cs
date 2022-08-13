@@ -33,11 +33,6 @@ namespace GhostNetwork.Gateway.Infrastructure
             return await GetProfilesByIdsAsync(ids);
         }
 
-        public Task<bool> IsFriendAsync(Guid userId, Guid ofUserId)
-        {
-            return relationsApi.IsFriendAsync(userId, ofUserId);
-        }
-
         public async Task<IEnumerable<UserInfo>> GetIncomingFriendRequestsAsync(Guid user, int take, int skip)
         {
             var ids = await relationsApi.SearchIncomingFriendsRequestsAsync(user, skip, take);
