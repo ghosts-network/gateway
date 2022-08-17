@@ -40,7 +40,7 @@ namespace GhostNetwork.Gateway.Api
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("api", new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
                     Version = "1.1.0"
