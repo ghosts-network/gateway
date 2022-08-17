@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Gateway.NewsFeed;
@@ -98,7 +99,10 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IUsersStorage, RestUsersStorage>();
 
             services.AddScoped<IChatStorage, ChatStorage>();
+            services.AddScoped<ChatValidator>();
+
             services.AddScoped<IMessageStorage, MessagesStorage>();
+            services.AddScoped<MessageValidator>();
 
             services.AddControllers();
         }

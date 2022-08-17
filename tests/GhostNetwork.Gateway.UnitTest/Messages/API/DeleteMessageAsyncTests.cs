@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 
-namespace GhostNetwork.Gateway.UnitTest.Messages;
+namespace GhostNetwork.Gateway.UnitTest.Messages.API;
 
 [TestFixture]
 public class DeleteMessageAsyncTests
@@ -48,7 +48,7 @@ public class DeleteMessageAsyncTests
 		});
 		
 		// Act
-		var response = await client.DeleteAsync($"/{chatId}/messages/{messageId}");
+		var response = await client.DeleteAsync($"/chats/{chatId}/messages/{messageId}");
 		
 		// Assert
 		Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -90,34 +90,9 @@ public class DeleteMessageAsyncTests
 		});
 		
 		// Act
-		var response = await client.DeleteAsync($"/{chatId}/messages/{messageId}");
+		var response = await client.DeleteAsync($"/chats/{chatId}/messages/{messageId}");
 		
 		// Assert
 		Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
-	}
-	
-	[Test]
-	public async Task Delete_NotFound()
-	{
-		// Arrange
-		var chatId = "chatId";
-		var messageId = "messageId";
-
-		var chatServiceMock = new Mock<IChatStorage>();
-
-		chatServiceMock.Setup(x => x.GetByIdAsync(chatId)).ReturnsAsync(default(Chat));
-
-		var client = TestServerHelper.New(collection =>
-		{
-			collection.AddAuthentication("Test")
-				.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", _ => { });
-			collection.AddScoped(_ => chatServiceMock.Object);
-		});
-		
-		// Act
-		var response = await client.DeleteAsync($"/{chatId}/messages/{messageId}");
-		
-		// Assert
-		Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 	}
 }

@@ -11,9 +11,9 @@ public interface IMessageStorage
 
     public Task<Message> GetByIdAsync(string chatId, string id);
 
-    public Task<Message> CreateAsync(string chatId, Guid authorId, string content);
+    public Task<(DomainResult, Message)> CreateAsync(string chatId, Guid authorId, string content);
 
-    public Task<DomainResult> UpdateAsync(string chatId, string messageId, string content);
+    public Task<DomainResult> UpdateAsync(string chatId, string messageId, Guid authorId, string content);
 
     public Task DeleteAsync(string chatId, string messageId);
 }

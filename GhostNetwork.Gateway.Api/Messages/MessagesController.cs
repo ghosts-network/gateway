@@ -10,22 +10,19 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api.Messages;
 
-[Route("{chatId}/messages")]
+[Route("/chats/{chatId}/messages")]
 [ApiController]
 [Authorize]
 public class MessagesController : ControllerBase
 {
     private readonly IMessageStorage messageStorage;
-    private readonly IChatStorage chatStorage;
     private readonly ICurrentUserProvider currentUserProvider;
 
     public MessagesController(
         IMessageStorage messageStorage,
-        IChatStorage chatStorage,
         ICurrentUserProvider currentUserProvider)
     {
         this.messageStorage = messageStorage;
-        this.chatStorage = chatStorage;
         this.currentUserProvider = currentUserProvider;
     }
 
@@ -45,13 +42,6 @@ public class MessagesController : ControllerBase
         [FromQuery, Range(0, int.MaxValue)] string cursor,
         [FromQuery, Range(1, 50)] int take = 20)
     {
-        var chat = await chatStorage.GetByIdAsync(chatId);
-
-        if (chat is null)
-        {
-            return NotFound();
-        }
-
         var (messages, nextCursor) = await messageStorage.SearchAsync(chatId, cursor, take);
 
         Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
@@ -60,46 +50,22 @@ public class MessagesController : ControllerBase
     }
 
     /// <summary>
-    /// Get message by id.
-    /// </summary>
-    /// <param name="chatId">Chat id.</param>
-    /// <param name="messageId">Message id.</param>
-    /// <returns>Message.</returns>
-    [HttpGet("{messageId}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Message>> GetByIdAsync([FromRoute] string chatId, [FromRoute] string messageId)
-    {
-        var chat = await chatStorage.GetByIdAsync(chatId);
-        var message = await messageStorage.GetByIdAsync(chatId, messageId);
-
-        if (chat is null || message is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(message);
-    }
-
-    /// <summary>
-    /// Create message.
+    /// Send message.
     /// </summary>
     /// <param name="chatId">Chat id.</param>
     /// <param name="model">Message model.</param>
-    /// <returns>Message.</returns>
+    /// <returns>New message.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Message>> CreateAsync([FromRoute] string chatId, [FromBody] CreateMessage model)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Message>> SendAsync([FromRoute] string chatId, [FromBody] CreateMessage model)
     {
-        var chat = await chatStorage.GetByIdAsync(chatId);
+        var (result, message) = await messageStorage.CreateAsync(chatId, Guid.Parse(currentUserProvider.UserId), model.Content);
 
-        if (chat is null)
+        if (!result.Successed)
         {
-            return NotFound();
+            return BadRequest(result.ToProblemDetails());
         }
-
-        var message = await messageStorage.CreateAsync(chatId, Guid.Parse(currentUserProvider.UserId), model.Content);
 
         return Created(string.Empty, message);
     }
@@ -114,12 +80,12 @@ public class MessagesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Message>> UpdateAsync([FromRoute] string chatId, [FromRoute] string messageId, [FromBody] UpdateMessageModel model)
     {
-        var chat = await chatStorage.GetByIdAsync(chatId);
         var message = await messageStorage.GetByIdAsync(chatId, messageId);
 
-        if (chat is null || message is null)
+        if (message is null)
         {
             return NotFound();
         }
@@ -129,7 +95,12 @@ public class MessagesController : ControllerBase
             return Forbid();
         }
 
-        await messageStorage.UpdateAsync(chatId, messageId, model.Content);
+        var result = await messageStorage.UpdateAsync(chatId, messageId, Guid.Parse(currentUserProvider.UserId),  model.Content);
+
+        if (!result.Successed)
+        {
+            return BadRequest(result.ToProblemDetails());
+        }
 
         return NoContent();
     }
@@ -145,10 +116,9 @@ public class MessagesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteAsync([FromRoute] string chatId, [FromRoute] string messageId)
     {
-        var chat = await chatStorage.GetByIdAsync(chatId);
         var message = await messageStorage.GetByIdAsync(chatId, messageId);
 
-        if (chat is null || message is null)
+        if (message is null)
         {
             return NotFound();
         }

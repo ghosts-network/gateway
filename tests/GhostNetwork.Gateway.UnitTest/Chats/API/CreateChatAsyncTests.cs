@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Messages.Model;
 using Microsoft.AspNetCore.Authentication;
@@ -10,7 +11,7 @@ using Moq;
 using NUnit.Framework;
 using Chat = GhostNetwork.Gateway.Chats.Chat;
 
-namespace GhostNetwork.Gateway.UnitTest.Chats;
+namespace GhostNetwork.Gateway.UnitTest.Chats.API;
 
 [TestFixture]
 public class CreateChatAsyncTests

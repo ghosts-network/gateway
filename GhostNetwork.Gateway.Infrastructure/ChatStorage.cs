@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
-using GhostNetwork.Gateway.Messages;
+using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Messages.Api;
 using GhostNetwork.Messages.Client;
 using GhostNetwork.Messages.Model;
@@ -15,17 +15,20 @@ namespace GhostNetwork.Gateway.Infrastructure;
 public class ChatStorage : IChatStorage
 {
     private readonly IChatsApi chatsApi;
+    private readonly ChatValidator validator;
 
-    public ChatStorage(IChatsApi chatsApi)
+    public ChatStorage(IChatsApi chatsApi, ChatValidator validator)
     {
         this.chatsApi = chatsApi;
+        this.validator = validator;
     }
 
     public async Task<(IEnumerable<Chat>, string)> GetAsync(string userId, string cursor, int limit)
     {
         var response = await chatsApi.SearchWithHttpInfoAsync(Guid.Parse(userId), cursor, limit);
 
-        return (response.Data.Select(ToGatewayChat), GetCursorHeader(response));
+        return (response.Data.Select(chat => new Chat(chat.Id, chat.Name, chat.Participants.Select(p => new UserInfo(p.Id, p.FullName, p.AvatarUrl)))),
+            GetCursorHeader(response));
     }
 
     public async Task<Chat> GetByIdAsync(string id)
@@ -34,7 +37,7 @@ public class ChatStorage : IChatStorage
         {
             var chat = await chatsApi.GetByIdAsync(id);
 
-            return chat is null ? null : ToGatewayChat(chat);
+            return chat is null ? null : new Chat(chat.Id, chat.Name, chat.Participants.Select(p => new UserInfo(p.Id, p.FullName, p.AvatarUrl)));
         }
         catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
         {
@@ -42,22 +45,26 @@ public class ChatStorage : IChatStorage
         }
     }
 
-    public async Task<Chat> CreateAsync(string name, IEnumerable<Guid> participants)
+    public async Task<Chat> CreateAsync(string name, List<Guid> participants)
     {
-        var chat = await chatsApi.CreateAsync(new CreateChatModel(name, participants.ToList()));
+        await validator.ValidateAsync(new ChatContext(name, participants));
 
-        return chat is null ? null : ToGatewayChat(chat);
+        var chat = await chatsApi.CreateAsync(new CreateChatModel(name, participants));
+
+        return chat is null ? null : new Chat(chat.Id, chat.Name, chat.Participants.Select(p => new UserInfo(p.Id, p.FullName, p.AvatarUrl)));
     }
 
-    public async Task<DomainResult> UpdateAsync(string id, string name, IEnumerable<Guid> participants)
+    public async Task<DomainResult> UpdateAsync(string id, string name, List<Guid> participants)
     {
+        await validator.ValidateAsync(new ChatContext(name, participants));
+
         try
         {
             await chatsApi.UpdateAsync(id, new UpdateChatModel(name, participants.ToList()));
         }
-        catch (ApiException)
+        catch (ApiException ex)
         {
-            return DomainResult.Error("API error!");
+            return DomainResult.Error($"API error! {ex.ErrorCode} {ex.Message}");
         }
 
         return DomainResult.Success();
@@ -73,10 +80,5 @@ public class ChatStorage : IChatStorage
         return !response.Headers.TryGetValue("X-Cursor", out var headers)
             ? default
             : headers.FirstOrDefault();
-    }
-
-    private static Chat ToGatewayChat(GhostNetwork.Messages.Model.Chat chat)
-    {
-        return new Chat(chat.Id, chat.Name, chat.Participants.Select(p => new UserInfo(p.Id, p.FullName, p.AvatarUrl)));
     }
 }

@@ -7,5 +7,5 @@ public class UpdateChat
 {
     public string Name { get; set; }
 
-    public IEnumerable<Guid> Participants { get; set; }
+    public List<Guid> Participants { get; set; }
 }

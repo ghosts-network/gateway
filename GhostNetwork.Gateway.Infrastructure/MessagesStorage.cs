@@ -15,10 +15,12 @@ namespace GhostNetwork.Gateway.Infrastructure;
 public class MessagesStorage : IMessageStorage
 {
     private readonly IMessagesApi messagesApi;
+    private readonly MessageValidator validator;
 
-    public MessagesStorage(IMessagesApi messagesApi)
+    public MessagesStorage(IMessagesApi messagesApi, MessageValidator validator)
     {
         this.messagesApi = messagesApi;
+        this.validator = validator;
     }
 
     public async Task<(IEnumerable<Message>, string)> SearchAsync(string chatId, string cursor, int limit)
@@ -42,22 +44,36 @@ public class MessagesStorage : IMessageStorage
         }
     }
 
-    public async Task<Message> CreateAsync(string chatId, Guid authorId, string content)
+    public async Task<(DomainResult, Message)> CreateAsync(string chatId, Guid authorId, string content)
     {
+        var result = await validator.ValidateAsync(new MessageContext(chatId, authorId, content));
+
+        if (!result.Successed)
+        {
+            return (result, default);
+        }
+
         var entity = await messagesApi.SendAsync(chatId, new CreateMessageModel(authorId, content));
 
-        return entity is null ? null : ToGatewayMessage(entity);
+        return (DomainResult.Success(), entity is null ? null : ToGatewayMessage(entity));
     }
 
-    public async Task<DomainResult> UpdateAsync(string chatId, string messageId, string content)
+    public async Task<DomainResult> UpdateAsync(string chatId, string messageId, Guid authorId, string content)
     {
+        var result = await validator.ValidateAsync(new MessageContext(chatId, authorId, content));
+
+        if (!result.Successed)
+        {
+            return result;
+        }
+
         try
         {
             await messagesApi.UpdateAsync(chatId, messageId, new UpdateMessageModel(content));
         }
-        catch (ApiException)
+        catch (ApiException ex)
         {
-            return DomainResult.Error("API error!");
+            return DomainResult.Error(ex.Message);
         }
 
         return DomainResult.Success();
