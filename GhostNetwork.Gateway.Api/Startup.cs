@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
+using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Gateway.NewsFeed;
 using GhostNetwork.Gateway.Users;
+using GhostNetwork.Messages.Api;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,8 +42,8 @@ namespace GhostNetwork.Gateway.Api
             {
                 options.SwaggerDoc("api", new OpenApiInfo
                 {
-                    Title = "GhostNetwork.Gateway",
-                    Version = "1.0.0"
+                    Title = "GhostNetwork/Gateway API",
+                    Version = "1.1.0"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -87,10 +90,19 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
             services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
 
+            services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
+            services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
+
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+
+            services.AddScoped<IChatStorage, ChatStorage>();
+            services.AddScoped<ChatValidator>();
+
+            services.AddScoped<IMessageStorage, MessagesStorage>();
+            services.AddScoped<MessageValidator>();
 
             services.AddControllers();
         }
