@@ -1,12 +1,11 @@
 ﻿using Domain;
-using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using System;
 using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 {
-    public class SecuritySettingsFriendsResolver : ISecuritySettingsResolver
+    public class SecuritySettingsFriendsResolver
     {
         private const string SectionName = "friends";
         private const string FriendsAccessMessage = "You cannot see friends of this user";

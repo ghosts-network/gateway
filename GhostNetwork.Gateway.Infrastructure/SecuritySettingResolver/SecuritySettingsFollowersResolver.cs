@@ -1,12 +1,11 @@
 using Domain;
-using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using System;
 using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver
 {
-    public class SecuritySettingsFollowersResolver : ISecuritySettingsResolver
+    public class SecuritySettingsFollowersResolver
     {
         private const string SectionName = "followers";
         private const string FollowersAccessMessage = "You cannot see followers of this user";
