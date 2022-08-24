@@ -1,6 +1,6 @@
 ﻿using Domain;
+using GhostNetwork.Gateway.Users.SecuritySection;
 using GhostNetwork.Gateway.Users;
-using GhostNetwork.Profiles.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -21,12 +21,11 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             //Setup
             var userId = Guid.NewGuid();
 
-            var model = new SecuritySettingUpdateViewModel(
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
+            var model = new SecuritySettingUpdateModel
+            {
+                Friends = new SecuritySettingsSectionInputModel(AccessLevel.NoOne, Enumerable.Empty<Guid>().ToList()),
+                Followers = new SecuritySettingsSectionInputModel(AccessLevel.NoOne, Enumerable.Empty<Guid>().ToList())
+            };
 
             var domainResult = DomainResult.Error(string.Empty);
 
@@ -35,7 +34,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 .Returns(userId.ToString());
 
             var serviceMock = new Mock<ISecuritySettingStorage>();
-            serviceMock.Setup(s => s.UpdateAsync(userId, model)).ReturnsAsync(domainResult);
+            serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<SecuritySettingUpdateModel>())).ReturnsAsync(domainResult);
 
             var userStorage = new Mock<IUsersStorage>();
             userStorage.Setup(s => s.SecuritySettings).Returns(serviceMock.Object);
@@ -61,12 +60,11 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
             //Setup
             var userId = Guid.NewGuid();
 
-            var model = new SecuritySettingUpdateViewModel(
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()),
-                new SecuritySettingsSectionInputModel(Profiles.Model.Access.NoOne, Enumerable.Empty<Guid>().ToList()));
+            var model = new SecuritySettingUpdateModel
+            {
+                Friends = new SecuritySettingsSectionInputModel(AccessLevel.NoOne, Enumerable.Empty<Guid>().ToList()),
+                Followers = new SecuritySettingsSectionInputModel(AccessLevel.NoOne, Enumerable.Empty<Guid>().ToList())
+            };
 
             var domainResult = DomainResult.Success();
 
@@ -75,7 +73,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 .Returns(userId.ToString());
 
             var serviceMock = new Mock<ISecuritySettingStorage>();
-            serviceMock.Setup(s => s.UpdateAsync(userId, model)).ReturnsAsync(domainResult);
+            serviceMock.Setup(s => s.UpdateAsync(It.IsAny<Guid>(), It.IsAny<SecuritySettingUpdateModel>())).ReturnsAsync(domainResult);
 
             var userStorage = new Mock<IUsersStorage>();
             userStorage.Setup(s => s.SecuritySettings).Returns(serviceMock.Object);
