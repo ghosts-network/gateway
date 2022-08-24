@@ -23,6 +23,18 @@ services:
       - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
 
+  messages:
+    image: ghcr.io/ghosts-network/messages:latest
+    ports:
+      - "5252:80"
+    depends_on:
+      - db
+      - profiles
+    environment:
+      - MONGO_CONNECTION=mongodb://db:27017/ghost-network
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PROFILES_ADDRESS=http://profiles
+
   db:
     image: mvertes/alpine-mongo
     ports:
@@ -35,7 +47,9 @@ services:
     depends_on:
       - content
       - profiles
+      - messages
     environment:
       - CONTENT_ADDRESS=http://content
       - PROFILES_ADDRESS=http://profiles
+      - MESSAGES_ADDRESS=http://messages
       - ASPNETCORE_ENVIRONMENT=Development
