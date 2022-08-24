@@ -1,9 +1,11 @@
 ﻿using Domain;
 using GhostNetwork.Gateway.Users;
+using GhostNetwork.Gateway.Users.SecuritySection;
 using GhostNetwork.Profiles.Api;
 using GhostNetwork.Profiles.Client;
 using GhostNetwork.Profiles.Model;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -56,11 +58,14 @@ namespace GhostNetwork.Gateway.Infrastructure
             return true;
         }
 
-        public async Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model)
+        public async Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateModel model)
         {
             try
             {
-                await securitySettingsApi.UpdateAsync(userId, model);
+                await securitySettingsApi.UpdateAsync(userId, new SecuritySettingUpdateViewModel(
+                    friends: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Friends.Access, model.Friends.CertainUsers.ToList()),
+                    followers: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Followers.Access, model.Followers.CertainUsers.ToList())));
+
                 return DomainResult.Success();
             }
             catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
