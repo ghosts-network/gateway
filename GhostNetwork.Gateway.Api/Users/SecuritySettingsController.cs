@@ -1,5 +1,5 @@
 ﻿using GhostNetwork.Gateway.Users;
-using GhostNetwork.Profiles.Model;
+using GhostNetwork.Gateway.Users.SecuritySection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,7 +22,7 @@ namespace GhostNetwork.Gateway.Api.Users
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUserSecuritySettings()
+        public async Task<ActionResult<SecuritySettingModel>> GetUserSecuritySettings()
         {
             var settings = await usersStorage.SecuritySettings.FindByProfileAsync(new Guid(currentUserProvider.UserId));
             return Ok(settings);
@@ -31,7 +31,7 @@ namespace GhostNetwork.Gateway.Api.Users
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateAsync([FromBody] SecuritySettingUpdateViewModel model)
+        public async Task<IActionResult> UpdateAsync([FromBody] SecuritySettingUpdateModel model)
         {
             var result = await usersStorage.SecuritySettings.UpdateAsync(new Guid(currentUserProvider.UserId), model);
             if (!result.Successed)
