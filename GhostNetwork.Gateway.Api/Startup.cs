@@ -8,7 +8,6 @@ using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Gateway.NewsFeed;
-using GhostNetwork.Gateway.SecuritySettings;
 using GhostNetwork.Gateway.Users;
 using GhostNetwork.Messages.Api;
 using GhostNetwork.Profiles.Api;
