@@ -1,5 +1,5 @@
 ﻿using Domain;
-using GhostNetwork.Profiles.Model;
+using GhostNetwork.Gateway.Users.SecuritySection;
 using System;
 using System.Threading.Tasks;
 
@@ -11,6 +11,6 @@ namespace GhostNetwork.Gateway.Users
 
         Task<bool> CheckAccessAsync(Guid userId, Guid toUserId, string sectionName);
 
-        Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateViewModel model);
+        Task<DomainResult> UpdateAsync(Guid userId, SecuritySettingUpdateModel model);
     }
 }
