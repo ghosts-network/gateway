@@ -27,7 +27,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             Stream stream,
             CancellationToken cancellationToken = default)
         {
-            var user = await profilesApi.GetByIdAsync(userId, cancellationToken);
+            var user = await profilesApi.GetByIdAsync(userId, cancellationToken: cancellationToken);
 
             var blobContainer = blobClient.GetBlobContainerClient("photos");
             await blobContainer.CreateIfNotExistsAsync(PublicAccessType.BlobContainer, cancellationToken: cancellationToken);
@@ -36,7 +36,7 @@ namespace GhostNetwork.Gateway.Infrastructure
             await blob.UploadAsync(stream, cancellationToken);
 
             var updateModel = new AvatarUpdateViewModel(blob.Uri.ToString());
-            await profilesApi.UpdateAvatarAsync(userId, updateModel, cancellationToken);
+            await profilesApi.UpdateAvatarAsync(userId, updateModel, cancellationToken: cancellationToken);
         }
     }
 }

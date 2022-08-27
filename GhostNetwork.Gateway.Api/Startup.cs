@@ -5,6 +5,7 @@ using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
+using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.Messages;
 using GhostNetwork.Gateway.NewsFeed;
 using GhostNetwork.Gateway.Users;
@@ -43,7 +44,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc("api", new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.1.0"
+                    Version = "1.2.0"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -79,6 +80,9 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
+            services.AddTransient<SecuritySettingsFriendsResolver>();
+            services.AddTransient<SecuritySettingsFollowersResolver>();
+
             services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),
                 provider.GetRequiredService<IProfilesApi>()));
@@ -89,6 +93,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
             services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<ISecuritySettingsApi>(_ => new SecuritySettingsApi(configuration["PROFILES_ADDRESS"]));
 
             services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
             services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
@@ -97,6 +102,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
+            services.AddScoped<ISecuritySettingStorage, SecuritySettingsStorage>();
 
             services.AddScoped<IChatStorage, ChatStorage>();
             services.AddScoped<ChatValidator>();
