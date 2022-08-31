@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Chats;
@@ -24,6 +25,7 @@ namespace GhostNetwork.Gateway.Api
 {
     public class Startup
     {
+        private const string ApiName = "api";
         private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
@@ -41,10 +43,10 @@ namespace GhostNetwork.Gateway.Api
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("api", new OpenApiInfo
+                options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.2.0"
+                    Version = "1.2.1"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -110,7 +112,9 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IMessageStorage, MessagesStorage>();
             services.AddScoped<MessageValidator>();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options => options
+                    .JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -121,7 +125,7 @@ namespace GhostNetwork.Gateway.Api
                     .UseSwagger()
                     .UseSwaggerUI(options =>
                     {
-                        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway V1");
+                        options.SwaggerEndpoint($"/swagger/{ApiName}/swagger.json", "Gateway V1");
 
                         options.OAuthClientId("swagger_local");
                         options.OAuthClientSecret("secret");
@@ -135,7 +139,7 @@ namespace GhostNetwork.Gateway.Api
                     .UseSwagger()
                     .UseSwaggerUI(options =>
                     {
-                        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway V1");
+                        options.SwaggerEndpoint($"/swagger/{ApiName}/swagger.json", "Gateway V1");
 
                         options.OAuthClientId("swagger_prod");
                         options.OAuthClientSecret("secret");
