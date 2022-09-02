@@ -1,5 +1,6 @@
 ﻿using GhostNetwork.Gateway.Users;
 using GhostNetwork.Gateway.Users.SecuritySection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ namespace GhostNetwork.Gateway.Api.Users
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class SecuritySettingsController : ControllerBase
     {
         private readonly IUsersStorage usersStorage;
