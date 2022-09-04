@@ -5,5 +5,7 @@
         public SecuritySettingsSectionInputModel Friends { get; set; }
 
         public SecuritySettingsSectionInputModel Followers { get; set; }
+
+        public SecuritySettingsSectionInputModel Posts { get; set; }
     }
 }
