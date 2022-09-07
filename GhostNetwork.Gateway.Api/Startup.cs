@@ -46,7 +46,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.2.2"
+                    Version = "1.2.3"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -84,6 +84,7 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddTransient<SecuritySettingsFriendsResolver>();
             services.AddTransient<SecuritySettingsFollowersResolver>();
+            services.AddTransient<SecuritySettingsPublicationResolver>();
 
             services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),

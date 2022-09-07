@@ -32,7 +32,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             return new SecuritySettingModel(
                 setting.UserId,
                 new SecuritySettingSection((AccessLevel)setting.Friends.Access, setting.Friends.CertainUsers),
-                new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers));
+                new SecuritySettingSection((AccessLevel)setting.Followers.Access, setting.Followers.CertainUsers),
+                new SecuritySettingSection((AccessLevel)setting.Posts.Access, setting.Posts.CertainUsers));
         }
 
         public async Task<bool> CheckAccessAsync(Guid userId, Guid toUserId, string sectionName)
@@ -64,7 +65,8 @@ namespace GhostNetwork.Gateway.Infrastructure
             {
                 await securitySettingsApi.UpdateAsync(userId, new SecuritySettingUpdateViewModel(
                     friends: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Friends.Access, model.Friends.CertainUsers.ToList()),
-                    followers: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Followers.Access, model.Followers.CertainUsers.ToList())));
+                    followers: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Followers.Access, model.Followers.CertainUsers.ToList()),
+                    posts: new Profiles.Model.SecuritySettingsSectionInputModel((Access)model.Posts.Access, model.Posts.CertainUsers.ToList())));
 
                 return DomainResult.Success();
             }
