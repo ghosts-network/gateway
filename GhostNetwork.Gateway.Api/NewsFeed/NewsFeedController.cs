@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.NewsFeed;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,21 +18,33 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
     {
         private readonly INewsFeedStorage newsFeedStorage;
         private readonly ICurrentUserProvider currentUserProvider;
+        private readonly SecuritySettingsPublicationResolver publicationAccessResolver;
 
-        public NewsFeedController(INewsFeedStorage newsFeedStorage, ICurrentUserProvider currentUserProvider)
+        public NewsFeedController(
+            INewsFeedStorage newsFeedStorage,
+            ICurrentUserProvider currentUserProvider,
+            SecuritySettingsPublicationResolver publicationAccessResolver)
         {
             this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;
+            this.publicationAccessResolver = publicationAccessResolver;
         }
 
         [HttpGet("users/{userId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [SwaggerResponseHeader(StatusCodes.Status200OK, Consts.Headers.Cursor, "string", "")]
         public async Task<ActionResult<IEnumerable<NewsFeedPublication>>> GetByUserAsync(
             [FromRoute] Guid userId,
             [FromQuery, Range(1, 50)] int take = 20,
             [FromQuery] string cursor = null)
         {
+            var resolveResult = await publicationAccessResolver.ResolveAccessAsync(userId);
+            if (!resolveResult.Successed)
+            {
+                return Forbid();
+            }
+
             var (news, nextCursor) = await newsFeedStorage.GetUserPublicationsAsync(userId, take, cursor);
 
             Response.Headers.Add(Consts.Headers.Cursor, nextCursor);

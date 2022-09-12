@@ -10,6 +10,8 @@ namespace GhostNetwork.Gateway.Users
 
         IUsersPictureStorage ProfilePictures { get; }
 
+        ISecuritySettingStorage SecuritySettings { get; }
+
         Task<User> GetByIdAsync(Guid id);
 
         Task<DomainResult> UpdateAsync(User user);

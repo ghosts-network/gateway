@@ -1,10 +1,10 @@
+using Domain;
+using GhostNetwork.Gateway.Users;
+using GhostNetwork.Profiles.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
-using GhostNetwork.Gateway.Users;
-using GhostNetwork.Profiles.Api;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -13,7 +13,9 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly IProfilesApi profilesApi;
         private readonly IRelationsApi relationsApi;
 
-        public RestUserRelationsStorage(IProfilesApi profilesApi, IRelationsApi relationsApi)
+        public RestUserRelationsStorage(
+            IProfilesApi profilesApi,
+            IRelationsApi relationsApi)
         {
             this.profilesApi = profilesApi;
             this.relationsApi = relationsApi;
