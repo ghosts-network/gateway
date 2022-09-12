@@ -33,7 +33,7 @@ public class MessageValidator : IValidator<MessageContext>
         }
         else if (chat.Participants.All(x => x.Id != context.AuthorId))
         {
-            errors.Add(new DomainError("You is not a participant of the chat!"));
+            errors.Add(new DomainError("You are not a participant of this chat!"));
         }
 
         return DomainResult.Error(errors);

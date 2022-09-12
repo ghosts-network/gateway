@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
@@ -17,7 +18,12 @@ namespace GhostNetwork.Gateway.Infrastructure
         private readonly ICommentsApi commentsApi;
         private readonly IReactionsApi reactionsApi;
 
-        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
+        public NewsFeedStorage(
+            IPublicationsApi publicationsApi,
+            ICommentsApi commentsApi,
+            IReactionsApi reactionsApi,
+            ICurrentUserProvider currentUserProvider,
+            INewsFeedMediaStorage mediaStorage)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
@@ -26,11 +32,14 @@ namespace GhostNetwork.Gateway.Infrastructure
 
             Reactions = new NewsFeedReactionsStorage(reactionsApi);
             Comments = new NewsFeedCommentsStorage(commentsApi);
+            Media = mediaStorage;
         }
 
         public INewsFeedReactionsStorage Reactions { get; }
 
         public INewsFeedCommentsStorage Comments { get; }
+
+        public INewsFeedMediaStorage Media { get; }
 
         public async Task<NewsFeedPublication> GetByIdAsync(string id)
         {

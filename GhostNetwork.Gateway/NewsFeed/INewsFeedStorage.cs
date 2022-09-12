@@ -10,6 +10,8 @@ namespace GhostNetwork.Gateway.NewsFeed
 
         INewsFeedCommentsStorage Comments { get; }
 
+        INewsFeedMediaStorage Media { get; }
+
         Task<NewsFeedPublication> GetByIdAsync(string id);
 
         Task<(IEnumerable<NewsFeedPublication>, string)> GetUserFeedAsync(string userId, int take, string cursor);
