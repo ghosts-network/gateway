@@ -21,6 +21,7 @@ copy provided dev-compose.yml and customize for your needs
 | AUTHORITY_REQUIRE_HTTPS | Indicate AUTHORITY server https required. Default true |
 | SHOW_PII                | Show PPI inside log. Default false                     |
 | MESSAGES_ADDRESS        | Address of messages service instance                   |
+| NEWSFEED_ADDRESS        | Address of news feed service instance                  |
 
 ## Development
 

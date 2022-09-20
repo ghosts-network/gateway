@@ -39,6 +39,8 @@ namespace GhostNetwork.Gateway.Api
         {
             IdentityModelEventSource.ShowPII = configuration.GetValue("SHOW_PII", false);
 
+            services.AddScoped(_ => new FeatureFlags(GetPersonalizedNewsfeed()));
+
             services.AddCors();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
@@ -46,7 +48,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.2.3"
+                    Version = "1.3.0"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -101,6 +103,8 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
             services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
 
+            services.AddScoped<NewsFeedApi>()
+                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]));
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             services.AddScoped<RestUsersStorage>();
@@ -173,6 +177,11 @@ namespace GhostNetwork.Gateway.Api
         private string[] GetAllowOrigins()
         {
             return configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',').ToArray() ?? Array.Empty<string>();
+        }
+
+        private string[] GetPersonalizedNewsfeed()
+        {
+            return configuration.GetValue<string>("ENABLE_PERSONALIZED_NEWSFEED_FOR")?.Split(',').ToArray() ?? Array.Empty<string>();
         }
     }
 }

@@ -13,16 +13,23 @@ namespace GhostNetwork.Gateway.Infrastructure
     public class NewsFeedStorage : INewsFeedStorage
     {
         private readonly ICurrentUserProvider currentUserProvider;
+        private readonly NewsFeedApi newsFeedApi;
         private readonly IPublicationsApi publicationsApi;
         private readonly ICommentsApi commentsApi;
         private readonly IReactionsApi reactionsApi;
 
-        public NewsFeedStorage(IPublicationsApi publicationsApi, ICommentsApi commentsApi, IReactionsApi reactionsApi, ICurrentUserProvider currentUserProvider)
+        public NewsFeedStorage(
+            IPublicationsApi publicationsApi,
+            ICommentsApi commentsApi,
+            IReactionsApi reactionsApi,
+            ICurrentUserProvider currentUserProvider,
+            NewsFeedApi newsFeedApi)
         {
             this.publicationsApi = publicationsApi;
             this.commentsApi = commentsApi;
             this.reactionsApi = reactionsApi;
             this.currentUserProvider = currentUserProvider;
+            this.newsFeedApi = newsFeedApi;
 
             Reactions = new NewsFeedReactionsStorage(reactionsApi);
             Comments = new NewsFeedCommentsStorage(commentsApi);
@@ -56,6 +63,30 @@ namespace GhostNetwork.Gateway.Infrastructure
             {
                 return null;
             }
+        }
+
+        public async Task<(IEnumerable<NewsFeedPublication>, string)> GetPersonalizedFeedAsync(string userId, int take, string cursor)
+        {
+            var (publications, crs) = await newsFeedApi.GetUserFeedAsync(userId, take, cursor);
+
+            var featuredComments = await LoadCommentsAsync(publications.Select(p => p.Id).ToList());
+            var reactions = await LoadReactionsAsync(publications.Select(p => p.Id).ToList());
+            var userReactions = userId == null
+                ? new Dictionary<string, UserReaction>()
+                : await LoadUserReactionsAsync(userId, publications.Select(p => p.Id).ToList());
+
+            var news = publications
+                .Select(publication => new NewsFeedPublication(
+                    publication.Id,
+                    publication.Content,
+                    publication.CreatedOn,
+                    publication.UpdatedOn,
+                    featuredComments[publication.Id],
+                    new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
+                    ToUser(publication.Author)))
+                .ToList();
+
+            return (news, crs);
         }
 
         public async Task<(IEnumerable<NewsFeedPublication>, string)> GetUserFeedAsync(string userId, int take, string cursor)
