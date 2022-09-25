@@ -1,10 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
+using AppAny.HotChocolate.FluentValidation;
 using Azure.Storage.Blobs;
+using FluentValidation;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Gateway.Chats;
+using GhostNetwork.Gateway.GraphQL.Models.InputModels;
+using GhostNetwork.Gateway.GraphQL.Mutations;
+using GhostNetwork.Gateway.GraphQL.Queries;
+using GhostNetwork.Gateway.GraphQL.TypeExtenssions;
+using GhostNetwork.Gateway.GraphQL.Validators;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.Messages;
@@ -20,6 +23,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace GhostNetwork.Gateway.Api
 {
@@ -117,6 +124,28 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IMessageStorage, MessagesStorage>();
             services.AddScoped<MessageValidator>();
 
+            services.AddScoped<IValidator<CreatePublicationInput>, CreatePublicationValidator>();
+            services.AddScoped<IValidator<UpdatePublicationInput>, UpdatePublicationValidator>();
+            services.AddScoped<IValidator<DeletePublicationInput>, DeletePublicationValidator>();
+            services.AddScoped<IValidator<CreateCommentInput>, CreateCommentValidator>();
+            services.AddScoped<IValidator<UpdateCommentInput>, UpdateCommentValidator>();
+            services.AddScoped<IValidator<DeleteCommentInput>, DeleteCommentValidator>();
+            services.AddScoped<IValidator<UpsertReactionInput>, UpsertReactionValidator>();
+            services.AddScoped<IValidator<DeleteReactionInput>, DeleteReactionValidator>();
+
+            services.AddGraphQLServer()
+                .AddQueryType<NewsFeedPublicationQuery>()
+                .AddTypeExtension<PublicationUserExtension>()
+                .AddTypeExtension<PublicationCommentExtension>()
+                .AddTypeExtension<CommentUserExtension>()
+                .AddTypeExtension<PublicationReactionsExtension>()
+                .AddMutationType<Mutation>()
+                .AddTypeExtension<PublicationMutations>()
+                .AddTypeExtension<CommentMutations>()
+                .AddTypeExtension<ReactionMutations>()
+                .AddFluentValidation()
+                .AddAuthorization();
+
             services.AddControllers()
                 .AddJsonOptions(options => options
                     .JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -171,7 +200,13 @@ namespace GhostNetwork.Gateway.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+
+                endpoints.MapGraphQL().RequireAuthorization();
+                endpoints.MapBananaCakePop("/graphql/ui");
+            });
         }
 
         private string[] GetAllowOrigins()
