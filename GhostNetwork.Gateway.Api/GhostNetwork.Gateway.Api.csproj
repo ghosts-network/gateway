@@ -6,7 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AppAny.HotChocolate.FluentValidation" Version="0.9.0" />
         <PackageReference Include="Boberneprotiv.Domain" Version="0.0.3" />
+        <PackageReference Include="HotChocolate.AspNetCore" Version="12.13.2" />
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="12.14.0" />
         <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
           <PrivateAssets>all</PrivateAssets>
@@ -17,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\GhostNetwork.Gateway.GraphQL\GhostNetwork.Gateway.GraphQL.csproj" />
         <ProjectReference Include="..\GhostNetwork.Gateway.Infrastructure\GhostNetwork.Gateway.Infrastructure.csproj" />
         <ProjectReference Include="..\GhostNetwork.Gateway\GhostNetwork.Gateway.csproj" />
     </ItemGroup>
