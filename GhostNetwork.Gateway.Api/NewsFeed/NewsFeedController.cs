@@ -157,6 +157,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
 
         [HttpDelete("{publicationId}/reaction")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> RemoveReactionAsync(
             [FromRoute] string publicationId)
         {
