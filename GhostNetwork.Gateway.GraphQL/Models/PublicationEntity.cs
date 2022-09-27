@@ -6,8 +6,7 @@
 
         public string Content { get; set; } = string.Empty;
 
-        [GraphQLIgnore]
-        public string AuthorId { get; set; } = string.Empty;
+        public UserInfoEntity? Author { get; set; }
 
         public DateTimeOffset CreatedOn { get; set; }
 
