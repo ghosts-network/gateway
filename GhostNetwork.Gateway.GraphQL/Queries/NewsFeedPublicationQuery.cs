@@ -1,35 +1,42 @@
 ﻿using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Model;
 using GhostNetwork.Gateway.GraphQL.Models;
+using GhostNetwork.Gateway.GraphQL.Payloads;
 
 namespace GhostNetwork.Gateway.GraphQL.Queries
 {
     public class NewsFeedPublicationQuery
     {
         private readonly IPublicationsApi publicationApi;
-        private readonly ICurrentUserProvider currentUserProvider;
 
-        public NewsFeedPublicationQuery(
-            ICurrentUserProvider currentUserProvider,
-            IPublicationsApi publicationApi)
+        public NewsFeedPublicationQuery(IPublicationsApi publicationApi)
         {
             this.publicationApi = publicationApi;
-            this.currentUserProvider = currentUserProvider;
         }
 
         [GraphQLName("publications")]
-        public async Task<IEnumerable<PublicationEntity>> GetPublicationsByUserIdAsync(int? take, string? cursor, Ordering? order, CancellationToken cancellationToken)
+        public async Task<NewsFeedPayload> GetNewsFeedAsync(int? take, string? cursor, Ordering? order, CancellationToken cancellationToken)
         {
             var publications = await publicationApi.SearchAsync(cursor, take, order: order, cancellationToken: cancellationToken);
-            
-            return publications.Select(p => new PublicationEntity
+
+            return new NewsFeedPayload
             {
-                Id = p.Id,
-                Content = p.Content,
-                CreatedOn = p.CreatedOn,
-                UpdatedOn = p.UpdatedOn,
-                AuthorId = p.Author.Id.ToString()
-            });
+                Publications = publications.Select(p => new PublicationEntity
+                {
+                    Id = p.Id,
+                    Content = p.Content,
+                    CreatedOn = p.CreatedOn,
+                    UpdatedOn = p.UpdatedOn,
+                    Author = new UserInfoEntity
+                    {
+                        Id = p.Author.Id.ToString(),
+                        FirstName = p.Author.FullName.Split(' ')[0],
+                        LastName = p.Author.FullName.Split(' ')[1],
+                        AvatarUrl = p.Author.AvatarUrl
+                    }
+                }),
+                Cursor = publications.LastOrDefault()?.Id ?? null
+            };
         }
     }
 }
