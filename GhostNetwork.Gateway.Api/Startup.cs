@@ -135,7 +135,6 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddGraphQLServer()
                 .AddQueryType<NewsFeedPublicationQuery>()
-                .AddTypeExtension<PublicationUserExtension>()
                 .AddTypeExtension<PublicationCommentExtension>()
                 .AddTypeExtension<CommentUserExtension>()
                 .AddTypeExtension<PublicationReactionsExtension>()
