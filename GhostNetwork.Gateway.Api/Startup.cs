@@ -39,7 +39,7 @@ namespace GhostNetwork.Gateway.Api
         {
             IdentityModelEventSource.ShowPII = configuration.GetValue("SHOW_PII", false);
 
-            services.AddScoped(_ => new FeatureFlags(GetPersonalizedNewsfeed()));
+            services.AddScoped(_ => new FeatureFlags(configuration.GetValue("ENABLE_PERSONALIZED_NEWSFEED", false), GetPersonalizedNewsfeed()));
 
             services.AddCors();
             services.AddHttpContextAccessor();
