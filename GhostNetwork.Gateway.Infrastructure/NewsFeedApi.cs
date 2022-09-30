@@ -28,7 +28,7 @@ public class NewsFeedApi
             opts["cursor"] = cursor;
         }
 
-        var path = $"{userId}?{opts.Select(o => $"{o.Key}={o.Value}")}";
+        var path = $"{userId}?{string.Join('&', opts.Select(o => $"{o.Key.ToString()}={o.Value.ToString()}"))}";
         var response = await httpClient.GetAsync(path);
 
         return (await ReadBody<List<Publication>>(response), GetCursorHeader(response));
