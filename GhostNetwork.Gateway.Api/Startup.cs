@@ -14,6 +14,7 @@ using GhostNetwork.Messages.Api;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,10 +28,12 @@ namespace GhostNetwork.Gateway.Api
     {
         private const string ApiName = "api";
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://accounts.ghost-network.boberneprotiv.com"));
@@ -48,7 +51,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.2"
+                    Version = "1.3.3"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -88,9 +91,19 @@ namespace GhostNetwork.Gateway.Api
             services.AddTransient<SecuritySettingsFollowersResolver>();
             services.AddTransient<SecuritySettingsPublicationResolver>();
 
-            services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
-                new BlobServiceClient(configuration["BLOB_CONNECTION"]),
-                provider.GetRequiredService<IProfilesApi>()));
+            if (configuration["FILE_STORAGE_TYPE"]?.ToLower() == "local")
+            {
+                services.AddScoped<IUsersPictureStorage, UsersPictureLocalStorage>(provider => new UsersPictureLocalStorage(
+                    environment.WebRootPath,
+                    $"{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Scheme}://{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Host.Value}",
+                    provider.GetRequiredService<IProfilesApi>()));
+            }
+            else
+            {
+                services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
+                    new BlobServiceClient(configuration["BLOB_CONNECTION"]),
+                    provider.GetRequiredService<IProfilesApi>()));
+            }
 
             services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
@@ -151,6 +164,11 @@ namespace GhostNetwork.Gateway.Api
                         options.OAuthAppName("Swagger Prod");
                         options.OAuthUsePkce();
                     });
+            }
+
+            if (configuration["FILE_STORAGE_TYPE"]?.ToLower() == "local")
+            {
+                app.UseStaticFiles();
             }
 
             app.UseRouting();
