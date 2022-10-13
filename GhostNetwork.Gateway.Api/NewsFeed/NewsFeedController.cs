@@ -20,15 +20,18 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         private readonly INewsFeedStorage newsFeedStorage;
         private readonly ICurrentUserProvider currentUserProvider;
         private readonly SecuritySettingsPublicationResolver publicationAccessResolver;
+        private readonly FeatureFlags featureFlags;
 
         public NewsFeedController(
             INewsFeedStorage newsFeedStorage,
             ICurrentUserProvider currentUserProvider,
-            SecuritySettingsPublicationResolver publicationAccessResolver)
+            SecuritySettingsPublicationResolver publicationAccessResolver,
+            FeatureFlags featureFlags)
         {
             this.newsFeedStorage = newsFeedStorage;
             this.currentUserProvider = currentUserProvider;
             this.publicationAccessResolver = publicationAccessResolver;
+            this.featureFlags = featureFlags;
         }
 
         [HttpGet("users/{userId:guid}")]
@@ -60,11 +63,22 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
             [FromQuery, Range(1, 50)] int take = 20,
             [FromQuery] string cursor = null)
         {
-            var (news, nextCursor) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, take, cursor);
+            if (featureFlags.PersonalizedNewsFeedEnabled(currentUserProvider.UserId))
+            {
+                var (news, nextCursor) = await newsFeedStorage.GetPersonalizedFeedAsync(currentUserProvider.UserId, take, cursor);
 
-            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
+                Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
 
-            return Ok(news);
+                return Ok(news);
+            }
+            else
+            {
+                var (news, nextCursor) = await newsFeedStorage.GetUserFeedAsync(currentUserProvider.UserId, take, cursor);
+
+                Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
+
+                return Ok(news);
+            }
         }
 
         [HttpPost]

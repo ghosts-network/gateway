@@ -83,7 +83,7 @@ namespace GhostNetwork.Gateway.Api.Users
                 return Forbid();
             }
 
-            if (Path.GetExtension(file.FileName) != ".jpg" && Path.GetExtension(file.FileName) != ".png")
+            if (Path.GetExtension(file.FileName) is not (".jpg" or ".png" or ".jpeg"))
             {
                 return BadRequest();
             }

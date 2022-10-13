@@ -21,4 +21,8 @@
         <ProjectReference Include="..\GhostNetwork.Gateway\GhostNetwork.Gateway.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot" />
+    </ItemGroup>
+
 </Project>

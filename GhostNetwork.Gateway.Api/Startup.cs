@@ -14,6 +14,7 @@ using GhostNetwork.Messages.Api;
 using GhostNetwork.Profiles.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,10 +28,12 @@ namespace GhostNetwork.Gateway.Api
     {
         private const string ApiName = "api";
         private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         private Uri Authority => new Uri(configuration.GetValue("AUTHORITY", "https://accounts.ghost-network.boberneprotiv.com"));
@@ -39,6 +42,8 @@ namespace GhostNetwork.Gateway.Api
         {
             IdentityModelEventSource.ShowPII = configuration.GetValue("SHOW_PII", false);
 
+            services.AddScoped(_ => new FeatureFlags(configuration.GetValue("ENABLE_PERSONALIZED_NEWSFEED", false), GetPersonalizedNewsfeed()));
+
             services.AddCors();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(options =>
@@ -46,7 +51,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.2.3"
+                    Version = "1.3.3"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -86,9 +91,19 @@ namespace GhostNetwork.Gateway.Api
             services.AddTransient<SecuritySettingsFollowersResolver>();
             services.AddTransient<SecuritySettingsPublicationResolver>();
 
-            services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
-                new BlobServiceClient(configuration["BLOB_CONNECTION"]),
-                provider.GetRequiredService<IProfilesApi>()));
+            if (configuration["FILE_STORAGE_TYPE"]?.ToLower() == "local")
+            {
+                services.AddScoped<IUsersPictureStorage, UsersPictureLocalStorage>(provider => new UsersPictureLocalStorage(
+                    environment.WebRootPath,
+                    $"{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Scheme}://{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Host.Value}",
+                    provider.GetRequiredService<IProfilesApi>()));
+            }
+            else
+            {
+                services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
+                    new BlobServiceClient(configuration["BLOB_CONNECTION"]),
+                    provider.GetRequiredService<IProfilesApi>()));
+            }
 
             services.AddScoped<INewsFeedMediaStorage, NewsFeedMediaStorage>(_ => new NewsFeedMediaStorage(
                 new BlobServiceClient(configuration["BLOB_CONNECTION"])));
@@ -104,6 +119,8 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
             services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
 
+            services.AddScoped<NewsFeedApi>()
+                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]));
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             services.AddScoped<RestUsersStorage>();
@@ -152,6 +169,11 @@ namespace GhostNetwork.Gateway.Api
                     });
             }
 
+            if (configuration["FILE_STORAGE_TYPE"]?.ToLower() == "local")
+            {
+                app.UseStaticFiles();
+            }
+
             app.UseRouting();
 
             app.UseCors(builder =>
@@ -176,6 +198,11 @@ namespace GhostNetwork.Gateway.Api
         private string[] GetAllowOrigins()
         {
             return configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',').ToArray() ?? Array.Empty<string>();
+        }
+
+        private string[] GetPersonalizedNewsfeed()
+        {
+            return configuration.GetValue<string>("ENABLE_PERSONALIZED_NEWSFEED_FOR")?.Split(',').ToArray() ?? Array.Empty<string>();
         }
     }
 }

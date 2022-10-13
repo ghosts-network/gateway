@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Text.Json;
+using Azure.Messaging.ServiceBus;
 
 namespace GhostNetwork.EventBus.AzureServiceBus
 {
@@ -12,10 +13,10 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             WriteIndented = true
         };
         
-        public byte[] GetMessage<TEvent>(TEvent @event)
+        public ServiceBusMessage GetMessage<TEvent>(TEvent @event)
             where TEvent : Event
         {
-            return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(@event, Options));
+            return new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(@event, Options)));
         }
 
         public object GetEvent(byte[] message, Type outputType)
