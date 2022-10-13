@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.NewsFeed;
@@ -69,9 +70,13 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
+            IEnumerable<IFormFile> mediaFiles,
             [FromBody] CreateNewsFeedPublication content)
         {
-            var publication = await newsFeedStorage.PublishAsync(content.Content, await currentUserProvider.GetProfileAsync());
+            var publication = await newsFeedStorage.PublishAsync(
+                content.Content,
+                await currentUserProvider.GetProfileAsync(),
+                mediaFiles.Select(x => new MediaStream(x.FileName, x.OpenReadStream())));
 
             return Created(string.Empty, publication);
         }

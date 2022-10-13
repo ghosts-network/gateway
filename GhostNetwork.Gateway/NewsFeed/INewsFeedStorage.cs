@@ -18,7 +18,7 @@ namespace GhostNetwork.Gateway.NewsFeed
 
         Task<(IEnumerable<NewsFeedPublication>, string)> GetUserPublicationsAsync(Guid userId, int take, string cursor);
 
-        Task<NewsFeedPublication> PublishAsync(string content, UserInfo author);
+        Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, IEnumerable<MediaStream> mediaStreams);
 
         Task UpdateAsync(string publicationId, string content);
 

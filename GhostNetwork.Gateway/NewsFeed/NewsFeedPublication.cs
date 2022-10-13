@@ -1,17 +1,27 @@
 using System;
+using System.Collections.Generic;
 
 namespace GhostNetwork.Gateway.NewsFeed
 {
     public class NewsFeedPublication
     {
-        public NewsFeedPublication(string id, string content, DateTimeOffset createdeOn, DateTimeOffset updatedOn, CommentsShort comments, ReactionShort reactions, UserInfo author)
+        public NewsFeedPublication(
+            string id,
+            string content,
+            DateTimeOffset createdOn,
+            DateTimeOffset updatedOn,
+            CommentsShort comments,
+            ReactionShort reactions,
+            IEnumerable<Media> media,
+            UserInfo author)
         {
             Id = id;
             Content = content;
             Comments = comments;
             Reactions = reactions;
+            Media = media;
             Author = author;
-            CreatedOn = createdeOn;
+            CreatedOn = createdOn;
             UpdatedOn = updatedOn;
         }
 
@@ -22,6 +32,8 @@ namespace GhostNetwork.Gateway.NewsFeed
         public CommentsShort Comments { get; }
 
         public ReactionShort Reactions { get; }
+
+        public IEnumerable<Media> Media { get; }
 
         public UserInfo Author { get; }
 

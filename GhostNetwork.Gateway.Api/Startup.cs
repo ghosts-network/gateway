@@ -90,6 +90,9 @@ namespace GhostNetwork.Gateway.Api
                 new BlobServiceClient(configuration["BLOB_CONNECTION"]),
                 provider.GetRequiredService<IProfilesApi>()));
 
+            services.AddScoped<INewsFeedMediaStorage, NewsFeedMediaStorage>(_ => new NewsFeedMediaStorage(
+                new BlobServiceClient(configuration["BLOB_CONNECTION"])));
+
             services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));

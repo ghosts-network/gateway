@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
 using GhostNetwork.Content.Client;
 using GhostNetwork.Content.Model;
 using GhostNetwork.Gateway.NewsFeed;
+using Media = GhostNetwork.Gateway.NewsFeed.Media;
 
 namespace GhostNetwork.Gateway.Infrastructure
 {
@@ -59,6 +59,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
+                    publication.Media is null ? Array.Empty<Media>() : publication.Media.Select(x => new Media(x.Link)),
                     ToUser(publication.Author));
             }
             catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
@@ -87,6 +88,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
+                    publication.Media is null ? Array.Empty<Media>() : publication.Media.Select(x => new Media(x.Link)),
                     ToUser(publication.Author)))
                 .ToList();
 
@@ -113,26 +115,38 @@ namespace GhostNetwork.Gateway.Infrastructure
                     publication.UpdatedOn,
                     featuredComments[publication.Id],
                     new ReactionShort(reactions[publication.Id], userReactions[publication.Id]),
+                    publication.Media is null ? Array.Empty<Media>() : publication.Media.Select(x => new Media(x.Link)),
                     ToUser(publication.Author)))
                 .ToList();
 
             return (news, crs);
         }
 
-        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author)
+        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, IEnumerable<MediaStream> mediaStreams)
         {
             var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
             var model = new CreatePublicationModel(content, author: authorContent);
-            var entity = await publicationsApi.CreateAsync(model);
 
-            return new NewsFeedPublication(
-                entity.Id,
-                entity.Content,
-                entity.CreatedOn,
-                entity.UpdatedOn,
-                new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
-                new ReactionShort(new Dictionary<ReactionType, int>(), null),
-                ToUser(entity.Author));
+            try
+            {
+                var media = await Media.UploadAsync(mediaStreams, author.Id.ToString());
+                var entity = await publicationsApi.CreateAsync(model);
+
+                return new NewsFeedPublication(
+                    entity.Id,
+                    entity.Content,
+                    entity.CreatedOn,
+                    entity.UpdatedOn,
+                    new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
+                    new ReactionShort(new Dictionary<ReactionType, int>(), null),
+                    media,
+                    ToUser(entity.Author));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task UpdateAsync(string publicationId, string content)
