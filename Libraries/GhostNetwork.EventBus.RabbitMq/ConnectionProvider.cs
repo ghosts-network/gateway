@@ -1,7 +1,5 @@
 using System;
-using Polly;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
 
 namespace GhostNetwork.EventBus.RabbitMq
 {
@@ -20,12 +18,13 @@ namespace GhostNetwork.EventBus.RabbitMq
 
         public IConnection GetConnection()
         {
-            lock (connectionLock)
+            if (connection == null)
             {
-                TryConnect();
+                lock (connectionLock)
+                {
+                    connection = connectionFactory.CreateConnection();
+                }
             }
-
-            connection.ConnectionShutdown += OnConnectionLost;
 
             return connection;
         }
@@ -37,34 +36,6 @@ namespace GhostNetwork.EventBus.RabbitMq
         {
             connection?.Close();
             connection?.Dispose();
-        }
-
-        private void OnConnectionLost(object sender, ShutdownEventArgs args)
-        {
-            lock (connectionLock)
-            {
-                Dispose();
-                connection = null;
-
-                TryConnect();
-            }
-        }
-
-        private void TryConnect()
-        {
-            Policy
-                .Handle<BrokerUnreachableException>()
-                .WaitAndRetryForever(retryAttempt =>
-                    retryAttempt switch
-                    {
-                        1 => TimeSpan.FromSeconds(10),
-                        2 => TimeSpan.FromSeconds(30),
-                        _ => TimeSpan.FromSeconds(60)
-                    })
-                .Execute(() =>
-                {
-                    connection ??= connectionFactory.CreateConnection();
-                });
         }
     }
 }
