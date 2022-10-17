@@ -121,11 +121,14 @@ namespace GhostNetwork.Gateway.Api
             services.AddScoped<IRelationsApi>(provider => new RelationsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
             services.AddScoped<ISecuritySettingsApi>(provider => new SecuritySettingsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
 
-            services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
-            services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
+            services.AddHttpClient("messaging")
+                .AddHttpMessageHandler<LoggingHttpHandler>();
+            services.AddScoped<IChatsApi>(provider => new ChatsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("messaging"), configuration["MESSAGES_ADDRESS"]));
+            services.AddScoped<IMessagesApi>(provider => new MessagesApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("messaging"), configuration["MESSAGES_ADDRESS"]));
 
             services.AddScoped<NewsFeedApi>()
-                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]));
+                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]))
+                .AddHttpMessageHandler<LoggingHttpHandler>();
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             services.AddScoped<RestUsersStorage>();

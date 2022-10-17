@@ -53,7 +53,7 @@ public class MessagesStorage : IMessageStorage
             return (result, default);
         }
 
-        var entity = await messagesApi.SendAsync(chatId, new CreateMessageModel(authorId, content));
+        var entity = await messagesApi.CreateAsync(chatId, new CreateMessageModel(authorId, content));
 
         return (DomainResult.Success(), entity is null ? null : ToGatewayMessage(entity));
     }
