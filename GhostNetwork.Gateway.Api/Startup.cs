@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Api.Helpers;
 using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
@@ -105,13 +107,19 @@ namespace GhostNetwork.Gateway.Api
                     provider.GetRequiredService<IProfilesApi>()));
             }
 
-            services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
-            services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
-            services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
+            services.AddSingleton<LoggingHttpHandler>();
 
-            services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
-            services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
-            services.AddScoped<ISecuritySettingsApi>(_ => new SecuritySettingsApi(configuration["PROFILES_ADDRESS"]));
+            services.AddHttpClient("content")
+                .AddHttpMessageHandler<LoggingHttpHandler>();
+            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<ICommentsApi>(provider => new CommentsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
+
+            services.AddHttpClient("profile")
+                .AddHttpMessageHandler<LoggingHttpHandler>();
+            services.AddScoped<IProfilesApi>(provider => new ProfilesApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<IRelationsApi>(provider => new RelationsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<ISecuritySettingsApi>(provider => new SecuritySettingsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
 
             services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
             services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));

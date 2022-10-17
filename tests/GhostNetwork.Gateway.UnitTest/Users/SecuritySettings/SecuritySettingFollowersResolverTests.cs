@@ -211,7 +211,7 @@ namespace GhostNetwork.Gateway.UnitTest.Users.SecuritySettings
                 .Returns(currentUserId.ToString());
 
             var relationStorageMock = new Mock<IRelationsApi>();
-            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default, default))
+            relationStorageMock.Setup(x => x.IsFriendAsync(userId, currentUserId, default))
                 .ReturnsAsync(false);
 
             var securitySettingsMock = new Mock<ISecuritySettingStorage>();
