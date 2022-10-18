@@ -150,14 +150,14 @@ namespace GhostNetwork.Gateway.Infrastructure
             return (news, crs);
         }
 
-        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, IEnumerable<MediaStream> mediaStreams)
+        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, IEnumerable<MediaStream> media)
         {
             var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
             var model = new CreatePublicationModel(content, author: authorContent);
 
             try
             {
-                var media = await Media.UploadAsync(mediaStreams, author.Id.ToString());
+                var m = await Media.UploadAsync(media, author.Id.ToString());
                 var entity = await publicationsApi.CreateAsync(model);
 
                 return new NewsFeedPublication(
@@ -167,7 +167,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     entity.UpdatedOn,
                     new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
                     new ReactionShort(new Dictionary<ReactionType, int>(), null),
-                    media,
+                    m,
                     ToUser(entity.Author));
             }
             catch (Exception e)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GhostNetwork.Gateway.Api.NewsFeed
@@ -6,5 +7,7 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
     {
         [Required]
         public string Content { get; set; }
+
+        public IEnumerable<AddNewsFeedMedia> Media { get; set; }
     }
 }

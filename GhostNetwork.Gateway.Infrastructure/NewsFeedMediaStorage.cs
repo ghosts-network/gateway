@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,13 +17,6 @@ public class NewsFeedMediaStorage : INewsFeedMediaStorage
     public NewsFeedMediaStorage(BlobServiceClient blobClient)
     {
         this.blobClient = blobClient;
-    }
-
-    public async Task<IEnumerable<string>> GetAllAsync()
-    {
-        var blobContainer = blobClient.GetBlobContainerClient("media");
-        var blob = blobContainer.GetBlobs();
-        return blob.Select(x => x.Name);
     }
 
     public async Task<IEnumerable<Media>> UploadAsync(IEnumerable<MediaStream> media, string userId, CancellationToken cancellationToken = default)

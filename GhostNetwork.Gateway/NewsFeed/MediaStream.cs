@@ -2,4 +2,4 @@
 
 namespace GhostNetwork.Gateway.NewsFeed;
 
-public record MediaStream(string FileName, Stream Stream);
+public record MediaStream(Stream Stream, string FileName);

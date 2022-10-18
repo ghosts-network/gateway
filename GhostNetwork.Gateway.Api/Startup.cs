@@ -97,16 +97,20 @@ namespace GhostNetwork.Gateway.Api
                     environment.WebRootPath,
                     $"{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Scheme}://{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Host.Value}",
                     provider.GetRequiredService<IProfilesApi>()));
+
+                services.AddScoped<INewsFeedMediaStorage, NewsFeedMediaLocalStorage>(provider => new NewsFeedMediaLocalStorage(
+                    environment.WebRootPath,
+                    $"{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Scheme}://{provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request.Host.Value}"));
             }
             else
             {
                 services.AddScoped<IUsersPictureStorage, UsersPictureStorage>(provider => new UsersPictureStorage(
                     new BlobServiceClient(configuration["BLOB_CONNECTION"]),
                     provider.GetRequiredService<IProfilesApi>()));
-            }
 
-            services.AddScoped<INewsFeedMediaStorage, NewsFeedMediaStorage>(_ => new NewsFeedMediaStorage(
-                new BlobServiceClient(configuration["BLOB_CONNECTION"])));
+                services.AddScoped<INewsFeedMediaStorage, NewsFeedMediaStorage>(_ => new NewsFeedMediaStorage(
+                    new BlobServiceClient(configuration["BLOB_CONNECTION"])));
+            }
 
             services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
             services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
