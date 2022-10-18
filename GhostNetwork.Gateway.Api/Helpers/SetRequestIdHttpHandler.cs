@@ -15,7 +15,7 @@ public class SetRequestIdHttpHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        request.Headers.Add(Consts.Headers.RequestId, contextProvider.CorrelationId); 
+        request.Headers.Add(Consts.Headers.RequestId, contextProvider.CorrelationId);
         return await base.SendAsync(request, cancellationToken);
     }
 }
