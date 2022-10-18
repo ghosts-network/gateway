@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -17,11 +16,11 @@ public class LoggingMiddleware
         this.next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, ILogger<LoggingMiddleware> logger)
+    public async Task Invoke(HttpContext httpContext, ILogger<LoggingMiddleware> logger, ContextProvider contextProvider)
     {
         using (logger.BeginScope(new Dictionary<string, object>
                {
-                   ["correlationId"] = httpContext.Request.Headers["X-Request-ID"].FirstOrDefault() ?? Guid.NewGuid().ToString()
+                   ["correlationId"] = contextProvider.CorrelationId
                }))
         {
             var sw = Stopwatch.StartNew();
@@ -31,6 +30,7 @@ public class LoggingMiddleware
                    }))
             {
                 logger.LogInformation($"{httpContext.Request.Method} {httpContext.Request.Path.Value}{httpContext.Request.QueryString.Value} request started");
+                httpContext.Response.Headers[Consts.Headers.RequestId] = contextProvider.CorrelationId;
             }
 
             try

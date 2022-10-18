@@ -53,7 +53,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.4"
+                    Version = "1.3.5"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -140,6 +140,10 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<IMessageStorage, MessagesStorage>();
             services.AddScoped<MessageValidator>();
+            services.AddScoped(provider => new ContextProvider(
+                provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request
+                    .Headers[Consts.Headers.RequestId].FirstOrDefault()
+                ?? Guid.NewGuid().ToString()));
 
             services.AddControllers()
                 .AddJsonOptions(options => options
