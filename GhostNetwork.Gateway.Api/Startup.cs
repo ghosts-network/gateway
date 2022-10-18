@@ -53,7 +53,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.5"
+                    Version = "1.3.6"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
