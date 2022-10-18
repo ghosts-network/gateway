@@ -53,7 +53,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.3"
+                    Version = "1.3.4"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -107,7 +107,7 @@ namespace GhostNetwork.Gateway.Api
                     provider.GetRequiredService<IProfilesApi>()));
             }
 
-            services.AddSingleton<LoggingHttpHandler>();
+            services.AddTransient<LoggingHttpHandler>();
 
             services.AddHttpClient("content")
                 .AddHttpMessageHandler<LoggingHttpHandler>();
@@ -148,6 +148,7 @@ namespace GhostNetwork.Gateway.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<LoggingMiddleware>();
             if (env.IsDevelopment())
             {
                 app
