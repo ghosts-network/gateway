@@ -19,6 +19,7 @@ public class SetRequestIdHttpHandler : DelegatingHandler
     {
         var contextProvider = httpContextAccessor.HttpContext!.RequestServices.GetRequiredService<ContextProvider>();
         request.Headers.Add(Consts.Headers.RequestId, contextProvider.CorrelationId);
+        request.Headers.Add("X-Caller-ID", "Gateway");
 
         return await base.SendAsync(request, cancellationToken);
     }
