@@ -7,12 +7,14 @@ namespace GhostNetwork.Gateway.Api
             public const string TotalCount = "X-TotalCount";
             public const string Cursor = "X-Cursor";
             public const string HasMore = "X-HasMore";
+            public const string RequestId = "X-Request-ID";
 
             public static string[] All => new[]
             {
                 TotalCount,
                 Cursor,
-                HasMore
+                HasMore,
+                RequestId
             };
         }
     }

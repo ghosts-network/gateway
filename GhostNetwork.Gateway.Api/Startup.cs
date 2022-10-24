@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Gateway.Api.Helpers;
 using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
@@ -51,7 +53,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.3"
+                    Version = "1.3.7"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -112,19 +114,33 @@ namespace GhostNetwork.Gateway.Api
                     new BlobServiceClient(configuration["BLOB_CONNECTION"])));
             }
 
-            services.AddScoped<IPublicationsApi>(_ => new PublicationsApi(configuration["CONTENT_ADDRESS"]));
-            services.AddScoped<ICommentsApi>(_ => new CommentsApi(configuration["CONTENT_ADDRESS"]));
-            services.AddScoped<IReactionsApi>(_ => new ReactionsApi(configuration["CONTENT_ADDRESS"]));
+            services.AddTransient<LoggingHttpHandler>();
+            services.AddTransient<SetRequestIdHttpHandler>();
 
-            services.AddScoped<IProfilesApi>(_ => new ProfilesApi(configuration["PROFILES_ADDRESS"]));
-            services.AddScoped<IRelationsApi>(_ => new RelationsApi(configuration["PROFILES_ADDRESS"]));
-            services.AddScoped<ISecuritySettingsApi>(_ => new SecuritySettingsApi(configuration["PROFILES_ADDRESS"]));
+            services.AddHttpClient("content")
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
+            services.AddScoped<IPublicationsApi>(provider => new PublicationsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<ICommentsApi>(provider => new CommentsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
+            services.AddScoped<IReactionsApi>(provider => new ReactionsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("content"), configuration["CONTENT_ADDRESS"]));
 
-            services.AddScoped<IChatsApi>(_ => new ChatsApi(configuration["MESSAGES_ADDRESS"]));
-            services.AddScoped<IMessagesApi>(_ => new MessagesApi(configuration["MESSAGES_ADDRESS"]));
+            services.AddHttpClient("profile")
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
+            services.AddScoped<IProfilesApi>(provider => new ProfilesApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<IRelationsApi>(provider => new RelationsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
+            services.AddScoped<ISecuritySettingsApi>(provider => new SecuritySettingsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("profile"), configuration["PROFILES_ADDRESS"]));
+
+            services.AddHttpClient("messaging")
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
+            services.AddScoped<IChatsApi>(provider => new ChatsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("messaging"), configuration["MESSAGES_ADDRESS"]));
+            services.AddScoped<IMessagesApi>(provider => new MessagesApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("messaging"), configuration["MESSAGES_ADDRESS"]));
 
             services.AddScoped<NewsFeedApi>()
-                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]));
+                .AddHttpClient<NewsFeedApi>(c => c.BaseAddress = new Uri(configuration["NEWSFEED_ADDRESS"]))
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
 
             services.AddScoped<RestUsersStorage>();
@@ -136,6 +152,10 @@ namespace GhostNetwork.Gateway.Api
 
             services.AddScoped<IMessageStorage, MessagesStorage>();
             services.AddScoped<MessageValidator>();
+            services.AddScoped(provider => new ContextProvider(
+                provider.GetRequiredService<IHttpContextAccessor>().HttpContext!.Request
+                    .Headers[Consts.Headers.RequestId].FirstOrDefault()
+                ?? Guid.NewGuid().ToString()));
 
             services.AddControllers()
                 .AddJsonOptions(options => options
@@ -144,6 +164,7 @@ namespace GhostNetwork.Gateway.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<LoggingMiddleware>();
             if (env.IsDevelopment())
             {
                 app

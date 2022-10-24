@@ -8,6 +8,8 @@
     <ItemGroup>
         <PackageReference Include="Boberneprotiv.Domain" Version="0.0.3" />
         <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
