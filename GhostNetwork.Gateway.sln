@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.Rabbi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostNetwork.EventBus.AzureServiceBus", "Libraries\GhostNetwork.EventBus.AzureServiceBus\GhostNetwork.EventBus.AzureServiceBus.csproj", "{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostNetwork.Gateway.Education.MongoDb", "GhostNetwork.Gateway.Education.MongoDb\GhostNetwork.Gateway.Education.MongoDb.csproj", "{C80E8FBD-827E-45E0-8588-35565D97533D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF6516B-CD68-4746-AFD7-42D3B0AF6158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80E8FBD-827E-45E0-8588-35565D97533D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80E8FBD-827E-45E0-8588-35565D97533D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80E8FBD-827E-45E0-8588-35565D97533D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80E8FBD-827E-45E0-8588-35565D97533D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,10 +20,10 @@ public class FlashCardsController : ControllerBase
     private readonly IFlashCardsCatalog catalog;
     private readonly IFlashCardsProgressManager progressManager;
 
-    public FlashCardsController()
+    public FlashCardsController(IFlashCardsProgressManager progressManager)
     {
         catalog = FlashCardsCatalog.Instance;
-        progressManager = FlashCardsProgressManager.Instance;
+        this.progressManager = progressManager;
     }
 
     /// <summary>
@@ -98,13 +98,6 @@ public class FlashCardsController : ControllerBase
 
         return Ok(await progressManager.FindSetProgressAsync(set, new EducationUser(User.UserId()!)));
     }
-}
-
-internal interface IFlashCardsProgressManager
-{
-    Task<FlashCardsSetUserProgress> FindSetProgressAsync(FlashCardsSetDetails set, EducationUser user);
-
-    Task UpdateProgressAsync(FlashCardsSetDetails set, EducationUser user, FlashCardSetTestResult results);
 }
 
 internal class FlashCardsProgressManager : IFlashCardsProgressManager
