@@ -87,17 +87,24 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
         public async Task<ActionResult<NewsFeedPublication>> CreateAsync(
             [FromBody] CreateNewsFeedPublication content)
         {
-            var mediaStream = (
-                from m in content.Media
-                let bytes = Convert.FromBase64String(m.Base64)
-                let stream = new MemoryStream(bytes)
-                select new MediaStream(stream, m.FileName))
-                .ToList();
+            var media = Enumerable.Empty<Media>();
+
+            if (content.Media is not null)
+            {
+                var mediaStream = (
+                        from m in content.Media
+                        let bytes = Convert.FromBase64String(m.Base64)
+                        let stream = new MemoryStream(bytes)
+                        select new MediaStream(stream, m.FileName))
+                    .ToList();
+
+                media = await newsFeedStorage.Media.UploadAsync(mediaStream, currentUserProvider.UserId);
+            }
 
             var publication = await newsFeedStorage.PublishAsync(
                 content.Content,
                 await currentUserProvider.GetProfileAsync(),
-                mediaStream);
+                media.ToList());
 
             return Created(string.Empty, publication);
         }
@@ -122,7 +129,44 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 return Forbid();
             }
 
-            await newsFeedStorage.UpdateAsync(publicationId, model.Content);
+            var media = Enumerable.Empty<Media>();
+
+            if (model.Media is not null)
+            {
+                var mediaStream = (
+                        from m in model.Media
+                        let bytes = Convert.FromBase64String(m.Base64)
+                        let stream = new MemoryStream(bytes)
+                        select new MediaStream(stream, m.FileName))
+                    .ToList();
+
+                media = await newsFeedStorage.Media.UploadAsync(mediaStream, currentUserProvider.UserId);
+            }
+
+            await newsFeedStorage.UpdateAsync(publicationId, model.Content, media.ToList());
+
+            return NoContent();
+        }
+
+        [HttpDelete("{publicationId}/media")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteManyMedia([FromRoute] string publicationId, [FromQuery] IEnumerable<string> fileNames)
+        {
+            var publication = await newsFeedStorage.GetByIdAsync(publicationId);
+
+            if (publication == null)
+            {
+                return NotFound();
+            }
+
+            if (publication.Author.Id.ToString() != currentUserProvider.UserId)
+            {
+                return Forbid();
+            }
+
+            await newsFeedStorage.Media.DeleteManyAsync(fileNames, publicationId);
 
             return NoContent();
         }
@@ -145,7 +189,11 @@ namespace GhostNetwork.Gateway.Api.NewsFeed
                 return Forbid();
             }
 
-            await newsFeedStorage.DeleteAsync(publicationId);
+            var fileNames = publication.Media is null
+                ? Enumerable.Empty<string>()
+                : publication.Media.Select(x => x.Link);
+
+            await newsFeedStorage.DeleteAsync(publicationId, fileNames);
 
             return NoContent();
         }

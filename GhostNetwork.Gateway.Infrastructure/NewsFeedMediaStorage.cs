@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -19,7 +16,7 @@ public class NewsFeedMediaStorage : INewsFeedMediaStorage
         this.blobClient = blobClient;
     }
 
-    public async Task<IEnumerable<Media>> UploadAsync(IEnumerable<MediaStream> media, string userId, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Media>> UploadAsync(IEnumerable<MediaStream> media, string publicationId, CancellationToken cancellationToken = default)
     {
         var links = new List<Media>();
 
@@ -28,7 +25,7 @@ public class NewsFeedMediaStorage : INewsFeedMediaStorage
 
         foreach (var m in media)
         {
-            var blob = blobContainer.GetBlobClient($"{userId}/{m.FileName}");
+            var blob = blobContainer.GetBlobClient($"{publicationId}/{m.FileName}");
             await blob.UploadAsync(m.Stream, cancellationToken);
             links.Add(new Media(blob.Uri.ToString()));
         }
@@ -36,15 +33,15 @@ public class NewsFeedMediaStorage : INewsFeedMediaStorage
         return links;
     }
 
-    public async Task DeleteAsync(IEnumerable<string> fileNames, CancellationToken cancellationToken = default)
+    public async Task DeleteManyAsync(IEnumerable<string> fileNames, string publicationId, CancellationToken cancellationToken = default)
     {
         var blobContainer = blobClient.GetBlobContainerClient("media");
 
         foreach (var fileName in fileNames)
         {
-            var blob = blobContainer.GetBlobClient(fileName);
-
-            await blob.DeleteAsync(DeleteSnapshotsOption.None, default, cancellationToken);
+            await blobContainer
+                .GetBlobClient(fileName)
+                .DeleteAsync(DeleteSnapshotsOption.None, default, cancellationToken);
         }
     }
 }

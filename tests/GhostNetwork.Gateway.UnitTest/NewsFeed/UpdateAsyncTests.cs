@@ -53,9 +53,9 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var currentUserId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C7");
             var publicationId = Guid.NewGuid().ToString();
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null)));
+            // NewsFeedStorageMock
+            //     .Setup(s => s.GetByIdAsync(publicationId))
+            //     .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null))); TODO
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)
@@ -85,9 +85,9 @@ namespace GhostNetwork.Gateway.UnitTest.NewsFeed
             var userId = Guid.Parse("B4E69138-CE54-444A-8226-2CFABFD352C6");
             var publicationId = Guid.NewGuid().ToString();
 
-            NewsFeedStorageMock
-                .Setup(s => s.GetByIdAsync(publicationId))
-                .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null)));
+            // NewsFeedStorageMock
+            //     .Setup(s => s.GetByIdAsync(publicationId))
+            //     .ReturnsAsync(new NewsFeedPublication("", "", default, default, null, null, new UserInfo(userId, "", null))); TODO
 
             CurrentUserProviderMock
                 .Setup(s => s.UserId)

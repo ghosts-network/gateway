@@ -150,14 +150,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             return (news, crs);
         }
 
-        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, IEnumerable<MediaStream> media)
+        public async Task<NewsFeedPublication> PublishAsync(string content, UserInfo author, List<Media> media)
         {
             var authorContent = new UserInfoModel(author.Id, author.FullName, author.AvatarUrl);
-            var model = new CreatePublicationModel(content, author: authorContent);
+            var model = new CreatePublicationModel(content, author: authorContent, media.Select(x => new CreateMediaModel(x.Link)).ToList());
 
             try
             {
-                var m = await Media.UploadAsync(media, author.Id.ToString());
                 var entity = await publicationsApi.CreateAsync(model);
 
                 return new NewsFeedPublication(
@@ -167,7 +166,7 @@ namespace GhostNetwork.Gateway.Infrastructure
                     entity.UpdatedOn,
                     new CommentsShort(Enumerable.Empty<PublicationComment>(), 0),
                     new ReactionShort(new Dictionary<ReactionType, int>(), null),
-                    m,
+                    media,
                     ToUser(entity.Author));
             }
             catch (Exception e)
@@ -177,15 +176,21 @@ namespace GhostNetwork.Gateway.Infrastructure
             }
         }
 
-        public async Task UpdateAsync(string publicationId, string content)
+        public async Task UpdateAsync(string publicationId, string content, IEnumerable<Media> media)
         {
-            await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(content));
+            await publicationsApi.UpdateAsync(publicationId, new UpdatePublicationModel(content, media.Select(x => new UpdateMediaModel(x.Link)).ToList()));
         }
 
-        public async Task DeleteAsync(string publicationId)
+        public Task DeleteAsync(string publicationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DeleteAsync(string publicationId, IEnumerable<string> fileNames)
         {
             await Reactions.RemoveManyAsync(KeysBuilder.PublicationReactionsKey(publicationId));
             await Comments.DeleteManyAsync(publicationId);
+            await Media.DeleteManyAsync(fileNames, publicationId);
             await publicationsApi.DeleteAsync(publicationId);
         }
 

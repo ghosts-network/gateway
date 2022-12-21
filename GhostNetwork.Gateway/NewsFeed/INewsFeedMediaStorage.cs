@@ -6,7 +6,7 @@ namespace GhostNetwork.Gateway.NewsFeed;
 
 public interface INewsFeedMediaStorage
 {
-    Task<IEnumerable<Media>> UploadAsync(IEnumerable<MediaStream> media, string userId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Media>> UploadAsync(IEnumerable<MediaStream> media, string publicationId, CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(IEnumerable<string> fileNames, CancellationToken cancellationToken = default);
+    Task DeleteManyAsync(IEnumerable<string> fileNames, string publicationId, CancellationToken cancellationToken = default);
 }

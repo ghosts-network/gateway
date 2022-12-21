@@ -27,8 +27,6 @@ namespace GhostNetwork.Gateway.Infrastructure
             Stream stream,
             CancellationToken cancellationToken = default)
         {
-            var user = await profilesApi.GetByIdAsync(userId, cancellationToken: cancellationToken);
-
             var blobContainer = blobClient.GetBlobContainerClient("photos");
             await blobContainer.CreateIfNotExistsAsync(PublicAccessType.BlobContainer, cancellationToken: cancellationToken);
 
