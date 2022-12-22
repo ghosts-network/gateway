@@ -22,6 +22,16 @@ services:
     environment:
       - MONGO_CONNECTION=mongodb://db:27017/ghost-network
       - ASPNETCORE_ENVIRONMENT=Development
+
+  education:
+    image: ghcr.io/ghosts-network/education:latest
+    ports:
+      - "5500:80"
+    depends_on:
+      - db
+    environment:
+      - MONGO_CONNECTION=mongodb://db:27017/education
+      - ASPNETCORE_ENVIRONMENT=Development
   
   messages:
     image: ghcr.io/ghosts-network/messages:latest

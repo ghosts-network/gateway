@@ -1,11 +1,12 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
+using System.Net;
 using System.Threading.Tasks;
+using GhostNetwork.Education.Api;
+using GhostNetwork.Education.Client;
+using GhostNetwork.Education.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,11 @@ namespace GhostNetwork.Gateway.Api.Education.EducationMaterials.FlashCards;
 [ApiController]
 public class FlashCardsController : ControllerBase
 {
-    private readonly IFlashCardsCatalog catalog;
-    private readonly IFlashCardsProgressManager progressManager;
+    private readonly IFlashCardsApi flashCardsApi;
 
-    public FlashCardsController(IFlashCardsProgressManager progressManager)
+    public FlashCardsController(IFlashCardsApi flashCardsApi)
     {
-        catalog = FlashCardsCatalog.Instance;
-        this.progressManager = progressManager;
+        this.flashCardsApi = flashCardsApi;
     }
 
     /// <summary>
@@ -39,14 +38,14 @@ public class FlashCardsController : ControllerBase
         [FromQuery] string? cursor,
         [FromQuery, Range(1, 50)] int take = 20)
     {
-        var (sets, nextCursor) = await catalog.FindManyAsync(new CursorPagination(cursor, take));
+        var response = await flashCardsApi.SearchSetsWithHttpInfoAsync(cursor, take);
 
-        if (nextCursor is null)
+        if (response.Headers.TryGetValue("X-Cursor", out var headers))
         {
-            Response.Headers.Add(Consts.Headers.Cursor, nextCursor);
+            Response.Headers.Add(Consts.Headers.Cursor, headers.FirstOrDefault());
         }
 
-        return Ok(sets);
+        return Ok(response.Data);
     }
 
     /// <summary>
@@ -57,20 +56,18 @@ public class FlashCardsController : ControllerBase
     [HttpGet("sets/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FlashCardsSetDetails>> GetSetByIdAsync([FromRoute] string id)
+    public async Task<ActionResult<FlashCardsSet>> GetSetByIdAsync([FromRoute] string id)
     {
-        var set = await catalog.FindOneAsync(id);
-        if (set == null)
+        try
+        {
+            var response = await flashCardsApi.GetSetByIdWithHttpInfoAsync(id, User.UserId());
+
+            return Ok(response.Data);
+        }
+        catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
         {
             return NotFound();
         }
-
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            set = set with { Progress = await progressManager.FindSetProgressAsync(set, new EducationUser(User.UserId()!)) };
-        }
-
-        return Ok(set);
     }
 
     /// <summary>
@@ -88,130 +85,19 @@ public class FlashCardsController : ControllerBase
         [FromRoute] string id,
         [FromBody] FlashCardSetTestResult results)
     {
-        var set = await catalog.FindOneAsync(id);
-        if (set is null)
+        try
+        {
+            var response = await flashCardsApi.SaveProgressWithHttpInfoAsync(id, User.UserId()!, results);
+
+            return Ok(response.Data);
+        }
+        catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.NotFound)
         {
             return NotFound();
         }
-
-        await progressManager.UpdateProgressAsync(set, new EducationUser(User.UserId()!), results);
-
-        return Ok(await progressManager.FindSetProgressAsync(set, new EducationUser(User.UserId()!)));
-    }
-}
-
-internal class FlashCardsProgressManager : IFlashCardsProgressManager
-{
-    // user - set - card
-    private readonly Dictionary<string, Dictionary<string, Dictionary<string, CurrentProgressData>>> progress = new Dictionary<string, Dictionary<string, Dictionary<string, CurrentProgressData>>>();
-
-    private readonly List<ProgressHistoryData> history = new List<ProgressHistoryData>();
-
-    private FlashCardsProgressManager()
-    {
-    }
-
-    public static FlashCardsProgressManager Instance { get; } = new FlashCardsProgressManager();
-
-    public Task<FlashCardsSetUserProgress> FindSetProgressAsync(FlashCardsSetDetails set, EducationUser user)
-    {
-        if (!progress.ContainsKey(user.Id))
+        catch (ApiException ex) when (ex.ErrorCode == (int)HttpStatusCode.BadRequest)
         {
-            progress[user.Id] = new Dictionary<string, Dictionary<string, CurrentProgressData>>();
+            return BadRequest();
         }
-
-        if (!progress[user.Id].ContainsKey(set.Id))
-        {
-            progress[user.Id][set.Id] = new Dictionary<string, CurrentProgressData>();
-        }
-
-        var fraction = set.Cards.Aggregate(0, (acc, card) => acc
-                                                             + (progress[user.Id][set.Id].ContainsKey(card.Id)
-                                                                 ? progress[user.Id][set.Id][card.Id].Percents
-                                                                 : 0)) / (decimal)set.Cards.Count;
-
-        return Task.FromResult(new FlashCardsSetUserProgress(fraction, set.Cards.ToDictionary(
-            card => card.Id,
-            card => progress[user.Id][set.Id].ContainsKey(card.Id)
-                ? progress[user.Id][set.Id][card.Id].Percents
-                : 0)));
-    }
-
-    public Task UpdateProgressAsync(FlashCardsSetDetails set, EducationUser user, FlashCardSetTestResult results)
-    {
-        var now = DateTimeOffset.UtcNow;
-        history.Add(new ProgressHistoryData(set.Id, user.Id, now));
-        if (!progress.ContainsKey(user.Id))
-        {
-            progress[user.Id] = new Dictionary<string, Dictionary<string, CurrentProgressData>>();
-        }
-
-        if (!progress[user.Id].ContainsKey(set.Id))
-        {
-            progress[user.Id][set.Id] = new Dictionary<string, CurrentProgressData>();
-        }
-
-        foreach (var answer in results.Answers)
-        {
-            var currentPercents = progress[user.Id][set.Id].ContainsKey(answer.CardId)
-                ? progress[user.Id][set.Id][answer.CardId].Percents
-                : 0;
-
-            var newPercents = set.ValidateAnswer(answer)
-                ? Math.Min(currentPercents + 50, 100)
-                : Math.Max(currentPercents - 50, 0);
-
-            progress[user.Id][set.Id][answer.CardId] = new CurrentProgressData(newPercents, now);
-        }
-
-        return Task.CompletedTask;
-    }
-
-    private record ProgressHistoryData(string SetId, string UserId, DateTimeOffset Date);
-
-    private record CurrentProgressData(int Percents, DateTimeOffset LastPass);
-}
-
-/// <summary>
-/// CursorPagination limit object for response result.
-/// </summary>
-/// <param name="Cursor">Search ignore all elements before cursor including.</param>
-/// <param name="Take">Takes specified amount of elements if available.</param>
-public record CursorPagination(string? Cursor, int Take);
-
-public interface IFlashCardsCatalog
-{
-    Task<(IReadOnlyCollection<FlashCardsSet>, string?)> FindManyAsync(CursorPagination pagination);
-
-    Task<FlashCardsSetDetails?> FindOneAsync(string id);
-}
-
-internal class FlashCardsCatalog : IFlashCardsCatalog
-{
-    private FlashCardsCatalog()
-    {
-        var json = File.ReadAllText("catalog.json");
-        Sets = JsonSerializer.Deserialize<List<FlashCardsSetDetails>>(json, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        })!;
-    }
-
-    public static FlashCardsCatalog Instance { get; } = new FlashCardsCatalog();
-
-    private IReadOnlyCollection<FlashCardsSetDetails> Sets { get; }
-
-    public Task<(IReadOnlyCollection<FlashCardsSet>, string?)> FindManyAsync(CursorPagination pagination)
-    {
-        IReadOnlyCollection<FlashCardsSet> list = Sets
-            .Select(s => new FlashCardsSet(s.Id, s.Title, new FlashCardsSetInfo(s.Cards.Count)))
-            .ToList();
-
-        return Task.FromResult((list, default(string?)));
-    }
-
-    public Task<FlashCardsSetDetails?> FindOneAsync(string id)
-    {
-        return Task.FromResult(Sets.FirstOrDefault(s => s.Id == id));
     }
 }

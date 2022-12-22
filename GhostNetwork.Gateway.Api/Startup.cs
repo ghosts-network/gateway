@@ -5,10 +5,9 @@ using System.Net.Http;
 using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
-using GhostNetwork.Gateway.Api.Education.EducationMaterials.FlashCards;
+using GhostNetwork.Education.Api;
 using GhostNetwork.Gateway.Api.Helpers;
 using GhostNetwork.Gateway.Chats;
-using GhostNetwork.Gateway.Education.MongoDb;
 using GhostNetwork.Gateway.Infrastructure;
 using GhostNetwork.Gateway.Infrastructure.SecuritySettingResolver;
 using GhostNetwork.Gateway.Messages;
@@ -22,11 +21,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Events;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace GhostNetwork.Gateway.Api
@@ -84,59 +80,6 @@ namespace GhostNetwork.Gateway.Api
                 });
             });
 
-            services.AddSingleton(provider =>
-            {
-                var connectionString = configuration["MONGO_CONNECTION"];
-                var mongoUrl = MongoUrl.Create(connectionString);
-                var settings = MongoClientSettings.FromUrl(mongoUrl);
-                settings.ClusterConfigurator = cb =>
-                {
-                    cb.Subscribe<CommandStartedEvent>(e =>
-                    {
-                        var logger = provider.GetRequiredService<ILogger<MongoDbContext>>();
-                        using var scope = logger.BeginScope(new Dictionary<string, object>
-                        {
-                            ["type"] = "outgoing:mongodb"
-                        });
-
-                        logger.LogInformation("Mongodb query started");
-                    });
-
-                    cb.Subscribe<CommandSucceededEvent>(e =>
-                    {
-                        var logger = provider.GetRequiredService<ILogger<MongoDbContext>>();
-                        using var scope = logger.BeginScope(new Dictionary<string, object>
-                        {
-                            ["type"] = "outgoing:mongodb",
-                            ["elapsedMilliseconds"] = e.Duration.Milliseconds
-                        });
-
-                        logger.LogInformation("Mongodb query finished");
-                    });
-
-                    cb.Subscribe<CommandFailedEvent>(e =>
-                    {
-                        var logger = provider.GetRequiredService<ILogger<MongoDbContext>>();
-                        using var scope = logger.BeginScope(new Dictionary<string, object>
-                        {
-                            ["type"] = "outgoing:mongodb",
-                            ["elapsedMilliseconds"] = e.Duration.Milliseconds
-                        });
-
-                        logger.LogInformation("Mongodb query failed");
-                    });
-                };
-                return new MongoClient(settings);
-            });
-
-            services.AddScoped(provider =>
-            {
-                var mongoUrl = MongoUrl.Create(configuration["MONGO_CONNECTION"]);
-                return new MongoDbContext(provider.GetRequiredService<MongoClient>().GetDatabase(mongoUrl.DatabaseName ?? "gn.edu"));
-            });
-
-            services.AddScoped<IFlashCardsProgressManager, FlashCardsProgressStorage>();
-
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication("Bearer", options =>
                 {
@@ -193,6 +136,11 @@ namespace GhostNetwork.Gateway.Api
                 .AddHttpMessageHandler<LoggingHttpHandler>()
                 .AddHttpMessageHandler<SetRequestIdHttpHandler>();
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
+
+            services.AddHttpClient("education")
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
+            services.AddScoped<IFlashCardsApi>(provider => new FlashCardsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("education"), configuration["EDUCATION_ADDRESS"]));
 
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
