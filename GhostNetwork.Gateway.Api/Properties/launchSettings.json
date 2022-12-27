@@ -13,8 +13,7 @@
         "MESSAGES_ADDRESS": "http://localhost:5252",
         "EDUCATION_ADDRESS": "http://localhost:5500",
         "NEWSFEED_ADDRESS": "http://boberneprotiv.com:10000",
-        "FILE_STORAGE_TYPE": "local",
-        "MONGO_CONNECTION": "mongodb://root:wv4FL6hjVehl@boberneprotiv.com:27017/edu?authSource=admin"
+        "FILE_STORAGE_TYPE": "local"
       }
     }
   }
