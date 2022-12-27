@@ -56,7 +56,7 @@ public class FlashCardsController : ControllerBase
     [HttpGet("sets/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<FlashCardsSet>> GetSetByIdAsync([FromRoute] string id)
+    public async Task<ActionResult<FlashCardsSetDetailsWithProgressViewModel>> GetSetByIdAsync([FromRoute] string id)
     {
         try
         {
