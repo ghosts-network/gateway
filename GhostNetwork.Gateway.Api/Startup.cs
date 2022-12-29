@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using GhostNetwork.Content.Api;
+using GhostNetwork.Education.Api;
 using GhostNetwork.Gateway.Api.Helpers;
 using GhostNetwork.Gateway.Chats;
 using GhostNetwork.Gateway.Infrastructure;
@@ -53,7 +54,7 @@ namespace GhostNetwork.Gateway.Api
                 options.SwaggerDoc(ApiName, new OpenApiInfo
                 {
                     Title = "GhostNetwork/Gateway API",
-                    Version = "1.3.7"
+                    Version = "1.4.0"
                 });
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -135,6 +136,11 @@ namespace GhostNetwork.Gateway.Api
                 .AddHttpMessageHandler<LoggingHttpHandler>()
                 .AddHttpMessageHandler<SetRequestIdHttpHandler>();
             services.AddScoped<INewsFeedStorage, NewsFeedStorage>();
+
+            services.AddHttpClient("education")
+                .AddHttpMessageHandler<LoggingHttpHandler>()
+                .AddHttpMessageHandler<SetRequestIdHttpHandler>();
+            services.AddScoped<IFlashCardsApi>(provider => new FlashCardsApi(provider.GetRequiredService<IHttpClientFactory>().CreateClient("education"), configuration["EDUCATION_ADDRESS"]));
 
             services.AddScoped<RestUsersStorage>();
             services.AddScoped<IUsersStorage, RestUsersStorage>();
