@@ -27,7 +27,7 @@ namespace GhostNetwork.Gateway.Api
 
             var profile = await profilesApi.GetByIdAsync(Guid.Parse(UserId));
 
-            return new UserInfo(profile.Id, $"{profile.FirstName} {profile.LastName}", null);
+            return new UserInfo(profile.Id, $"{profile.FirstName} {profile.LastName}", profile.ProfilePicture);
         }
     }
 }
