@@ -44,6 +44,12 @@ namespace GhostNetwork.Gateway.Infrastructure
             return await GetProfilesByIdsAsync(ids);
         }
 
+        public async Task<RelationType> RelationTypeAsync(Guid fromUser, Guid toUser)
+        {
+            var type = await relationsApi.RelationTypeAsync(fromUser, toUser);
+            return (RelationType)type.Type;
+        }
+
         public async Task<DomainResult> SendFriendRequestAsync(Guid fromUser, Guid toUser)
         {
             await relationsApi.SendFriendRequestAsync(fromUser, toUser);
