@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <CodeAnalysisRuleSet>../../GhostNetwork.ruleset</CodeAnalysisRuleSet>
-        <PackageVersion>1.2.1</PackageVersion>
+        <PackageVersion>1.2.2</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
