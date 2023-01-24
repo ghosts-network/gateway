@@ -51,6 +51,12 @@ namespace GhostNetwork.EventBus.RabbitMq
 
             var exchangeName = nameProvider.GetExchangeName<TEvent>();
             channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
+            var props = propertiesProvider.GetProperties(channel);
+            if (string.IsNullOrEmpty(props.MessageId))
+            {
+                props.MessageId = Guid.NewGuid().ToString();
+            }
+
             channel.BasicPublish(
                 exchangeName,
                 string.Empty,
