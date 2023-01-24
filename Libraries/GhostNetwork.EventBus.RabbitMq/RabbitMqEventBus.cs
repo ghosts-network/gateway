@@ -60,7 +60,7 @@ namespace GhostNetwork.EventBus.RabbitMq
             channel.BasicPublish(
                 exchangeName,
                 string.Empty,
-                propertiesProvider.GetProperties(channel),
+                props,
                 messageProvider.GetMessage(@event));
 
             channel.Close();
