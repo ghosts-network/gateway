@@ -15,6 +15,8 @@ namespace GhostNetwork.Gateway.Api.Users
     [Authorize]
     public class RelationsController : ControllerBase
     {
+        private const int SummaryListSize = 6;
+
         private readonly IUsersStorage usersStorage;
         private readonly ICurrentUserProvider currentUserProvider;
         private readonly SecuritySettingsFriendsResolver friendsAccessResolver;
@@ -30,6 +32,41 @@ namespace GhostNetwork.Gateway.Api.Users
             this.currentUserProvider = currentUserProvider;
             this.friendsAccessResolver = friendsAccessResolver;
             this.followersAccessResolver = followersAccessResolver;
+        }
+
+        [HttpGet("{userId:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<RelationsSummary>> GetSummaryAsync(
+            [FromRoute] Guid userId)
+        {
+            var friendsTask = usersStorage.Relations.GetFriendsAsync(userId, SummaryListSize, 0);
+            var followersTask = usersStorage.Relations.GetFollowersAsync(userId, SummaryListSize, 0);
+
+            var outgoingRequestsTask = Guid.Parse(currentUserProvider.UserId) == userId
+                ? usersStorage.Relations.GetOutgoingFriendRequestsAsync(userId, SummaryListSize, 0)
+                : Task.FromResult(default(IEnumerable<UserInfo>));
+
+            var incomingRequestsTask = Guid.Parse(currentUserProvider.UserId) == userId
+                ? usersStorage.Relations.GetIncomingFriendRequestsAsync(userId, SummaryListSize, 0)
+                : Task.FromResult(default(IEnumerable<UserInfo>));
+
+            var actions = RelationsActions.NoAvailable;
+            if (Guid.Parse(currentUserProvider.UserId) != userId)
+            {
+                var relationType = await usersStorage.Relations.RelationTypeAsync(userId, Guid.Parse(currentUserProvider.UserId));
+                actions = new RelationsActions(
+                    relationType is RelationType.NoRelation,
+                    relationType is RelationType.Friend,
+                    relationType is RelationType.PendingFollower,
+                    relationType is RelationType.Following);
+            }
+
+            return Ok(new RelationsSummary(
+                await friendsTask,
+                await followersTask,
+                await outgoingRequestsTask,
+                await incomingRequestsTask,
+                actions));
         }
 
         [HttpGet("{userId:guid}/friends")]

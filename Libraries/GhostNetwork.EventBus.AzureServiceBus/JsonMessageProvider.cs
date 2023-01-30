@@ -12,7 +12,7 @@ namespace GhostNetwork.EventBus.AzureServiceBus
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = true
         };
-        
+
         public ServiceBusMessage GetMessage<TEvent>(TEvent @event)
             where TEvent : Event
         {

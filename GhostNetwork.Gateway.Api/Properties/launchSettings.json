@@ -11,6 +11,7 @@
         "CONTENT_ADDRESS": "http://localhost:5300",
         "PROFILES_ADDRESS": "http://localhost:5400",
         "MESSAGES_ADDRESS": "http://localhost:5252",
+        "EDUCATION_ADDRESS": "http://localhost:5500",
         "NEWSFEED_ADDRESS": "http://boberneprotiv.com:10000",
         "FILE_STORAGE_TYPE": "local"
       }

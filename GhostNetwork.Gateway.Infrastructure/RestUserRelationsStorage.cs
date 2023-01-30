@@ -3,7 +3,6 @@ using GhostNetwork.Gateway.Users;
 using GhostNetwork.Profiles.Api;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GhostNetwork.Gateway.Infrastructure
@@ -45,6 +44,12 @@ namespace GhostNetwork.Gateway.Infrastructure
             return await GetProfilesByIdsAsync(ids);
         }
 
+        public async Task<RelationType> RelationTypeAsync(Guid fromUser, Guid toUser)
+        {
+            var type = await relationsApi.RelationTypeAsync(fromUser, toUser);
+            return (RelationType)type.Type;
+        }
+
         public async Task<DomainResult> SendFriendRequestAsync(Guid fromUser, Guid toUser)
         {
             await relationsApi.SendFriendRequestAsync(fromUser, toUser);
@@ -80,13 +85,13 @@ namespace GhostNetwork.Gateway.Infrastructure
             return DomainResult.Success();
         }
 
-        private async Task<IEnumerable<UserInfo>> GetProfilesByIdsAsync(IEnumerable<Guid> ids)
+        private async Task<IEnumerable<UserInfo>> GetProfilesByIdsAsync(IReadOnlyCollection<Guid> ids)
         {
-            var friends = new List<UserInfo>(ids.Count());
+            var friends = new List<UserInfo>(ids.Count);
             foreach (var id in ids)
             {
                 var friend = await profilesApi.GetByIdAsync(id);
-                friends.Add(new UserInfo(friend.Id, $"{friend.FirstName} {friend.LastName}", string.Empty));
+                friends.Add(new UserInfo(friend.Id, $"{friend.FirstName} {friend.LastName}", friend.ProfilePicture));
             }
 
             return friends;

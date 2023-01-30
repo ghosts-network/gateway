@@ -9,16 +9,38 @@ namespace GhostNetwork.EventBus.RabbitMq
     {
         private readonly ConnectionProvider connectionProvider;
         private readonly IMessageProvider messageProvider;
+        private readonly IPropertiesProvider propertiesProvider;
         private readonly INameProvider nameProvider;
         private readonly IHandlerProvider handlerProvider;
         private readonly SubscriptionManager subscriptionManager;
 
-        public RabbitMqEventBus(ConnectionFactory connectionFactory, IHandlerProvider handlerProvider, IMessageProvider messageProvider = null, INameProvider nameProvider = null)
+        [Obsolete("Use constructor with IPropertiesProvider")]
+        public RabbitMqEventBus(
+            ConnectionFactory connectionFactory,
+            IHandlerProvider handlerProvider,
+            IMessageProvider messageProvider = null,
+            INameProvider nameProvider = null)
         {
             connectionProvider = new ConnectionProvider(connectionFactory);
             subscriptionManager = new SubscriptionManager();
             this.handlerProvider = handlerProvider;
             this.messageProvider = messageProvider ?? new JsonMessageProvider();
+            this.nameProvider = nameProvider ?? new DefaultQueueNameProvider();
+            propertiesProvider = new EmptyPropertiesProvider();
+        }
+
+        public RabbitMqEventBus(
+            ConnectionFactory connectionFactory,
+            IHandlerProvider handlerProvider,
+            IMessageProvider messageProvider = null,
+            IPropertiesProvider propertiesProvider = null,
+            INameProvider nameProvider = null)
+        {
+            connectionProvider = new ConnectionProvider(connectionFactory);
+            subscriptionManager = new SubscriptionManager();
+            this.handlerProvider = handlerProvider;
+            this.messageProvider = messageProvider ?? new JsonMessageProvider();
+            this.propertiesProvider = propertiesProvider ?? new EmptyPropertiesProvider();
             this.nameProvider = nameProvider ?? new DefaultQueueNameProvider();
         }
 
@@ -29,7 +51,17 @@ namespace GhostNetwork.EventBus.RabbitMq
 
             var exchangeName = nameProvider.GetExchangeName<TEvent>();
             channel.ExchangeDeclare(exchangeName, ExchangeType.Fanout);
-            channel.BasicPublish(exchangeName, string.Empty, null, messageProvider.GetMessage(@event));
+            var props = propertiesProvider.GetProperties(channel);
+            if (string.IsNullOrEmpty(props.MessageId))
+            {
+                props.MessageId = Guid.NewGuid().ToString();
+            }
+
+            channel.BasicPublish(
+                exchangeName,
+                string.Empty,
+                props,
+                messageProvider.GetMessage(@event));
 
             channel.Close();
             return Task.CompletedTask;

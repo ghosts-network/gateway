@@ -36,7 +36,7 @@ services:
       - PROFILES_ADDRESS=http://profiles
 
   db:
-    image: mvertes/alpine-mongo
+    image: mongo:5.0.8
     ports:
       - "27017:27017"
 

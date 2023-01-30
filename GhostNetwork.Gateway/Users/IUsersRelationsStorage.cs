@@ -15,6 +15,8 @@ namespace GhostNetwork.Gateway.Users
 
         Task<IEnumerable<UserInfo>> GetOutgoingFriendRequestsAsync(Guid user, int take, int skip);
 
+        Task<RelationType> RelationTypeAsync(Guid fromUser, Guid toUser);
+
         Task<DomainResult> SendFriendRequestAsync(Guid fromUser, Guid toUser);
 
         Task<DomainResult> ApproveFriendRequestAsync(Guid user, Guid requester);
